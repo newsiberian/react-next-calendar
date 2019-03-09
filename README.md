@@ -2,6 +2,11 @@
 
 An events calendar component built for React and made for modern browsers (read: IE10+) and uses flexbox over the classic tables-ception approach.
 
+## Why custom?
+
+This is a custom version with only one accepted [PR](https://github.com/intljusticemission/react-big-calendar/pull/1182) from original package. This package will be dropped
+after PR will be merged.
+
 [**DEMO and Docs**](http://intljusticemission.github.io/react-big-calendar/examples/index.html)
 
 Inspired by [Full Calendar](http://fullcalendar.io/).
@@ -15,8 +20,8 @@ element has a height, or the calendar won't be visible.
 
 ## Starters
 
-* [react-big-calendar](https://github.com/arecvlohe/rbc-starter)
-* [react-big-calendar with drag and drop](https://github.com/arecvlohe/rbc-with-dnd-starter)
+- [react-big-calendar](https://github.com/arecvlohe/rbc-starter)
+- [react-big-calendar with drag and drop](https://github.com/arecvlohe/rbc-with-dnd-starter)
 
 ## Run examples locally
 
@@ -27,7 +32,7 @@ $ npm install
 $ npm run examples
 ```
 
-* Open [localhost:3000/examples/index.html](http://localhost:3000/examples/index.html).
+- Open [localhost:3000/examples/index.html](http://localhost:3000/examples/index.html).
 
 ### Localization and Date Formatting
 
@@ -42,7 +47,7 @@ Regardless of your choice, you **must** choose a localizer to use this library:
 import BigCalendar from 'react-big-calendar'
 import moment from 'moment'
 
-const localizer = BigCalendar.momentLocalizer(moment) 
+const localizer = BigCalendar.momentLocalizer(moment)
 
 const MyCalendar = props => (
   <div>
@@ -62,7 +67,7 @@ const MyCalendar = props => (
 import BigCalendar from 'react-big-calendar'
 import globalize from 'globalize'
 
-const localizer = BigCalendar.globalizeLocalizer(globalize) 
+const localizer = BigCalendar.globalizeLocalizer(globalize)
 
 const MyCalendar = props => (
   <div>
