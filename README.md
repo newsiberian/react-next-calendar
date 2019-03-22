@@ -13,7 +13,7 @@ Inspired by [Full Calendar](http://fullcalendar.io/).
 
 ## Use and Setup
 
-`npm install react-big-calendar --save`
+`yarn add react-big-calendar` or `npm install --save react-big-calendar`
 
 Include `react-big-calendar/lib/css/react-big-calendar.css` for styles, and make sure your calendar's container
 element has a height, or the calendar won't be visible.
@@ -25,11 +25,11 @@ element has a height, or the calendar won't be visible.
 
 ## Run examples locally
 
-```
+```sh
 $ git clone git@github.com:intljusticemission/react-big-calendar.git
 $ cd react-big-calendar
-$ npm install
-$ npm run examples
+$ yarn
+$ yarn examples
 ```
 
 - Open [localhost:3000/examples/index.html](http://localhost:3000/examples/index.html).
