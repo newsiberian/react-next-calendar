@@ -10,13 +10,14 @@ import globalize from 'globalize'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'font-awesome/css/font-awesome.min.css'
 
-import 'react-big-calendar/lib/less/styles.less'
-import './styles.less'
-import './prism.less'
+import 'react-big-calendar/lib/sass/styles.scss'
+import './styles.scss'
+import './prism.scss'
 import Card from './Card'
 import ExampleControlSlot from './ExampleControlSlot'
 import Basic from './demos/basic'
 import Selectable from './demos/selectable'
+import CreateEventWithNoOverlap from './demos/createEventWithNoOverlap'
 import Cultures from './demos/cultures'
 import Popup from './demos/popup'
 import Rendering from './demos/rendering'
@@ -25,6 +26,7 @@ import Resource from './demos/resource'
 import DndResource from './demos/dndresource'
 import Timeslots from './demos/timeslots'
 import Dnd from './demos/dnd'
+import DndOutsideSource from './demos/dndOutsideSource'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 
@@ -36,6 +38,7 @@ let demoRoot =
 const EXAMPLES = {
   basic: 'Basic Calendar',
   selectable: 'Create events',
+  createEventWithNoOverlap: 'Create events with no-overlap algorithm',
   cultures: 'Localization',
   popup: 'Show more via a popup',
   timeslots: 'Custom Time Grids',
@@ -43,6 +46,8 @@ const EXAMPLES = {
   customView: 'Custom Calendar Views',
   resource: 'Resource Scheduling',
   dnd: 'Addon: Drag and drop',
+  dndresource: 'Resource Drag and drop',
+  dndOutsideSource: 'Addon: Drag and drop (from outside calendar)',
 }
 
 const DEFAULT_EXAMPLE = 'basic'
@@ -78,6 +83,8 @@ class Example extends React.Component {
       timeslots: Timeslots,
       dnd: Dnd,
       dndresource: DndResource,
+      dndOutsideSource: DndOutsideSource,
+      createEventWithNoOverlap: CreateEventWithNoOverlap,
     }[selected]
 
     return (
