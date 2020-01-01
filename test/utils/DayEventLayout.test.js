@@ -40,17 +40,32 @@ describe('getStyledEvents', () => {
           { start: d(11), end: d(11, 10) },
           { start: d(11, 10), end: d(11, 20) },
         ],
-        [{ width: 100, xOffset: 0 }, { width: 100, xOffset: 0 }],
+        [
+          { width: 100, xOffset: 0 },
+          { width: 100, xOffset: 0 },
+        ],
       ],
       [
         'two consecutive events too close together',
-        [{ start: d(11), end: d(11, 5) }, { start: d(11, 5), end: d(11, 10) }],
-        [{ width: 85, xOffset: 0 }, { width: 50, xOffset: 50 }],
+        [
+          { start: d(11), end: d(11, 5) },
+          { start: d(11, 5), end: d(11, 10) },
+        ],
+        [
+          { width: 85, xOffset: 0 },
+          { width: 50, xOffset: 50 },
+        ],
       ],
       [
         'two overlapping events',
-        [{ start: d(11), end: d(12) }, { start: d(11), end: d(12) }],
-        [{ width: 85, xOffset: 0 }, { width: 50, xOffset: 50 }],
+        [
+          { start: d(11), end: d(12) },
+          { start: d(11), end: d(12) },
+        ],
+        [
+          { width: 85, xOffset: 0 },
+          { width: 50, xOffset: 50 },
+        ],
       ],
       [
         'three overlapping events',
