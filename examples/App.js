@@ -27,8 +27,7 @@ import DndResource from './demos/dndresource'
 import Timeslots from './demos/timeslots'
 import Dnd from './demos/dnd'
 import DndOutsideSource from './demos/dndOutsideSource'
-import Dropdown from 'react-bootstrap/lib/Dropdown'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
+import { Dropdown } from 'react-bootstrap'
 
 const globalizeLocalizer = localizer(globalize)
 
@@ -138,14 +137,14 @@ class Example extends React.Component {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   {Object.entries(EXAMPLES).map(([key, title]) => (
-                    <MenuItem
+                    <Dropdown.Item
                       active={this.state.selected === key}
                       key={key}
                       href={`#${key}`}
                       onClick={() => this.select(key)}
                     >
                       {title}
-                    </MenuItem>
+                    </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>

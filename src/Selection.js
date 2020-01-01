@@ -411,8 +411,8 @@ class Selection {
     let { x, y, isTouch } = this._initialEventData
     return (
       !isTouch &&
-      (Math.abs(pageX - x) <= clickTolerance &&
-        Math.abs(pageY - y) <= clickTolerance)
+      Math.abs(pageX - x) <= clickTolerance &&
+      Math.abs(pageY - y) <= clickTolerance
     )
   }
 }
@@ -436,8 +436,8 @@ function normalizeDistance(distance = 0) {
 /**
  * Given two objects containing "top", "left", "offsetWidth" and "offsetHeight"
  * properties, determine if they collide.
- * @param  {Object|HTMLElement} a
- * @param  {Object|HTMLElement} b
+ * @param  {Object|HTMLElement} nodeA
+ * @param  {Object|HTMLElement} nodeB
  * @return {bool}
  */
 export function objectsCollide(nodeA, nodeB, tolerance = 0) {
@@ -454,15 +454,17 @@ export function objectsCollide(nodeA, nodeB, tolerance = 0) {
     bottom: bBottom = bTop,
   } = getBoundsForNode(nodeB)
 
-  return !// 'a' bottom doesn't touch 'b' top
-  (
-    aBottom - tolerance < bTop ||
-    // 'a' top doesn't touch 'b' bottom
-    aTop + tolerance > bBottom ||
-    // 'a' right doesn't touch 'b' left
-    aRight - tolerance < bLeft ||
-    // 'a' left doesn't touch 'b' right
-    aLeft + tolerance > bRight
+  return !(
+    // 'a' bottom doesn't touch 'b' top
+    (
+      aBottom - tolerance < bTop ||
+      // 'a' top doesn't touch 'b' bottom
+      aTop + tolerance > bBottom ||
+      // 'a' right doesn't touch 'b' left
+      aRight - tolerance < bLeft ||
+      // 'a' left doesn't touch 'b' right
+      aLeft + tolerance > bRight
+    )
   )
 }
 

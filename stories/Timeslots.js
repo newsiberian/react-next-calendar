@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions'
 import moment from 'moment'
 import React from 'react'
 
-import { events, Calendar } from './helpers'
+import { events, Calendar, Views } from './helpers'
 /* eslint-disable react/prop-types */
 
 storiesOf('Timeslots', module)
