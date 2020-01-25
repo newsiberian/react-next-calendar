@@ -82,7 +82,7 @@ function BackgroundCells({
         initial.current = { x: box.x, y: box.y }
       }
 
-      if (selector.isSelected(rowRef.current)) {
+      if (selector.current.isSelected(rowRef.current)) {
         const nodeBox = getBoundsForNode(rowRef.current)
         ;({ startIdx: start, endIdx: end } = dateCellSelection(
           initial.current,
