@@ -22,7 +22,7 @@ let weekRangeFormat = ({ start, end }, culture, local) =>
 
 export let formats = {
   dateFormat: 'dd',
-  dayFormat: 'dd ddd',
+  dayFormat: 'dd ccc',
   weekdayFormat: 'cccc',
 
   selectRangeFormat: timeRangeFormat,
@@ -37,7 +37,7 @@ export let formats = {
   dayRangeHeaderFormat: weekRangeFormat,
   agendaHeaderFormat: dateRangeFormat,
 
-  agendaDateFormat: 'ddd MMM dd',
+  agendaDateFormat: 'ccc MMM dd',
   agendaTimeFormat: 'p',
   agendaTimeRangeFormat: timeRangeFormat,
 }

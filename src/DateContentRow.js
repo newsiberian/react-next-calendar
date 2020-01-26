@@ -3,7 +3,6 @@ import getHeight from 'dom-helpers/height'
 import qsa from 'dom-helpers/querySelectorAll'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { findDOMNode } from 'react-dom'
 
 import * as dates from './utils/dates'
 import BackgroundCells from './BackgroundCells'
@@ -14,6 +13,8 @@ import * as DateSlotMetrics from './utils/DateSlotMetrics'
 class DateContentRow extends React.Component {
   constructor(...args) {
     super(...args)
+
+    this.rootRef = React.createRef()
 
     this.slotMetrics = DateSlotMetrics.getSlotMetrics()
   }
@@ -27,7 +28,7 @@ class DateContentRow extends React.Component {
   handleShowMore = (slot, target) => {
     const { range, onShowMore } = this.props
     let metrics = this.slotMetrics(this.props)
-    let row = qsa(findDOMNode(this), '.rbc-row-bg')[0]
+    let row = qsa(this.rootRef.current, '.rbc-row-bg')[0]
 
     let cell
     if (row) cell = row.children[slot - 1]
@@ -44,15 +45,10 @@ class DateContentRow extends React.Component {
     this.eventRow = r
   }
 
-  getContainer = () => {
-    const { container } = this.props
-    return container ? container() : findDOMNode(this)
-  }
-
   getRowLimit() {
     let eventHeight = getHeight(this.eventRow)
     let headingHeight = this.headingRow ? getHeight(this.headingRow) : 0
-    let eventSpace = getHeight(findDOMNode(this)) - headingHeight
+    let eventSpace = getHeight(this.rootRef.current) - headingHeight
 
     return Math.max(Math.floor(eventSpace / eventHeight), 1)
   }
@@ -73,7 +69,7 @@ class DateContentRow extends React.Component {
   renderDummy = () => {
     let { className, range, renderHeader } = this.props
     return (
-      <div className={className}>
+      <div className={className} ref={this.rootRef}>
         <div className="rbc-row-content">
           {renderHeader && (
             <div className="rbc-row" ref={this.createHeadingRef}>
@@ -101,6 +97,7 @@ class DateContentRow extends React.Component {
       selected,
       selectable,
       renderForMeasure,
+      containerRef,
 
       accessors,
       getters,
@@ -138,14 +135,14 @@ class DateContentRow extends React.Component {
     }
 
     return (
-      <div className={className}>
+      <div className={className} ref={this.rootRef}>
         <BackgroundCells
           date={date}
           getNow={getNow}
           rtl={rtl}
           range={range}
           selectable={selectable}
-          container={this.getContainer}
+          containerRef={containerRef || this.rootRef}
           getters={getters}
           onSelectStart={onSelectStart}
           onSelectEnd={onSelectEnd}
@@ -188,7 +185,7 @@ DateContentRow.propTypes = {
   renderForMeasure: PropTypes.bool,
   renderHeader: PropTypes.func,
 
-  container: PropTypes.func,
+  containerRef: PropTypes.shape({ current: PropTypes.object }),
   selected: PropTypes.object,
   selectable: PropTypes.oneOf([true, false, 'ignoreEvents']),
   longPressThreshold: PropTypes.number,
@@ -214,6 +211,7 @@ DateContentRow.propTypes = {
 }
 
 DateContentRow.defaultProps = {
+  containerRef: undefined,
   minRows: 0,
   maxRows: Infinity,
 }

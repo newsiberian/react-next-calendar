@@ -29,6 +29,7 @@ class MonthView extends React.Component {
     this._bgRows = []
     this._pendingSelection = []
     this.slotRowRef = React.createRef()
+    this.rootRef = React.createRef()
     this.state = {
       rowLimit: 5,
       needLimitMeasure: true,
@@ -80,7 +81,7 @@ class MonthView extends React.Component {
     this._weekCount = weeks.length
 
     return (
-      <div className={clsx('rbc-month-view', className)}>
+      <div className={clsx('rbc-month-view', className)} ref={this.rootRef}>
         <div className="rbc-row rbc-month-header">
           {this.renderHeaders(weeks[0])}
         </div>
@@ -114,7 +115,7 @@ class MonthView extends React.Component {
       <DateContentRow
         key={weekIdx}
         ref={weekIdx === 0 ? this.slotRowRef : undefined}
-        container={this.getContainer}
+        containerRef={this.rootRef}
         className="rbc-month-row"
         getNow={getNow}
         date={date}

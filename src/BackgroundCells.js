@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 
+import useSelection, { getBoundsForNode, isEvent } from './hooks/useSelection'
 import * as dates from './utils/dates'
 import { notify } from './utils/helpers'
 import { dateCellSelection, getSlotAtX, pointInBox } from './utils/selection'
-import Selection, { getBoundsForNode, isEvent } from './Selection'
 
 function BackgroundCells({
   components: { dateCellWrapper: Wrapper },
-  container,
+  containerRef,
   date: currentDate,
   getNow,
   getters,
@@ -21,116 +21,110 @@ function BackgroundCells({
   range,
   rtl,
 }) {
-  const [prevSelectable, setPrevSelectable] = useState(null)
-  const [selecting, setSelecting] = useState(false)
-  const [startIdx, setStartIdx] = useState(null)
-  const [endIdx, setEndIdx] = useState(null)
+  // we need most of these as refs because Selection doesn't see state changes
+  // internally
+  const selecting = useRef(false)
+  // we need this as `state` because otherwise render function doesn't see
+  // startIdx/endIdx changes
+  const [{ startVisual, endVisual }, setStartEnd] = useState({
+    startVisual: -1,
+    endVisual: -1,
+  })
+  const startEnd = useRef({
+    startIdx: -1,
+    endIdx: -1,
+  })
   const initial = useRef({})
-  const selector = useRef(null)
   const rowRef = useRef(null)
 
-  useEffect(() => {
-    if (selectable) {
-      initSelectable()
-    }
-
-    return () => {
-      teardownSelectable()
-    }
-  }, [])
+  const [on, isSelected] = useSelection(containerRef.current, selectable, {
+    longPressThreshold,
+  })
 
   useEffect(() => {
     if (selectable) {
       initSelectable()
-    } else if (prevSelectable) {
-      teardownSelectable()
     }
-    setPrevSelectable(selectable)
   }, [selectable])
 
-  function initSelectable() {
-    selector.current = new Selection(container, {
-      longPressThreshold,
-    })
+  const handleSelecting = box => {
+    let start = -1
+    let end = -1
 
-    const selectorClicksHandler = (point, actionType) => {
-      if (!isEvent(rowRef.current, point)) {
-        const rowBox = getBoundsForNode(rowRef.current)
-
-        if (pointInBox(rowBox, point)) {
-          let currentCell = getSlotAtX(rowBox, point.x, rtl, range.length)
-
-          selectSlot({
-            startIdx: currentCell,
-            endIdx: currentCell,
-            action: actionType,
-            box: point,
-          })
-        }
-      }
-
-      initial.current = {}
-      setSelecting(false)
+    if (!selecting.current) {
+      notify(onSelectStart, [box])
+      initial.current = { x: box.x, y: box.y }
+      selecting.current = true
     }
 
-    selector.current.on('selecting', box => {
-      let start = -1
-      let end = -1
+    if (isSelected(rowRef.current)) {
+      const nodeBox = getBoundsForNode(rowRef.current)
+      ;({ startIdx: start, endIdx: end } = dateCellSelection(
+        initial.current,
+        nodeBox,
+        box,
+        range.length,
+        rtl
+      ))
+    }
 
-      if (!selecting) {
-        notify(onSelectStart, [box])
-        initial.current = { x: box.x, y: box.y }
+    setStartEnd({ startVisual: start, endVisual: end })
+    startEnd.current = { startIdx: start, endIdx: end }
+  }
+
+  const handleSelect = bounds => {
+    const { startIdx, endIdx } = startEnd.current
+    selectSlot({ start: startIdx, end: endIdx, action: 'select', bounds })
+    initial.current = {}
+    selecting.current = false
+    startEnd.current = { startIdx: -1, endIdx: -1 }
+    setStartEnd({ startVisual: -1, endVisual: -1 })
+    // TODO: this is not passed here, so it always be undefined
+    notify(onSelectEnd, [startIdx, endIdx, selecting.current])
+  }
+
+  const selectorClicksHandler = (point, actionType) => {
+    if (!isEvent(rowRef.current, point)) {
+      const rowBox = getBoundsForNode(rowRef.current)
+
+      if (pointInBox(rowBox, point)) {
+        let currentCell = getSlotAtX(rowBox, point.x, rtl, range.length)
+
+        selectSlot({
+          start: currentCell,
+          end: currentCell,
+          action: actionType,
+          box: point,
+        })
       }
+    }
 
-      if (selector.current.isSelected(rowRef.current)) {
-        const nodeBox = getBoundsForNode(rowRef.current)
-        ;({ startIdx: start, endIdx: end } = dateCellSelection(
-          initial.current,
-          nodeBox,
-          box,
-          range.length,
-          rtl
-        ))
-      }
+    initial.current = {}
+    selecting.current = false
+  }
 
-      setSelecting(true)
-      setStartIdx(start)
-      setEndIdx(end)
-    })
+  function initSelectable() {
+    on('selecting', handleSelecting)
 
-    selector.current.on('beforeSelect', box => {
+    on('beforeSelect', box => {
       if (selectable !== 'ignoreEvents') return
 
       return !isEvent(rowRef.current, box)
     })
 
-    selector.current.on('click', point => selectorClicksHandler(point, 'click'))
+    on('click', point => selectorClicksHandler(point, 'click'))
 
-    selector.current.on('doubleClick', point =>
-      selectorClicksHandler(point, 'doubleClick')
-    )
+    on('doubleClick', point => selectorClicksHandler(point, 'doubleClick'))
 
-    selector.current.on('select', bounds => {
-      selectSlot({ action: 'select', bounds })
-      initial.current = {}
-      setSelecting(false)
-      // TODO: this is not passed here, so it always be undefined
-      notify(onSelectEnd, [startIdx, endIdx, selecting])
-    })
+    on('select', handleSelect)
   }
 
-  function teardownSelectable() {
-    if (!selector.current) return
-    selector.current.teardown()
-    selector.current = null
-  }
-
-  function selectSlot({ action, bounds, box }) {
-    if (endIdx !== -1 && startIdx !== -1)
+  function selectSlot({ start, end, action, bounds, box }) {
+    if (end !== -1 && start !== -1)
       onSelectSlot &&
         onSelectSlot({
-          start: startIdx,
-          end: endIdx,
+          start,
+          end,
           action,
           bounds,
           box,
@@ -142,17 +136,23 @@ function BackgroundCells({
   return (
     <div className="rbc-row-bg" ref={rowRef}>
       {range.map((date, index) => {
-        const selected = selecting && index >= startIdx && index <= endIdx
         const { className, style } = getters.dayProp(date)
 
         return (
-          <Wrapper key={index} value={date} range={range}>
+          <Wrapper
+            key={`${date.getDate()}-${index}`}
+            value={date}
+            range={range}
+          >
             <div
               style={style}
               className={clsx(
                 'rbc-day-bg',
                 className,
-                selected && 'rbc-selected-cell',
+                selecting.current &&
+                  index >= startVisual &&
+                  index <= endVisual &&
+                  'rbc-selected-cell',
                 dates.eq(date, current, 'day') && 'rbc-today',
                 currentDate &&
                   dates.month(currentDate) !== dates.month(date) &&
@@ -173,7 +173,9 @@ BackgroundCells.propTypes = {
   getters: PropTypes.object.isRequired,
   components: PropTypes.object.isRequired,
 
-  container: PropTypes.func,
+  containerRef: PropTypes.shape({
+    current: PropTypes.object,
+  }).isRequired,
   dayPropGetter: PropTypes.func,
   selectable: PropTypes.oneOf([true, false, 'ignoreEvents']),
   longPressThreshold: PropTypes.number,
