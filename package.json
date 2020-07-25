@@ -90,6 +90,7 @@
     "bootstrap": "4.5.0",
     "bootstrap-sass": "^3.4.1",
     "component-metadata-loader": "^4.0.0",
+    "cpy-cli": "^3.1.1",
     "eslint": "7.5.0",
     "eslint-config-jason": "7.0.1",
     "eslint-config-prettier": "6.11.0",
