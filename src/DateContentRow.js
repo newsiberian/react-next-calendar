@@ -110,6 +110,7 @@ class DateContentRow extends React.Component {
       onSelectStart,
       onSelectEnd,
       onDoubleClick,
+      onKeyPress,
       resourceId,
       longPressThreshold,
       isAllDay,
@@ -130,6 +131,7 @@ class DateContentRow extends React.Component {
       components,
       onSelect,
       onDoubleClick,
+      onKeyPress,
       resourceId,
       slotMetrics: metrics,
     }
@@ -149,6 +151,7 @@ class DateContentRow extends React.Component {
           onSelectSlot={this.handleSelectSlot}
           components={components}
           longPressThreshold={longPressThreshold}
+          resourceId={resourceId}
         />
 
         <div className="rbc-row-content">
@@ -196,6 +199,7 @@ DateContentRow.propTypes = {
   onSelectEnd: PropTypes.func,
   onSelectStart: PropTypes.func,
   onDoubleClick: PropTypes.func,
+  onKeyPress: PropTypes.func,
   dayPropGetter: PropTypes.func,
 
   getNow: PropTypes.func.isRequired,
