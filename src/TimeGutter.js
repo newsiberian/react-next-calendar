@@ -1,33 +1,46 @@
-import clsx from 'clsx'
+import * as React from 'react'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import clsx from 'clsx'
 
 import * as TimeSlotUtils from './utils/TimeSlots'
 import TimeSlotGroup from './TimeSlotGroup'
 
-export default class TimeGutter extends Component {
-  constructor(...args) {
-    super(...args)
-
-    const { min, max, timeslots, step } = this.props
-    this.slotMetrics = TimeSlotUtils.getSlotMetrics({
-      min,
-      max,
+const TimeGutter = React.forwardRef(function TimeGutter(
+  {
+    min,
+    max,
+    timeslots,
+    step,
+    resource,
+    components,
+    getters,
+    localizer,
+    getNow,
+  },
+  ref
+) {
+  const slotMetrics = React.useRef(
+    TimeSlotUtils.getSlotMetrics({
+      min: new Date(min),
+      max: new Date(max),
       timeslots,
       step,
     })
-  }
+  )
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { min, max, timeslots, step } = nextProps
-    this.slotMetrics = this.slotMetrics.update({ min, max, timeslots, step })
-  }
+  React.useEffect(() => {
+    slotMetrics.current = slotMetrics.current.update({
+      min: new Date(min),
+      max: new Date(max),
+      timeslots,
+      step,
+    })
+  }, [min, max, timeslots, step])
 
-  renderSlot = (value, idx) => {
+  function renderSlot(value, idx) {
     if (idx !== 0) return null
-    const { localizer, getNow } = this.props
 
-    const isNow = this.slotMetrics.dateIsInGroup(getNow(), idx)
+    const isNow = slotMetrics.current.dateIsInGroup(getNow(), idx)
     return (
       <span className={clsx('rbc-label', isNow && 'rbc-now')}>
         {localizer.format(value, 'timeGutterFormat')}
@@ -35,37 +48,40 @@ export default class TimeGutter extends Component {
     )
   }
 
-  render() {
-    const { resource, components, getters } = this.props
-
-    return (
-      <div className="rbc-time-gutter rbc-time-column">
-        {this.slotMetrics.groups.map((grp, idx) => {
-          return (
-            <TimeSlotGroup
-              key={idx}
-              group={grp}
-              resource={resource}
-              components={components}
-              renderSlot={this.renderSlot}
-              getters={getters}
-            />
-          )
-        })}
-      </div>
-    )
-  }
-}
+  return (
+    <div className="rbc-time-gutter rbc-time-column" ref={ref}>
+      {slotMetrics.current.groups.map((grp, idx) => {
+        return (
+          <TimeSlotGroup
+            key={idx}
+            group={grp}
+            resource={resource}
+            components={components}
+            renderSlot={renderSlot}
+            getters={getters}
+          />
+        )
+      })}
+    </div>
+  )
+})
 
 TimeGutter.propTypes = {
-  min: PropTypes.instanceOf(Date).isRequired,
-  max: PropTypes.instanceOf(Date).isRequired,
+  /**
+   * in seconds to allow use this as dep for useEffect
+   */
+  min: PropTypes.number.isRequired,
+  /**
+   * in seconds to allow use this as dep for useEffect
+   */
+  max: PropTypes.number.isRequired,
   timeslots: PropTypes.number.isRequired,
   step: PropTypes.number.isRequired,
   getNow: PropTypes.func.isRequired,
   components: PropTypes.object.isRequired,
   getters: PropTypes.object,
-
   localizer: PropTypes.object.isRequired,
   resource: PropTypes.string,
 }
+
+export default TimeGutter

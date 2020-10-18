@@ -80,10 +80,7 @@ storiesOf('Big Calendar', module)
       <Calendar
         showMultiDayTimes
         defaultDate={new Date(2016, 11, 4)}
-        max={moment()
-          .endOf('day')
-          .add(-1, 'hours')
-          .toDate()}
+        max={moment().endOf('day').add(-1, 'hours').toDate()}
         events={[
           {
             title: 'start of the week',
@@ -162,10 +159,21 @@ storiesOf('Big Calendar', module)
       />
     )
   })
-  .add('add custom timeSlotWrapper', () => {
+  .add('add custom timeSlotWrapper (Day)', () => {
     return (
       <Calendar
         defaultView={Views.DAY}
+        events={events}
+        components={{
+          timeSlotWrapper: customComponents.timeSlotWrapper,
+        }}
+      />
+    )
+  })
+  .add('add custom timeSlotWrapper (Week)', () => {
+    return (
+      <Calendar
+        defaultView={Views.WEEK}
         events={events}
         components={{
           timeSlotWrapper: customComponents.timeSlotWrapper,
@@ -196,14 +204,16 @@ storiesOf('Big Calendar', module)
       />
     )
   })
-  .add('add custom timeSlotWrapper', () => {
+  .add('scroll to time', () => {
     return (
       <Calendar
-        defaultView={Views.WEEK}
+        defaultView={Views.DAY}
+        min={moment('12:00am', 'h:mma').toDate()}
+        max={moment('11:59pm', 'h:mma').toDate()}
+        scrollToTime={moment('5:00am', 'h:mma').toDate()}
         events={events}
-        components={{
-          timeSlotWrapper: customComponents.timeSlotWrapper,
-        }}
+        onSelectEvent={action('event selected')}
+        defaultDate={new Date()}
       />
     )
   })

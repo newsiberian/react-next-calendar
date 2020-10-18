@@ -230,9 +230,9 @@ class DayColumn extends React.Component {
           continuesLater={continuesLater}
           accessors={accessors}
           selected={isSelected(event, selected)}
-          onClick={e => this._select(event, e)}
-          onDoubleClick={e => this._doubleClick(event, e)}
-          onKeyPress={e => this._keyPress(event, e)}
+          onClick={(e) => this._select(event, e)}
+          onDoubleClick={(e) => this._doubleClick(event, e)}
+          onKeyPress={(e) => this._keyPress(event, e)}
         />
       )
     })
@@ -244,7 +244,7 @@ class DayColumn extends React.Component {
       longPressThreshold: this.props.longPressThreshold,
     }))
 
-    let maybeSelect = box => {
+    let maybeSelect = (box) => {
       let onSelecting = this.props.onSelecting
       let current = this.state || {}
       let state = selectionState(box)
@@ -268,7 +268,7 @@ class DayColumn extends React.Component {
       }
     }
 
-    let selectionState = point => {
+    let selectionState = (point) => {
       let currentSlot = this.slotMetrics.closestSlotFromPoint(
         point,
         getBoundsForNode(node)
@@ -315,17 +315,19 @@ class DayColumn extends React.Component {
     selector.on('selecting', maybeSelect)
     selector.on('selectStart', maybeSelect)
 
-    selector.on('beforeSelect', box => {
+    selector.on('beforeSelect', (box) => {
       if (this.props.selectable !== 'ignoreEvents') return
 
       return !isEvent(findDOMNode(this), box)
     })
 
-    selector.on('click', box => selectorClicksHandler(box, 'click'))
+    selector.on('click', (box) => selectorClicksHandler(box, 'click'))
 
-    selector.on('doubleClick', box => selectorClicksHandler(box, 'doubleClick'))
+    selector.on('doubleClick', (box) =>
+      selectorClicksHandler(box, 'doubleClick')
+    )
 
-    selector.on('select', bounds => {
+    selector.on('select', (bounds) => {
       if (this.state.selecting) {
         this._selectSlot({ ...this.state, action: 'select', bounds })
         this.setState({ selecting: false })
@@ -409,7 +411,13 @@ DayColumn.propTypes = {
   onDoubleClickEvent: PropTypes.func.isRequired,
   onKeyPressEvent: PropTypes.func,
 
+  /**
+   * @deprecated ?
+   */
   className: PropTypes.string,
+  /**
+   * @deprecated ?
+   */
   dragThroughEvents: PropTypes.bool,
   resource: PropTypes.any,
 

@@ -1,101 +1,131 @@
+import * as React from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import * as animationFrame from 'dom-helpers/animationFrame'
-import React, { Component } from 'react'
-import { findDOMNode } from 'react-dom'
 import memoize from 'memoize-one'
+import getWidth from 'dom-helpers/width'
 
 import * as dates from './utils/dates'
 import DayColumn from './DayColumn'
 import TimeGutter from './TimeGutter'
-
-import getWidth from 'dom-helpers/width'
 import TimeGridHeader from './TimeGridHeader'
 import { notify } from './utils/helpers'
 import { inRange, sortEvents } from './utils/eventLevels'
 import Resources from './utils/Resources'
 import { DayLayoutAlgorithmPropType } from './utils/propTypes'
 
-export default class TimeGrid extends Component {
-  constructor(props) {
-    super(props)
+export default function TimeGrid({
+  events,
+  resources,
 
-    this.state = { gutterWidth: undefined, isOverflowing: null }
+  step = 30,
+  timeslots = 2,
+  range,
+  min = dates.startOf(new Date(), 'day'),
+  max = dates.endOf(new Date(), 'day'),
+  getNow,
 
-    this.scrollRef = React.createRef()
-    this.contentRef = React.createRef()
-    this._scrollRatio = null
-  }
+  scrollToTime = dates.startOf(new Date(), 'day'),
+  showMultiDayTimes,
 
-  UNSAFE_componentWillMount() {
-    this.calculateScroll()
-  }
+  rtl,
 
-  componentDidMount() {
-    this.checkOverflow()
+  width,
 
-    if (this.props.width == null) {
-      this.measureGutter()
+  accessors,
+  components,
+  getters,
+  localizer,
+
+  selected,
+  selectable,
+  longPressThreshold,
+
+  onSelecting,
+  onSelectEvent,
+  onSelectSlot,
+  onDoubleClickEvent,
+  onKeyPressEvent,
+  onDrillDown,
+  getDrilldownView,
+
+  dayLayoutAlgorithm,
+}) {
+  const [gutterWidth, setGutterWidth] = React.useState(undefined)
+  const [isOverflowing, setIsOverflowing] = React.useState(false)
+  const scrollRef = React.useRef()
+  const contentRef = React.useRef()
+  const gutterRef = React.useRef()
+  const scrollRatio = React.useRef(null)
+  const measureGutterAnimationFrameRequest = React.useRef()
+
+  React.useEffect(() => {
+    let rafHandle
+    let updatingOverflow = false
+
+    function handleResize() {
+      if (typeof rafHandle === 'number') {
+        animationFrame.cancel(rafHandle)
+      }
+      rafHandle = animationFrame.request(checkOverflow)
     }
 
-    this.applyScroll()
+    function checkOverflow() {
+      if (updatingOverflow || !contentRef.current) {
+        return
+      }
 
-    window.addEventListener('resize', this.handleResize)
-  }
+      setIsOverflowing(
+        contentRef.current.scrollHeight > contentRef.current.clientHeight
+      )
+    }
 
-  handleScroll = e => {
-    if (this.scrollRef.current) {
-      this.scrollRef.current.scrollLeft = e.target.scrollLeft
+    calculateScroll()
+
+    checkOverflow()
+
+    if (typeof width !== 'number') {
+      measureGutter()
+    }
+
+    applyScroll()
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+
+      animationFrame.cancel(rafHandle)
+
+      if (measureGutterAnimationFrameRequest.current) {
+        window.cancelAnimationFrame(measureGutterAnimationFrameRequest.current)
+      }
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (typeof width !== 'number') {
+      measureGutter()
+    }
+
+    applyScroll()
+  }, [width, measureGutter, applyScroll])
+
+  React.useEffect(() => {
+    calculateScroll()
+  }, [range, scrollToTime, calculateScroll])
+
+  function handleScroll(e) {
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = e.target.scrollLeft
     }
   }
 
-  handleResize = () => {
-    animationFrame.cancel(this.rafHandle)
-    this.rafHandle = animationFrame.request(this.checkOverflow)
+  function handleSelectAllDayEvent(...args) {
+    notify(onSelectEvent, args)
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
-
-    animationFrame.cancel(this.rafHandle)
-
-    if (this.measureGutterAnimationFrameRequest) {
-      window.cancelAnimationFrame(this.measureGutterAnimationFrameRequest)
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.props.width == null) {
-      this.measureGutter()
-    }
-
-    this.applyScroll()
-    //this.checkOverflow()
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { range, scrollToTime } = this.props
-    // When paginating, reset scroll
-    if (
-      !dates.eq(nextProps.range[0], range[0], 'minute') ||
-      !dates.eq(nextProps.scrollToTime, scrollToTime, 'minute')
-    ) {
-      this.calculateScroll(nextProps)
-    }
-  }
-
-  gutterRef = ref => {
-    this.gutter = ref && findDOMNode(ref)
-  }
-
-  handleSelectAlldayEvent = (...args) => {
-    //cancel any pending selections so only the event click goes through.
-    this.clearSelection()
-    notify(this.props.onSelectEvent, args)
-  }
-
-  handleSelectAllDaySlot = (slots, slotInfo) => {
-    const { onSelectSlot } = this.props
+  function handleSelectAllDaySlot(slots, slotInfo) {
     notify(onSelectSlot, {
       slots,
       start: slots[0],
@@ -105,22 +135,58 @@ export default class TimeGrid extends Component {
     })
   }
 
-  renderEvents(range, events, now) {
-    let {
-      min,
-      max,
-      components,
-      accessors,
-      localizer,
-      dayLayoutAlgorithm,
-    } = this.props
+  const measureGutter = React.useCallback(
+    function measureGutter() {
+      if (measureGutterAnimationFrameRequest.current) {
+        window.cancelAnimationFrame(measureGutterAnimationFrameRequest.current)
+      }
+      measureGutterAnimationFrameRequest.current = window.requestAnimationFrame(
+        () => {
+          const width = getWidth(gutterRef.current)
 
-    const resources = this.memoizedResources(this.props.resources, accessors)
-    const groupedEvents = resources.groupEvents(events)
+          if (width && gutterWidth !== width) {
+            setGutterWidth(width)
+          }
+        }
+      )
+    },
+    [gutterWidth]
+  )
 
-    return resources.map(([id, resource], i) =>
+  const applyScroll = React.useCallback(function applyScroll() {
+    if (typeof scrollRatio.current === 'number') {
+      contentRef.current.scrollTop =
+        contentRef.current.scrollHeight * scrollRatio.current
+      // Only do this once
+      scrollRatio.current = null
+    }
+  }, [])
+
+  const calculateScroll = React.useCallback(
+    function calculateScroll() {
+      const diffMillis = scrollToTime - dates.startOf(scrollToTime, 'day')
+
+      if (diffMillis === 0) {
+        scrollRatio.current = null
+      } else {
+        const totalMillis = dates.diff(max, min)
+        scrollRatio.current = diffMillis / totalMillis
+      }
+    },
+    [scrollToTime, max, min]
+  )
+
+  const memoizedResources = memoize((resources, accessors) =>
+    Resources(resources, accessors)
+  )
+
+  function renderEvents(range, events, now) {
+    const res = memoizedResources(resources, accessors)
+    const groupedEvents = res.groupEvents(events)
+
+    return res.map(([id, resource], i) =>
       range.map((date, jj) => {
-        let daysEvents = (groupedEvents.get(id) || []).filter(event =>
+        let daysEvents = (groupedEvents.get(id) || []).filter((event) =>
           dates.inRange(
             date,
             accessors.start(event),
@@ -131,16 +197,34 @@ export default class TimeGrid extends Component {
 
         return (
           <DayColumn
-            {...this.props}
-            localizer={localizer}
+            key={i + '-' + jj}
+            events={daysEvents}
+            step={step}
+            date={date}
             min={dates.merge(date, min)}
             max={dates.merge(date, max)}
-            resource={resource && id}
-            components={components}
+            getNow={getNow}
             isNow={dates.eq(date, now, 'day')}
-            key={i + '-' + jj}
-            date={date}
-            events={daysEvents}
+            rtl={rtl}
+            accessors={accessors}
+            components={components}
+            getters={getters}
+            localizer={localizer}
+            showMultiDayTimes={showMultiDayTimes}
+            // TODO: do we need this?
+            // culture={}
+            timeslots={timeslots}
+            selected={selected}
+            selectable={selectable}
+            // TODO: do we need this?
+            // eventOffset={}
+            longPressThreshold={longPressThreshold}
+            onSelecting={onSelecting}
+            onSelectSlot={onSelectSlot}
+            onSelectEvent={onSelectEvent}
+            onDoubleClickEvent={onDoubleClickEvent}
+            onKeyPressEvent={onKeyPressEvent}
+            resource={resource && id}
             dayLayoutAlgorithm={dayLayoutAlgorithm}
           />
         )
@@ -148,162 +232,81 @@ export default class TimeGrid extends Component {
     )
   }
 
-  render() {
-    let {
-      events,
-      range,
-      width,
-      rtl,
-      selected,
-      getNow,
-      resources,
-      components,
-      accessors,
-      getters,
-      localizer,
-      min,
-      max,
-      showMultiDayTimes,
-      longPressThreshold,
-    } = this.props
+  let start = range[0]
+  let end = range[range.length - 1]
 
-    width = width || this.state.gutterWidth
+  let allDayEvents = []
+  let rangeEvents = []
 
-    let start = range[0],
-      end = range[range.length - 1]
+  events.forEach((event) => {
+    if (inRange(event, start, end, accessors)) {
+      let eStart = accessors.start(event),
+        eEnd = accessors.end(event)
 
-    this.slots = range.length
-
-    let allDayEvents = [],
-      rangeEvents = []
-
-    events.forEach(event => {
-      if (inRange(event, start, end, accessors)) {
-        let eStart = accessors.start(event),
-          eEnd = accessors.end(event)
-
-        if (
-          accessors.allDay(event) ||
-          (dates.isJustDate(eStart) && dates.isJustDate(eEnd)) ||
-          (!showMultiDayTimes && !dates.eq(eStart, eEnd, 'day'))
-        ) {
-          allDayEvents.push(event)
-        } else {
-          rangeEvents.push(event)
-        }
+      if (
+        accessors.allDay(event) ||
+        (dates.isJustDate(eStart) && dates.isJustDate(eEnd)) ||
+        (!showMultiDayTimes && !dates.eq(eStart, eEnd, 'day'))
+      ) {
+        allDayEvents.push(event)
+      } else {
+        rangeEvents.push(event)
       }
-    })
+    }
+  })
 
-    allDayEvents.sort((a, b) => sortEvents(a, b, accessors))
+  allDayEvents.sort((a, b) => sortEvents(a, b, accessors))
 
-    return (
+  return (
+    <div
+      className={clsx('rbc-time-view', resources && 'rbc-time-view-resources')}
+    >
+      <TimeGridHeader
+        range={range}
+        events={allDayEvents}
+        width={width || gutterWidth}
+        rtl={rtl}
+        getNow={getNow}
+        localizer={localizer}
+        selected={selected}
+        resources={memoizedResources(resources, accessors)}
+        selectable={selectable}
+        accessors={accessors}
+        getters={getters}
+        components={components}
+        scrollRef={scrollRef}
+        isOverflowing={isOverflowing}
+        longPressThreshold={longPressThreshold}
+        onSelectSlot={handleSelectAllDaySlot}
+        onSelectEvent={handleSelectAllDayEvent}
+        onDoubleClickEvent={onDoubleClickEvent}
+        onKeyPressEvent={onKeyPressEvent}
+        onDrillDown={onDrillDown}
+        getDrilldownView={getDrilldownView}
+      />
+
       <div
-        className={clsx(
-          'rbc-time-view',
-          resources && 'rbc-time-view-resources'
-        )}
+        ref={contentRef}
+        className="rbc-time-content"
+        onScroll={handleScroll}
       >
-        <TimeGridHeader
-          range={range}
-          events={allDayEvents}
-          width={width}
-          rtl={rtl}
-          getNow={getNow}
+        <TimeGutter
+          date={start}
+          ref={gutterRef}
           localizer={localizer}
-          selected={selected}
-          resources={this.memoizedResources(resources, accessors)}
-          selectable={this.props.selectable}
-          accessors={accessors}
-          getters={getters}
+          min={dates.merge(start, min).getTime()}
+          max={dates.merge(start, max).getTime()}
+          step={step}
+          getNow={getNow}
+          timeslots={timeslots}
           components={components}
-          scrollRef={this.scrollRef}
-          isOverflowing={this.state.isOverflowing}
-          longPressThreshold={longPressThreshold}
-          onSelectSlot={this.handleSelectAllDaySlot}
-          onSelectEvent={this.handleSelectAlldayEvent}
-          onDoubleClickEvent={this.props.onDoubleClickEvent}
-          onKeyPressEvent={this.props.onKeyPressEvent}
-          onDrillDown={this.props.onDrillDown}
-          getDrilldownView={this.props.getDrilldownView}
+          className="rbc-time-gutter"
+          getters={getters}
         />
-        <div
-          ref={this.contentRef}
-          className="rbc-time-content"
-          onScroll={this.handleScroll}
-        >
-          <TimeGutter
-            date={start}
-            ref={this.gutterRef}
-            localizer={localizer}
-            min={dates.merge(start, min)}
-            max={dates.merge(start, max)}
-            step={this.props.step}
-            getNow={this.props.getNow}
-            timeslots={this.props.timeslots}
-            components={components}
-            className="rbc-time-gutter"
-            getters={getters}
-          />
-          {this.renderEvents(range, rangeEvents, getNow())}
-        </div>
+
+        {renderEvents(range, rangeEvents, getNow())}
       </div>
-    )
-  }
-
-  clearSelection() {
-    clearTimeout(this._selectTimer)
-    this._pendingSelection = []
-  }
-
-  measureGutter() {
-    if (this.measureGutterAnimationFrameRequest) {
-      window.cancelAnimationFrame(this.measureGutterAnimationFrameRequest)
-    }
-    this.measureGutterAnimationFrameRequest = window.requestAnimationFrame(
-      () => {
-        const width = getWidth(this.gutter)
-
-        if (width && this.state.gutterWidth !== width) {
-          this.setState({ gutterWidth: width })
-        }
-      }
-    )
-  }
-
-  applyScroll() {
-    if (this._scrollRatio != null) {
-      const content = this.contentRef.current
-      content.scrollTop = content.scrollHeight * this._scrollRatio
-      // Only do this once
-      this._scrollRatio = null
-    }
-  }
-
-  calculateScroll(props = this.props) {
-    const { min, max, scrollToTime } = props
-
-    const diffMillis = scrollToTime - dates.startOf(scrollToTime, 'day')
-    const totalMillis = dates.diff(max, min)
-
-    this._scrollRatio = diffMillis / totalMillis
-  }
-
-  checkOverflow = () => {
-    if (this._updatingOverflow) return
-
-    const content = this.contentRef.current
-    let isOverflowing = content.scrollHeight > content.clientHeight
-
-    if (this.state.isOverflowing !== isOverflowing) {
-      this._updatingOverflow = true
-      this.setState({ isOverflowing }, () => {
-        this._updatingOverflow = false
-      })
-    }
-  }
-
-  memoizedResources = memoize((resources, accessors) =>
-    Resources(resources, accessors)
+    </div>
   )
 }
 
@@ -344,12 +347,4 @@ TimeGrid.propTypes = {
   getDrilldownView: PropTypes.func.isRequired,
 
   dayLayoutAlgorithm: DayLayoutAlgorithmPropType,
-}
-
-TimeGrid.defaultProps = {
-  step: 30,
-  timeslots: 2,
-  min: dates.startOf(new Date(), 'day'),
-  max: dates.endOf(new Date(), 'day'),
-  scrollToTime: dates.startOf(new Date(), 'day'),
 }
