@@ -81,13 +81,7 @@ export default function TimeGrid({
     }
 
     calculateScroll()
-
     checkOverflow()
-
-    if (typeof width !== 'number') {
-      measureGutter()
-    }
-
     applyScroll()
 
     window.addEventListener('resize', handleResize)
