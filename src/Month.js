@@ -6,7 +6,6 @@ import * as animationFrame from 'dom-helpers/animationFrame'
 import chunk from 'lodash/chunk'
 import Overlay from 'react-overlays/Overlay'
 
-import useEnhancedEffect from './hooks/useEnhancedEffect'
 import * as dates from './utils/dates'
 import { navigate, views } from './utils/constants'
 import { notify } from './utils/helpers'
@@ -56,9 +55,11 @@ function MonthView({
   const [overlay, setOverlay] = React.useState({})
   const [prevDate, setPrevDate] = React.useState(date)
   const pendingSelection = React.useRef([])
-  const slotRowRef = React.useRef()
   const rootRef = React.useRef()
   const selectTimer = React.useRef()
+
+  const month = dates.visibleDays(date, localizer)
+  const weeks = chunk(month, 7)
 
   React.useEffect(() => {
     function handleResize() {
@@ -74,13 +75,6 @@ function MonthView({
     }
   }, [])
 
-  // we must measure limits before render
-  useEnhancedEffect(() => {
-    if (needLimitMeasure) {
-      measureRowLimit()
-    }
-  }, [needLimitMeasure])
-
   React.useEffect(() => {
     const changed = !dates.eq(prevDate, date, 'month')
     if (changed) {
@@ -89,126 +83,13 @@ function MonthView({
     }
   }, [date, prevDate])
 
-  function renderWeek(week, weekIdx) {
-    const weekEvents = eventsForWeek(
-      events,
-      week[0],
-      week[week.length - 1],
-      accessors
-    )
-
-    weekEvents.sort((a, b) => sortEvents(a, b, accessors))
-
-    return (
-      <DateContentRow
-        key={weekIdx}
-        ref={weekIdx === 0 ? slotRowRef : undefined}
-        containerRef={rootRef}
-        className="rbc-month-row"
-        getNow={getNow}
-        date={date}
-        range={week}
-        events={weekEvents}
-        maxRows={rowLimit}
-        selected={selected}
-        selectable={selectable}
-        components={components}
-        accessors={accessors}
-        getters={getters}
-        localizer={localizer}
-        renderHeader={readerDateHeading}
-        renderForMeasure={needLimitMeasure}
-        onShowMore={handleShowMore}
-        onSelect={handleSelectEvent}
-        onDoubleClick={handleDoubleClickEvent}
-        onKeyPress={handleKeyPressEvent}
-        onSelectSlot={handleSelectSlot}
-        longPressThreshold={longPressThreshold}
-        rtl={rtl}
-      />
-    )
-  }
-
-  function readerDateHeading({ date: headerDate, className, ...props }) {
-    const isOffRange = dates.month(headerDate) !== dates.month(date)
-    const isCurrent = dates.eq(headerDate, date, 'day')
-    const drillDownView = getDrilldownView(headerDate)
-    const label = localizer.format(headerDate, 'dateFormat')
-    const DateHeaderComponent = components.dateHeader || DateHeader
-
-    return (
-      <div
-        {...props}
-        className={clsx(
-          className,
-          isOffRange && 'rbc-off-range',
-          isCurrent && 'rbc-current'
-        )}
-      >
-        <DateHeaderComponent
-          label={label}
-          date={headerDate}
-          drilldownView={drillDownView}
-          isOffRange={isOffRange}
-          onDrillDown={(e) => handleHeadingClick(headerDate, drillDownView, e)}
-        />
-      </div>
-    )
-  }
-
-  function renderHeaders(row) {
-    const first = row[0]
-    const last = row[row.length - 1]
-    const HeaderComponent = components.header || Header
-
-    return dates.range(first, last, 'day').map((day, idx) => (
-      <div key={'header_' + idx} className="rbc-header">
-        <HeaderComponent
-          date={day}
-          localizer={localizer}
-          label={localizer.format(day, 'weekdayFormat')}
-        />
-      </div>
-    ))
-  }
-
-  function renderOverlay() {
-    return (
-      <Overlay
-        rootClose
-        placement="bottom"
-        show={!!overlay.position}
-        onHide={() => setOverlay({})}
-        target={() => overlay.target}
-      >
-        {({ props }) => (
-          <Popup
-            {...props}
-            popupOffset={popupOffset}
-            accessors={accessors}
-            getters={getters}
-            selected={selected}
-            components={components}
-            localizer={localizer}
-            position={overlay.position}
-            show={overlayDisplay}
-            events={overlay.events}
-            slotStart={overlay.date}
-            slotEnd={overlay.end}
-            onSelect={handleSelectEvent}
-            onDoubleClick={handleDoubleClickEvent}
-            onKeyPress={handleKeyPressEvent}
-            handleDragStart={handleDragStart}
-          />
-        )}
-      </Overlay>
-    )
-  }
-
-  function measureRowLimit() {
-    setRowLimit(slotRowRef.current.getRowLimit())
+  const measureRowLimit = React.useCallback(function measureRowLimit(
+    getRowLimit
+  ) {
+    setRowLimit(getRowLimit())
     setNeedLimitMeasure(false)
-  }
+  },
+  [])
 
   function handleSelectSlot(range, slotInfo) {
     pendingSelection.current = pendingSelection.current.concat(range)
@@ -279,8 +160,122 @@ function MonthView({
     pendingSelection.current = []
   }
 
-  const month = dates.visibleDays(date, localizer)
-  const weeks = chunk(month, 7)
+  function renderWeek(week, weekIdx) {
+    const weekEvents = eventsForWeek(
+      events,
+      week[0],
+      week[week.length - 1],
+      accessors
+    )
+
+    weekEvents.sort((a, b) => sortEvents(a, b, accessors))
+
+    return (
+      <DateContentRow
+        key={weekIdx}
+        containerRef={rootRef}
+        isFirstRow={weekIdx === 0}
+        className="rbc-month-row"
+        getNow={getNow}
+        date={date}
+        range={week}
+        events={weekEvents}
+        maxRows={rowLimit}
+        selected={selected}
+        selectable={selectable}
+        components={components}
+        accessors={accessors}
+        getters={getters}
+        localizer={localizer}
+        renderHeader={readerDateHeading}
+        renderForMeasure={needLimitMeasure}
+        measureRowLimit={measureRowLimit}
+        onShowMore={handleShowMore}
+        onSelect={handleSelectEvent}
+        onDoubleClick={handleDoubleClickEvent}
+        onKeyPress={handleKeyPressEvent}
+        onSelectSlot={handleSelectSlot}
+        longPressThreshold={longPressThreshold}
+        rtl={rtl}
+      />
+    )
+  }
+
+  function readerDateHeading({ date: headerDate, className, ...props }) {
+    const isOffRange = dates.month(headerDate) !== dates.month(date)
+    const isCurrent = dates.eq(headerDate, date, 'day')
+    const drillDownView = getDrilldownView(headerDate)
+    const label = localizer.format(headerDate, 'dateFormat')
+    const DateHeaderComponent = components.dateHeader || DateHeader
+
+    return (
+      <div
+        {...props}
+        className={clsx(
+          className,
+          isOffRange && 'rbc-off-range',
+          isCurrent && 'rbc-current'
+        )}
+      >
+        <DateHeaderComponent
+          label={label}
+          date={headerDate}
+          drillDownView={drillDownView}
+          isOffRange={isOffRange}
+          onDrillDown={(e) => handleHeadingClick(headerDate, drillDownView, e)}
+        />
+      </div>
+    )
+  }
+
+  function renderHeaders(row) {
+    const first = row[0]
+    const last = row[row.length - 1]
+    const HeaderComponent = components.header || Header
+
+    return dates.range(first, last, 'day').map((day, idx) => (
+      <div key={'header_' + idx} className="rbc-header">
+        <HeaderComponent
+          date={day}
+          localizer={localizer}
+          label={localizer.format(day, 'weekdayFormat')}
+        />
+      </div>
+    ))
+  }
+
+  function renderOverlay() {
+    return (
+      <Overlay
+        rootClose
+        placement="bottom"
+        show={!!overlay.position}
+        onHide={() => setOverlay({})}
+        target={() => overlay.target}
+      >
+        {({ props }) => (
+          <Popup
+            {...props}
+            popupOffset={popupOffset}
+            accessors={accessors}
+            getters={getters}
+            selected={selected}
+            components={components}
+            localizer={localizer}
+            position={overlay.position}
+            show={overlayDisplay}
+            events={overlay.events}
+            slotStart={overlay.date}
+            slotEnd={overlay.end}
+            onSelect={handleSelectEvent}
+            onDoubleClick={handleDoubleClickEvent}
+            onKeyPress={handleKeyPressEvent}
+            handleDragStart={handleDragStart}
+          />
+        )}
+      </Overlay>
+    )
+  }
 
   return (
     <div className={clsx('rbc-month-view', className)} ref={rootRef}>

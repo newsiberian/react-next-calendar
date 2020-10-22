@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import * as React from 'react'
 import contains from 'dom-helpers/contains'
 import closest from 'dom-helpers/closest'
 import listen from 'dom-helpers/listen'
@@ -11,41 +11,41 @@ export default function useSelection(
   selectable,
   { global = false, longPressThreshold = 250 } = {}
 ) {
-  const isDetached = useRef(false)
-  const selecting = useRef(false)
-  const selectRect = useRef(null)
+  const isDetached = React.useRef(false)
+  const selecting = React.useRef(false)
+  const selectRect = React.useRef(null)
   const globalMouse = !node || global
-  const listeners = useRef(Object.create(null))
-  const initialEventData = useRef(null)
-  const lastClickData = useRef(null)
-  const ctrl = useRef()
+  const listeners = React.useRef(Object.create(null))
+  const initialEventData = React.useRef(null)
+  const lastClickData = React.useRef(null)
+  const ctrl = React.useRef()
 
-  let removeTouchMoveWindowListener
-  let removeKeyUpListener
-  let removeKeyDownListener
-  let removeDropFromOutsideListener
-  let removeDragOverFromOutside
-  let removeInitialEventListener
-  let removeEndListener
-  let onEscListener
-  let removeMoveListener
+  const removeTouchMoveWindowListener = React.useRef()
+  const removeKeyUpListener = React.useRef()
+  const removeKeyDownListener = React.useRef()
+  const removeDropFromOutsideListener = React.useRef()
+  const removeDragOverFromOutsideListener = React.useRef()
+  const removeInitialEventListener = React.useRef()
+  const removeEndListener = React.useRef()
+  const onEscListener = React.useRef()
+  const removeMoveListener = React.useRef()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (selectable) {
       // Fixes an iOS 10 bug where scrolling could not be prevented on the window.
       // https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-      removeTouchMoveWindowListener = addEventListener(
+      removeTouchMoveWindowListener.current = addEventListener(
         'touchmove',
         () => {},
         window
       )
-      removeKeyDownListener = addEventListener('keydown', keyListener)
-      removeKeyUpListener = addEventListener('keyup', keyListener)
-      removeDropFromOutsideListener = addEventListener(
+      removeKeyDownListener.current = addEventListener('keydown', keyListener)
+      removeKeyUpListener.current = addEventListener('keyup', keyListener)
+      removeDropFromOutsideListener.current = addEventListener(
         'drop',
         dropFromOutsideListener
       )
-      removeDragOverFromOutside = addEventListener(
+      removeDragOverFromOutsideListener.current = addEventListener(
         'dragover',
         dragOverFromOutsideListener
       )
@@ -55,15 +55,18 @@ export default function useSelection(
     return () => {
       isDetached.current = true
       listeners.current = Object.create(null)
-      removeTouchMoveWindowListener && removeTouchMoveWindowListener()
-      removeInitialEventListener && removeInitialEventListener()
-      removeEndListener && removeEndListener()
-      onEscListener && onEscListener()
-      removeMoveListener && removeMoveListener()
-      removeKeyUpListener && removeKeyUpListener()
-      removeKeyDownListener && removeKeyDownListener()
-      removeDropFromOutsideListener && removeDropFromOutsideListener()
-      removeDragOverFromOutside && removeDragOverFromOutside()
+      removeTouchMoveWindowListener.current &&
+        removeTouchMoveWindowListener.current()
+      removeInitialEventListener.current && removeInitialEventListener.current()
+      removeEndListener.current && removeEndListener.current()
+      onEscListener.current && onEscListener.current()
+      removeMoveListener.current && removeMoveListener.current()
+      removeKeyUpListener.current && removeKeyUpListener.current()
+      removeKeyDownListener.current && removeKeyDownListener.current()
+      removeDropFromOutsideListener.current &&
+        removeDropFromOutsideListener.current()
+      removeDragOverFromOutsideListener.current &&
+        removeDragOverFromOutsideListener.current()
     }
   }, [selectable])
 
@@ -83,7 +86,7 @@ export default function useSelection(
   function emit(type, ...args) {
     let result
     let handlers = listeners.current[type] || []
-    handlers.forEach(fn => {
+    handlers.forEach((fn) => {
       if (result === undefined) result = fn(...args)
     })
     return result
@@ -107,7 +110,7 @@ export default function useSelection(
     let removeTouchMoveListener = null
     let removeTouchEndListener = null
 
-    const handleTouchStart = initialEvent => {
+    const handleTouchStart = (initialEvent) => {
       timer = setTimeout(() => {
         cleanup()
         handler(initialEvent)
@@ -150,20 +153,23 @@ export default function useSelection(
   // Listen for mousedown and touchstart events. When one is received, disable the other and setup
   // future event handling based on the type of event.
   function addInitialEventListener() {
-    const removeMouseDownListener = addEventListener('mousedown', e => {
-      removeInitialEventListener()
+    const removeMouseDownListener = addEventListener('mousedown', (e) => {
+      removeInitialEventListener.current()
       handleInitialEvent(e)
-      removeInitialEventListener = addEventListener(
+      removeInitialEventListener.current = addEventListener(
         'mousedown',
         handleInitialEvent
       )
     })
-    const removeTouchStartListener = addEventListener('touchstart', e => {
-      removeInitialEventListener()
-      removeInitialEventListener = addLongPressListener(handleInitialEvent, e)
+    const removeTouchStartListener = addEventListener('touchstart', (e) => {
+      removeInitialEventListener.current()
+      removeInitialEventListener.current = addLongPressListener(
+        handleInitialEvent,
+        e
+      )
     })
 
-    removeInitialEventListener = () => {
+    removeInitialEventListener.current = () => {
       removeMouseDownListener()
       removeTouchStartListener()
     }
@@ -219,14 +225,29 @@ export default function useSelection(
 
     switch (e.type) {
       case 'mousedown':
-        removeEndListener = addEventListener('mouseup', handleTerminatingEvent)
-        onEscListener = addEventListener('keydown', handleTerminatingEvent)
-        removeMoveListener = addEventListener('mousemove', handleMoveEvent)
+        removeEndListener.current = addEventListener(
+          'mouseup',
+          handleTerminatingEvent
+        )
+        onEscListener.current = addEventListener(
+          'keydown',
+          handleTerminatingEvent
+        )
+        removeMoveListener.current = addEventListener(
+          'mousemove',
+          handleMoveEvent
+        )
         break
       case 'touchstart':
         handleMoveEvent(e)
-        removeEndListener = addEventListener('touchend', handleTerminatingEvent)
-        removeMoveListener = addEventListener('touchmove', handleMoveEvent)
+        removeEndListener.current = addEventListener(
+          'touchend',
+          handleTerminatingEvent
+        )
+        removeMoveListener.current = addEventListener(
+          'touchmove',
+          handleMoveEvent
+        )
         break
       default:
         break
@@ -264,8 +285,8 @@ export default function useSelection(
 
     selecting.current = false
 
-    removeEndListener && removeEndListener()
-    removeMoveListener && removeMoveListener()
+    removeEndListener.current && removeEndListener.current()
+    removeMoveListener.current && removeMoveListener.current()
 
     if (!initialEventData.current) return
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import * as React from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 
@@ -20,34 +20,51 @@ function BackgroundCells({
   selectable,
   range,
   rtl,
+  resourceId,
 }) {
   // we need most of these as refs because Selection doesn't see state changes
   // internally
-  const selecting = useRef(false)
+  const selecting = React.useRef(false)
   // we need this as `state` because otherwise render function doesn't see
   // startIdx/endIdx changes
-  const [{ startVisual, endVisual }, setStartEnd] = useState({
+  const [{ startVisual, endVisual }, setStartEnd] = React.useState({
     startVisual: -1,
     endVisual: -1,
   })
-  const startEnd = useRef({
+  const startEnd = React.useRef({
     startIdx: -1,
     endIdx: -1,
   })
-  const initial = useRef({})
-  const rowRef = useRef(null)
+  const initial = React.useRef({})
+  const rowRef = React.useRef(null)
 
   const [on, isSelected] = useSelection(containerRef.current, selectable, {
     longPressThreshold,
   })
 
-  useEffect(() => {
+  React.useEffect(() => {
+    function initSelectable() {
+      on('selecting', handleSelecting)
+
+      on('beforeSelect', (box) => {
+        if (selectable !== 'ignoreEvents') return
+
+        return !isEvent(rowRef.current, box)
+      })
+
+      on('click', (point) => selectorClicksHandler(point, 'click'))
+
+      on('doubleClick', (point) => selectorClicksHandler(point, 'doubleClick'))
+
+      on('select', handleSelect)
+    }
+
     if (selectable) {
       initSelectable()
     }
   }, [selectable])
 
-  const handleSelecting = box => {
+  const handleSelecting = (box) => {
     let start = -1
     let end = -1
 
@@ -72,7 +89,7 @@ function BackgroundCells({
     startEnd.current = { startIdx: start, endIdx: end }
   }
 
-  const handleSelect = bounds => {
+  const handleSelect = (bounds) => {
     const { startIdx, endIdx } = startEnd.current
     selectSlot({ start: startIdx, end: endIdx, action: 'select', bounds })
     initial.current = {}
@@ -103,22 +120,6 @@ function BackgroundCells({
     selecting.current = false
   }
 
-  function initSelectable() {
-    on('selecting', handleSelecting)
-
-    on('beforeSelect', box => {
-      if (selectable !== 'ignoreEvents') return
-
-      return !isEvent(rowRef.current, box)
-    })
-
-    on('click', point => selectorClicksHandler(point, 'click'))
-
-    on('doubleClick', point => selectorClicksHandler(point, 'doubleClick'))
-
-    on('select', handleSelect)
-  }
-
   function selectSlot({ start, end, action, bounds, box }) {
     if (end !== -1 && start !== -1)
       onSelectSlot &&
@@ -128,7 +129,7 @@ function BackgroundCells({
           action,
           bounds,
           box,
-          resourceId: this.props.resourceId,
+          resourceId,
         })
   }
 

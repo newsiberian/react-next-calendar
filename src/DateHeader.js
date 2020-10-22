@@ -1,8 +1,8 @@
+import * as React from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
 
-const DateHeader = ({ label, drilldownView, onDrillDown }) => {
-  if (!drilldownView) {
+export default function DateHeader({ label, drillDownView, onDrillDown }) {
+  if (!drillDownView) {
     return <span>{label}</span>
   }
 
@@ -16,9 +16,7 @@ const DateHeader = ({ label, drilldownView, onDrillDown }) => {
 DateHeader.propTypes = {
   label: PropTypes.node,
   date: PropTypes.instanceOf(Date),
-  drilldownView: PropTypes.string,
+  drillDownView: PropTypes.string,
   onDrillDown: PropTypes.func,
   isOffRange: PropTypes.bool,
 }
-
-export default DateHeader
