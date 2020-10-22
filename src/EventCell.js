@@ -1,82 +1,86 @@
+import * as React from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
 import clsx from 'clsx'
+
 import * as dates from './utils/dates'
 
-class EventCell extends React.Component {
-  render() {
-    let {
-      style,
-      className,
-      event,
-      selected,
-      isAllDay,
-      onSelect,
-      onDoubleClick,
-      onKeyPress,
-      localizer,
-      continuesPrior,
-      continuesAfter,
-      accessors,
-      getters,
-      children,
-      components: { event: Event, eventWrapper: EventWrapper },
-      slotStart,
-      slotEnd,
-      ...props
-    } = this.props
+export default function EventCell(props) {
+  const {
+    style,
+    className,
+    event,
+    selected,
+    isAllDay,
+    onSelect,
+    onDoubleClick,
+    onKeyPress,
+    localizer,
+    continuesPrior,
+    continuesAfter,
+    accessors,
+    getters,
+    children,
+    components: { event: Event, eventWrapper: EventWrapper },
+    slotStart,
+    slotEnd,
+    ...rest
+  } = props
 
-    let title = accessors.title(event)
-    let tooltip = accessors.tooltip(event)
-    let end = accessors.end(event)
-    let start = accessors.start(event)
-    let allDay = accessors.allDay(event)
+  const title = accessors.title(event)
+  const tooltip = accessors.tooltip(event)
+  const end = accessors.end(event)
+  const start = accessors.start(event)
+  const allDay = accessors.allDay(event)
 
-    let showAsAllDay =
-      isAllDay || allDay || dates.diff(start, dates.ceil(end, 'day'), 'day') > 1
+  const showAsAllDay = React.useMemo(
+    () =>
+      isAllDay ||
+      allDay ||
+      dates.diff(start, dates.ceil(end, 'day'), 'day') > 1,
+    [isAllDay, allDay, start, end]
+  )
 
-    let userProps = getters.eventProp(event, start, end, selected)
+  const userProps = getters.eventProp(event, start, end, selected)
 
-    const content = (
-      <div className="rbc-event-content" title={tooltip || undefined}>
-        {Event ? (
-          <Event
-            event={event}
-            continuesPrior={continuesPrior}
-            continuesAfter={continuesAfter}
-            title={title}
-            isAllDay={allDay}
-            localizer={localizer}
-            slotStart={slotStart}
-            slotEnd={slotEnd}
-          />
-        ) : (
-          title
-        )}
+  const content = (
+    <div className="rbc-event-content" title={tooltip || undefined}>
+      {Event ? (
+        <Event
+          event={event}
+          continuesPrior={continuesPrior}
+          continuesAfter={continuesAfter}
+          title={title}
+          isAllDay={allDay}
+          localizer={localizer}
+          slotStart={slotStart}
+          slotEnd={slotEnd}
+        />
+      ) : (
+        title
+      )}
+    </div>
+  )
+
+  return (
+    <EventWrapper {...props} type="date">
+      <div
+        {...rest}
+        tabIndex={0}
+        style={{ ...userProps.style, ...style }}
+        className={clsx('rbc-event', className, userProps.className, {
+          'rbc-selected': selected,
+          'rbc-event-allday': showAsAllDay,
+          'rbc-event-continues-prior': continuesPrior,
+          'rbc-event-continues-after': continuesAfter,
+        })}
+        onClick={(e) => onSelect && onSelect(event, e)}
+        onDoubleClick={(e) => onDoubleClick && onDoubleClick(event, e)}
+        onKeyPress={(e) => onKeyPress && onKeyPress(event, e)}
+      >
+        {typeof children === 'function' ? children(content) : content}
       </div>
-    )
-
-    return (
-      <EventWrapper {...this.props} type="date">
-        <div
-          {...props}
-          tabIndex={0}
-          style={{ ...userProps.style, ...style }}
-          className={clsx('rbc-event', className, userProps.className, {
-            'rbc-selected': selected,
-            'rbc-event-allday': showAsAllDay,
-            'rbc-event-continues-prior': continuesPrior,
-            'rbc-event-continues-after': continuesAfter,
-          })}
-          onClick={e => onSelect && onSelect(event, e)}
-          onDoubleClick={e => onDoubleClick && onDoubleClick(event, e)}
-          onKeyPress={e => onKeyPress && onKeyPress(event, e)}
-        >
-          {typeof children === 'function' ? children(content) : content}
-        </div>
-      </EventWrapper>
-    )
-  }
+    </EventWrapper>
+  )
 }
 
 EventCell.propTypes = {
@@ -98,5 +102,3 @@ EventCell.propTypes = {
   onDoubleClick: PropTypes.func,
   onKeyPress: PropTypes.func,
 }
-
-export default EventCell
