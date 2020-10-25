@@ -2,10 +2,10 @@ import React from 'react'
 import { action } from '@storybook/addon-actions'
 
 const customComponents = {
-  dateCellWrapper: dateCellWrapperProps => {
+  dateCellWrapper: (dateCellWrapperProps) => {
     // Show 'click me' text in arbitrary places by using the range prop
     const hasAlert = dateCellWrapperProps.range
-      ? dateCellWrapperProps.range.some(date => {
+      ? dateCellWrapperProps.range.some((date) => {
           return date.getDate() % 12 === 0
         })
       : false
@@ -27,10 +27,10 @@ const customComponents = {
       </div>
     )
   },
-  timeSlotWrapper: timeSlotWrapperProps => {
+  dayWrapper: (dayWrapperProps) => {
     // Show different styles at arbitrary time
-    const hasCustomInfo = timeSlotWrapperProps.value
-      ? timeSlotWrapperProps.value.getHours() === 4
+    const hasCustomInfo = dayWrapperProps.value
+      ? dayWrapperProps.value.getHours() === 4
       : false
     const style = {
       display: 'flex',
@@ -40,11 +40,11 @@ const customComponents = {
     return (
       <div style={style}>
         {hasCustomInfo && 'Custom Day Wrapper'}
-        {timeSlotWrapperProps.children}
+        {dayWrapperProps.children}
       </div>
     )
   },
-  eventWrapper: eventWrapperProps => {
+  eventWrapper: (eventWrapperProps) => {
     const style = {
       border: '4px solid',
       borderColor:
@@ -53,7 +53,7 @@ const customComponents = {
     }
     return <div style={style}>{eventWrapperProps.children}</div>
   },
-  timeSlotWrapper: timeSlotWrapperProps => {
+  timeSlotWrapper: (timeSlotWrapperProps) => {
     const style =
       timeSlotWrapperProps.resource === null ||
       timeSlotWrapperProps.value.getMinutes() !== 0

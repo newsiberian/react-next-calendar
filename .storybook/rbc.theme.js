@@ -3,8 +3,6 @@ import { create } from '@storybook/theming'
 export default create({
   base: 'light',
 
-  colorSecondary: 'white',
-
   // UI
   appBg: 'white',
 
