@@ -393,7 +393,8 @@ Calendar.propTypes = {
   tooltipAccessor: accessor,
 
   /**
-   * Determines whether the event should be considered an "all day" event and ignore time.
+   * Determines whether the event should be considered an "all day" event and
+   * ignore time.
    * Must resolve to a `boolean` value.
    *
    * ```js
@@ -509,16 +510,17 @@ Calendar.propTypes = {
    * (dates: Date[] | { start: Date; end: Date }, view: 'month'|'week'|'work_week'|'day'|'agenda'|undefined) => void
    * ```
    *
-   * Callback fired when the visible date range changes. Returns an Array of dates
-   * or an object with start and end dates for BUILTIN views. Optionally new `view`
-   * will be returned when callback called after view change.
+   * Callback fired when the visible date range changes. Returns an Array of
+   * dates or an object with start and end dates for BUILTIN views. Optionally
+   * new `view` will be returned when callback called after view change.
    *
    * Custom views may return something different.
    */
   onRangeChange: PropTypes.func,
 
   /**
-   * A callback fired when a date selection is made. Only fires when `selectable` is `true`.
+   * A callback fired when a date selection is made. Only fires when `selectable`
+   * is `true`.
    *
    * ```js
    * (
@@ -609,7 +611,8 @@ Calendar.propTypes = {
    * ```jsx
    * views={['month', 'day', 'agenda']}
    * ```
-   * or an object hash of the view name and the component (or boolean for builtin).
+   * or an object hash of the view name and the component (or boolean for
+   * builtin).
    *
    * ```jsx
    * views={{
@@ -687,7 +690,8 @@ Calendar.propTypes = {
   popup: PropTypes.bool,
 
   /**
-   * Distance in pixels, from the edges of the viewport, the "show more" overlay should be positioned.
+   * Distance in pixels, from the edges of the viewport, the "show more" overlay
+   * should be positioned.
    *
    * ```jsx
    * <Calendar popupOffset={30}/>
@@ -709,9 +713,9 @@ Calendar.propTypes = {
   selectable: PropTypes.oneOf([true, false, 'ignoreEvents']),
 
   /**
-   * Specifies the number of miliseconds the user must press and hold on the screen for a touch
-   * to be considered a "long press." Long presses are used for time slot selection on touch
-   * devices.
+   * Specifies the number of milliseconds the user must press and hold on the
+   * screen for a touch to be considered a "long press." Long presses are used
+   * for time slot selection on touch devices.
    *
    * @type {number}
    * @default 250
@@ -735,8 +739,8 @@ Calendar.propTypes = {
   rtl: PropTypes.bool,
 
   /**
-   * Optionally provide a function that returns an object of className or style props
-   * to be applied to the the event node.
+   * Optionally provide a function that returns an object of className or style
+   * props to be applied to the the event node.
    *
    * ```js
    * (
@@ -750,9 +754,9 @@ Calendar.propTypes = {
   eventPropGetter: PropTypes.func,
 
   /**
-   * Optionally provide a function that returns an object of className or style props
-   * to be applied to the time-slot node. Caution! Styles that change layout or
-   * position may break the calendar in unexpected ways.
+   * Optionally provide a function that returns an object of className or style
+   * props to be applied to the time-slot node. Caution! Styles that change
+   * layout or position may break the calendar in unexpected ways.
    *
    * ```js
    * (date: Date, resourceId: (number|string)) => { className?: string, style?: Object }
@@ -762,7 +766,9 @@ Calendar.propTypes = {
 
   /**
    * Optionally provide a function that returns an object of props to be applied
-   * to the time-slot group node. Useful to dynamically change the sizing of time nodes.
+   * to the time-slot group node. Useful to dynamically change the sizing of
+   * time nodes.
+   *
    * ```js
    * () => { style?: Object }
    * ```
@@ -770,9 +776,9 @@ Calendar.propTypes = {
   slotGroupPropGetter: PropTypes.func,
 
   /**
-   * Optionally provide a function that returns an object of className or style props
-   * to be applied to the the day background. Caution! Styles that change layout or
-   * position may break the calendar in unexpected ways.
+   * Optionally provide a function that returns an object of className or style
+   * props to be applied to the the day background. Caution! Styles that change
+   * layout or position may break the calendar in unexpected ways.
    *
    * ```js
    * (date: Date) => { className?: string, style?: Object }
@@ -812,10 +818,12 @@ Calendar.propTypes = {
   culture: PropTypes.string,
 
   /**
-   * Localizer specific formats, tell the Calendar how to format and display dates.
+   * Localizer specific formats, tell the Calendar how to format and display
+   * dates.
    *
-   * `format` types are dependent on the configured localizer; both Moment and Globalize
-   * accept strings of tokens according to their own specification, such as: `'DD mm yyyy'`.
+   * `format` types are dependent on the configured localizer; both Moment and
+   * Globalize accept strings of tokens according to their own specification,
+   * such as: `'DD mm yyyy'`.
    *
    * ```jsx
    * let formats = {
@@ -908,9 +916,10 @@ Calendar.propTypes = {
   }),
 
   /**
-   * Customize how different sections of the calendar render by providing custom Components.
-   * In particular the `Event` component can be specified for the entire calendar, or you can
-   * provide an individual component for each view type.
+   * Customize how different sections of the calendar render by providing custom
+   * Components. In particular the `Event` component can be specified for the
+   * entire calendar, or you can provide an individual component for each view
+   * type.
    *
    * ```jsx
    * let components = {
@@ -922,7 +931,8 @@ Calendar.propTypes = {
    *   timeGutterHeader: MyTimeGutterWrapper,
    *   toolbar: MyToolbar,
    *   agenda: {
-   *   	 event: MyAgendaEvent // with the agenda view use a different component to render events
+   *     // with the agenda view use a different component to render events
+   *   	 event: MyAgendaEvent
    *     time: MyAgendaTime,
    *     date: MyAgendaDate,
    *   },
@@ -976,7 +986,8 @@ Calendar.propTypes = {
   }),
 
   /**
-   * String messages used throughout the component, override to provide localizations
+   * String messages used throughout the component, override to provide
+   * localizations
    */
   messages: PropTypes.shape({
     allDay: PropTypes.node,

@@ -14,7 +14,7 @@ export default function useSelection(
   const isDetached = React.useRef(false)
   const selecting = React.useRef(false)
   const selectRect = React.useRef(null)
-  const globalMouse = !node || global
+  const globalMouse = !node.current || global
   const listeners = React.useRef(Object.create(null))
   const initialEventData = React.useRef(null)
   const lastClickData = React.useRef(null)
@@ -32,6 +32,9 @@ export default function useSelection(
 
   React.useEffect(() => {
     if (selectable) {
+      // `isDetached` must be flushed to default to allow events be handled after
+      // several `selectable` switching
+      isDetached.current = false
       // Fixes an iOS 10 bug where scrolling could not be prevented on the window.
       // https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
       removeTouchMoveWindowListener.current = addEventListener(
@@ -68,91 +71,109 @@ export default function useSelection(
       removeDragOverFromOutsideListener.current &&
         removeDragOverFromOutsideListener.current()
     }
-  }, [selectable])
+  }, [
+    selectable,
+    addInitialEventListener,
+    dragOverFromOutsideListener,
+    dropFromOutsideListener,
+  ])
 
   function on(type, handler) {
-    let handlers = listeners.current[type] || (listeners.current[type] = [])
+    const handlers = listeners.current[type] || (listeners.current[type] = [])
 
     handlers.push(handler)
 
     return {
       remove() {
-        let idx = handlers.indexOf(handler)
-        if (idx !== -1) handlers.splice(idx, 1)
+        const idx = handlers.indexOf(handler)
+        if (idx !== -1) {
+          handlers.splice(idx, 1)
+        }
       },
     }
   }
 
   function emit(type, ...args) {
     let result
-    let handlers = listeners.current[type] || []
+    const handlers = listeners.current[type] || []
+
     handlers.forEach((fn) => {
-      if (result === undefined) result = fn(...args)
+      if (typeof result === 'undefined') {
+        result = fn(...args)
+      }
     })
+
     return result
   }
 
   function isSelected(nodeRef) {
-    if (!selectRect.current || !selecting.current) return false
+    if (!selectRect.current || !selecting.current) {
+      return false
+    }
     return objectsCollide(selectRect.current, getBoundsForNode(nodeRef))
   }
 
   function filter(items) {
-    //not selecting
-    if (!selectRect.current || !selecting.current) return []
+    // not selecting
+    if (!selectRect.current || !selecting.current) {
+      return []
+    }
     return items.filter(isSelected)
   }
 
-  // Adds a listener that will call the handler only after the user has pressed on the screen
-  // without moving their finger for 250ms.
-  function addLongPressListener(handler, initialEvent) {
-    let timer = null
-    let removeTouchMoveListener = null
-    let removeTouchEndListener = null
+  // Adds a listener that will call the handler only after the user has pressed
+  // on the screen without moving their finger for 250ms.
+  const addLongPressListener = React.useCallback(
+    (handler, initialEvent) => {
+      let timer = null
+      let removeTouchMoveListener = null
+      let removeTouchEndListener = null
 
-    const handleTouchStart = (initialEvent) => {
-      timer = setTimeout(() => {
+      const handleTouchStart = (initialEvent) => {
+        timer = setTimeout(() => {
+          cleanup()
+          handler(initialEvent)
+        }, longPressThreshold)
+        removeTouchMoveListener = addEventListener('touchmove', () => cleanup())
+        removeTouchEndListener = addEventListener('touchend', () => cleanup())
+      }
+
+      const removeTouchStartListener = addEventListener(
+        'touchstart',
+        handleTouchStart
+      )
+
+      const cleanup = () => {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        if (removeTouchMoveListener) {
+          removeTouchMoveListener()
+        }
+        if (removeTouchEndListener) {
+          removeTouchEndListener()
+        }
+
+        timer = null
+        removeTouchMoveListener = null
+        removeTouchEndListener = null
+      }
+
+      if (initialEvent) {
+        handleTouchStart(initialEvent)
+      }
+
+      return () => {
         cleanup()
-        handler(initialEvent)
-      }, longPressThreshold)
-      removeTouchMoveListener = addEventListener('touchmove', () => cleanup())
-      removeTouchEndListener = addEventListener('touchend', () => cleanup())
-    }
-
-    const removeTouchStartListener = addEventListener(
-      'touchstart',
-      handleTouchStart
-    )
-
-    const cleanup = () => {
-      if (timer) {
-        clearTimeout(timer)
+        removeTouchStartListener()
       }
-      if (removeTouchMoveListener) {
-        removeTouchMoveListener()
-      }
-      if (removeTouchEndListener) {
-        removeTouchEndListener()
-      }
+    },
+    [longPressThreshold]
+  )
 
-      timer = null
-      removeTouchMoveListener = null
-      removeTouchEndListener = null
-    }
-
-    if (initialEvent) {
-      handleTouchStart(initialEvent)
-    }
-
-    return () => {
-      cleanup()
-      removeTouchStartListener()
-    }
-  }
-
-  // Listen for mousedown and touchstart events. When one is received, disable the other and setup
-  // future event handling based on the type of event.
-  function addInitialEventListener() {
+  // Listen for mousedown and touchstart events. When one is received, disable
+  // the other and setup future event handling based on the type of event.
+  const addInitialEventListener = React.useCallback(() => {
     const removeMouseDownListener = addEventListener('mousedown', (e) => {
       removeInitialEventListener.current()
       handleInitialEvent(e)
@@ -173,88 +194,9 @@ export default function useSelection(
       removeMouseDownListener()
       removeTouchStartListener()
     }
-  }
+  }, [addLongPressListener, handleInitialEvent])
 
-  function handleInitialEvent(e) {
-    if (isDetached.current) {
-      return
-    }
-
-    const { clientX, clientY, pageX, pageY } = getEventCoordinates(e)
-    let collides
-    let offsetData
-
-    // Right clicks
-    if (
-      e.which === 3 ||
-      e.button === 2 ||
-      !isOverContainer(node, clientX, clientY)
-    )
-      return
-
-    if (!globalMouse && node && !contains(node, e.target)) {
-      let { top, left, bottom, right } = normalizeDistance(0)
-
-      offsetData = getBoundsForNode(node)
-
-      collides = objectsCollide(
-        {
-          top: offsetData.top - top,
-          left: offsetData.left - left,
-          bottom: offsetData.bottom + bottom,
-          right: offsetData.right + right,
-        },
-        { top: pageY, left: pageX }
-      )
-
-      if (!collides) return
-    }
-
-    let result = emit(
-      'beforeSelect',
-      (initialEventData.current = {
-        isTouch: /^touch/.test(e.type),
-        x: pageX,
-        y: pageY,
-        clientX,
-        clientY,
-      })
-    )
-
-    if (result === false) return
-
-    switch (e.type) {
-      case 'mousedown':
-        removeEndListener.current = addEventListener(
-          'mouseup',
-          handleTerminatingEvent
-        )
-        onEscListener.current = addEventListener(
-          'keydown',
-          handleTerminatingEvent
-        )
-        removeMoveListener.current = addEventListener(
-          'mousemove',
-          handleMoveEvent
-        )
-        break
-      case 'touchstart':
-        handleMoveEvent(e)
-        removeEndListener.current = addEventListener(
-          'touchend',
-          handleTerminatingEvent
-        )
-        removeMoveListener.current = addEventListener(
-          'touchmove',
-          handleMoveEvent
-        )
-        break
-      default:
-        break
-    }
-  }
-
-  function dropFromOutsideListener(e) {
+  const dropFromOutsideListener = React.useCallback((e) => {
     const { pageX, pageY, clientX, clientY } = getEventCoordinates(e)
 
     emit('dropFromOutside', {
@@ -265,9 +207,9 @@ export default function useSelection(
     })
 
     e.preventDefault()
-  }
+  }, [])
 
-  function dragOverFromOutsideListener(e) {
+  const dragOverFromOutsideListener = React.useCallback((e) => {
     const { pageX, pageY, clientX, clientY } = getEventCoordinates(e)
 
     emit('dragOverFromOutside', {
@@ -278,40 +220,9 @@ export default function useSelection(
     })
 
     e.preventDefault()
-  }
+  }, [])
 
-  function handleTerminatingEvent(e) {
-    const { pageX, pageY } = getEventCoordinates(e)
-
-    selecting.current = false
-
-    removeEndListener.current && removeEndListener.current()
-    removeMoveListener.current && removeMoveListener.current()
-
-    if (!initialEventData.current) return
-
-    const inRoot = !node || contains(node, e.target)
-    const click = isClick(pageX, pageY)
-
-    initialEventData.current = null
-
-    if (e.key === 'Escape') {
-      return emit('reset')
-    }
-
-    if (!inRoot) {
-      return emit('reset')
-    }
-
-    if (click && inRoot) {
-      return handleClickEvent(e)
-    }
-
-    // User drag-clicked in the Selectable area
-    if (!click) return emit('select', selectRect.current)
-  }
-
-  function handleClickEvent(e) {
+  const handleClickEvent = React.useCallback((e) => {
     const { pageX, pageY, clientX, clientY } = getEventCoordinates(e)
     const now = new Date().getTime()
 
@@ -339,9 +250,47 @@ export default function useSelection(
       clientX: clientX,
       clientY: clientY,
     })
-  }
+  }, [])
 
-  function handleMoveEvent(e) {
+  const handleTerminatingEvent = React.useCallback(
+    (e) => {
+      const { pageX, pageY } = getEventCoordinates(e)
+
+      selecting.current = false
+
+      removeEndListener.current && removeEndListener.current()
+      removeMoveListener.current && removeMoveListener.current()
+
+      if (!initialEventData.current) {
+        return
+      }
+
+      const inRoot = !node.current || contains(node.current, e.target)
+      const click = isClick(pageX, pageY)
+
+      initialEventData.current = null
+
+      if (e.key === 'Escape') {
+        return emit('reset')
+      }
+
+      if (!inRoot) {
+        return emit('reset')
+      }
+
+      if (click && inRoot) {
+        return handleClickEvent(e)
+      }
+
+      // User drag-clicked in the Selectable area
+      if (!click) {
+        return emit('select', selectRect.current)
+      }
+    },
+    [handleClickEvent]
+  )
+
+  const handleMoveEvent = React.useCallback((e) => {
     if (initialEventData.current === null || isDetached.current) {
       return
     }
@@ -356,7 +305,8 @@ export default function useSelection(
     const old = selecting.current
 
     // Prevent emitting selectStart event until mouse is moved.
-    // in Chrome on Windows, mouseMove event may be fired just after mouseDown event.
+    // in Chrome on Windows, mouseMove event may be fired just after mouseDown
+    // event.
     if (isClick(pageX, pageY) && !old && !(w || h)) {
       return
     }
@@ -375,10 +325,97 @@ export default function useSelection(
       emit('selectStart', initialEventData.current)
     }
 
-    if (!isClick(pageX, pageY)) emit('selecting', selectRect.current)
+    if (!isClick(pageX, pageY)) {
+      emit('selecting', selectRect.current)
+    }
 
     e.preventDefault()
-  }
+  }, [])
+
+  const handleInitialEvent = React.useCallback(
+    function handleInitialEvent(e) {
+      if (isDetached.current) {
+        return
+      }
+
+      const { clientX, clientY, pageX, pageY } = getEventCoordinates(e)
+
+      // Right clicks
+      if (
+        e.which === 3 ||
+        e.button === 2 ||
+        !isOverContainer(node.current, clientX, clientY)
+      ) {
+        return
+      }
+
+      if (!globalMouse && node.current && !contains(node.current, e.target)) {
+        const { top, left, bottom, right } = normalizeDistance(0)
+
+        const offsetData = getBoundsForNode(node.current)
+
+        const collides = objectsCollide(
+          {
+            top: offsetData.top - top,
+            left: offsetData.left - left,
+            bottom: offsetData.bottom + bottom,
+            right: offsetData.right + right,
+          },
+          { top: pageY, left: pageX }
+        )
+
+        if (!collides) {
+          return
+        }
+      }
+
+      const result = emit(
+        'beforeSelect',
+        (initialEventData.current = {
+          isTouch: /^touch/.test(e.type),
+          x: pageX,
+          y: pageY,
+          clientX,
+          clientY,
+        })
+      )
+
+      if (typeof result === 'boolean' && !result) {
+        return
+      }
+
+      switch (e.type) {
+        case 'mousedown':
+          removeEndListener.current = addEventListener(
+            'mouseup',
+            handleTerminatingEvent
+          )
+          onEscListener.current = addEventListener(
+            'keydown',
+            handleTerminatingEvent
+          )
+          removeMoveListener.current = addEventListener(
+            'mousemove',
+            handleMoveEvent
+          )
+          break
+        case 'touchstart':
+          handleMoveEvent(e)
+          removeEndListener.current = addEventListener(
+            'touchend',
+            handleTerminatingEvent
+          )
+          removeMoveListener.current = addEventListener(
+            'touchmove',
+            handleMoveEvent
+          )
+          break
+        default:
+          break
+      }
+    },
+    [globalMouse, handleMoveEvent, handleTerminatingEvent]
+  )
 
   function keyListener(e) {
     ctrl.current = e.metaKey || e.ctrlKey
@@ -408,7 +445,7 @@ function isOverContainer(container, x, y) {
 }
 
 export function getEventNodeFromPoint(node, { clientX, clientY }) {
-  let target = document.elementFromPoint(clientX, clientY)
+  const target = document.elementFromPoint(clientX, clientY)
   return closest(target, '.rbc-event', node)
 }
 
@@ -436,13 +473,14 @@ function getEventCoordinates(e) {
  * @return {Object}
  */
 function normalizeDistance(distance = 0) {
-  if (typeof distance !== 'object')
+  if (typeof distance !== 'object') {
     distance = {
       top: distance,
       left: distance,
       right: distance,
       bottom: distance,
     }
+  }
 
   return distance
 }
@@ -450,18 +488,19 @@ function normalizeDistance(distance = 0) {
 /**
  * Given two objects containing "top", "left", "offsetWidth" and "offsetHeight"
  * properties, determine if they collide.
- * @param  {Object|HTMLElement} nodeA
- * @param  {Object|HTMLElement} nodeB
- * @return {bool}
+ * @param {Object|HTMLElement} nodeA
+ * @param {Object|HTMLElement} nodeB
+ * @param {Number} tolerance
+ * @return {boolean}
  */
 export function objectsCollide(nodeA, nodeB, tolerance = 0) {
-  let {
+  const {
     top: aTop,
     left: aLeft,
     right: aRight = aLeft,
     bottom: aBottom = aTop,
   } = getBoundsForNode(nodeA)
-  let {
+  const {
     top: bTop,
     left: bLeft,
     right: bRight = bLeft,
@@ -484,15 +523,17 @@ export function objectsCollide(nodeA, nodeB, tolerance = 0) {
 
 /**
  * Given a node, get everything needed to calculate its boundaries
- * @param  {HTMLElement} node
+ * @param {HTMLElement} node
  * @return {Object}
  */
 export function getBoundsForNode(node) {
-  if (!node.getBoundingClientRect) return node
+  if (!node.getBoundingClientRect) {
+    return node
+  }
 
-  let rect = node.getBoundingClientRect(),
-    left = rect.left + pageOffset('left'),
-    top = rect.top + pageOffset('top')
+  const rect = node.getBoundingClientRect()
+  const left = rect.left + pageOffset('left')
+  const top = rect.top + pageOffset('top')
 
   return {
     top,
@@ -503,6 +544,10 @@ export function getBoundsForNode(node) {
 }
 
 function pageOffset(dir) {
-  if (dir === 'left') return window.pageXOffset || document.body.scrollLeft || 0
-  if (dir === 'top') return window.pageYOffset || document.body.scrollTop || 0
+  if (dir === 'left') {
+    return window.pageXOffset || document.body.scrollLeft || 0
+  }
+  if (dir === 'top') {
+    return window.pageYOffset || document.body.scrollTop || 0
+  }
 }

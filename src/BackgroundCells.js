@@ -38,7 +38,7 @@ function BackgroundCells({
   const initial = React.useRef({})
   const rowRef = React.useRef(null)
 
-  const [on, isSelected] = useSelection(containerRef.current, selectable, {
+  const [on, isSelected] = useSelection(containerRef, selectable, {
     longPressThreshold,
   })
 
@@ -47,7 +47,9 @@ function BackgroundCells({
       on('selecting', handleSelecting)
 
       on('beforeSelect', (box) => {
-        if (selectable !== 'ignoreEvents') return
+        if (selectable !== 'ignoreEvents') {
+          return
+        }
 
         return !isEvent(rowRef.current, box)
       })
