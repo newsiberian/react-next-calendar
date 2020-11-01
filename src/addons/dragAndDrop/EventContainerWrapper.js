@@ -3,10 +3,7 @@ import React from 'react'
 import * as dates from '../../utils/dates'
 import { findDOMNode } from 'react-dom'
 
-import Selection, {
-  getBoundsForNode,
-  getEventNodeFromPoint,
-} from '../../Selection'
+import Selection, { getBoundsForNode, getEventNodeFromPoint } from './Selection'
 import TimeGridEvent from '../../TimeGridEvent'
 import { dragAccessors } from './common'
 import NoopWrapper from '../../NoopWrapper'
@@ -138,7 +135,7 @@ class EventContainerWrapper extends React.Component {
       node.closest('.rbc-time-view')
     ))
 
-    selector.on('beforeSelect', point => {
+    selector.on('beforeSelect', (point) => {
       const { dragAndDropAction } = this.context.draggable
 
       if (!dragAndDropAction.action) return false
@@ -152,7 +149,7 @@ class EventContainerWrapper extends React.Component {
       this.eventOffsetTop = point.y - getBoundsForNode(eventNode).top
     })
 
-    selector.on('selecting', box => {
+    selector.on('selecting', (box) => {
       const bounds = getBoundsForNode(node)
       const { dragAndDropAction } = this.context.draggable
 
@@ -160,7 +157,7 @@ class EventContainerWrapper extends React.Component {
       if (dragAndDropAction.action === 'resize') this.handleResize(box, bounds)
     })
 
-    selector.on('dropFromOutside', point => {
+    selector.on('dropFromOutside', (point) => {
       if (!this.context.draggable.onDropFromOutside) return
 
       const bounds = getBoundsForNode(node)
@@ -170,7 +167,7 @@ class EventContainerWrapper extends React.Component {
       this.handleDropFromOutside(point, bounds)
     })
 
-    selector.on('dragOver', point => {
+    selector.on('dragOver', (point) => {
       if (!this.context.draggable.dragFromOutsideItem) return
 
       const bounds = getBoundsForNode(node)
@@ -183,7 +180,7 @@ class EventContainerWrapper extends React.Component {
       this.context.draggable.onStart()
     })
 
-    selector.on('select', point => {
+    selector.on('select', (point) => {
       const bounds = getBoundsForNode(node)
       isBeingDragged = false
       if (!this.state.event || !pointInColumn(bounds, point)) return

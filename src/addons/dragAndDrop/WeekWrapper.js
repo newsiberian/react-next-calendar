@@ -5,7 +5,7 @@ import { getSlotAtX, pointInBox } from '../../utils/selection'
 import { findDOMNode } from 'react-dom'
 
 import { eventSegments } from '../../utils/eventLevels'
-import Selection, { getBoundsForNode } from '../../Selection'
+import Selection, { getBoundsForNode } from './Selection'
 import EventRow from '../../EventRow'
 import { dragAccessors } from './common'
 
@@ -194,7 +194,7 @@ class WeekWrapper extends React.Component {
 
     let selector = (this._selector = new Selection(() => container))
 
-    selector.on('beforeSelect', point => {
+    selector.on('beforeSelect', (point) => {
       const { isAllDay } = this.props
       const { action } = this.context.draggable.dragAndDropAction
 
@@ -205,7 +205,7 @@ class WeekWrapper extends React.Component {
       )
     })
 
-    selector.on('selecting', box => {
+    selector.on('selecting', (box) => {
       const bounds = getBoundsForNode(node)
       const { dragAndDropAction } = this.context.draggable
 
@@ -214,14 +214,14 @@ class WeekWrapper extends React.Component {
     })
 
     selector.on('selectStart', () => this.context.draggable.onStart())
-    selector.on('select', point => {
+    selector.on('select', (point) => {
       const bounds = getBoundsForNode(node)
 
       if (!this.state.segment || !pointInBox(bounds, point)) return
       this.handleInteractionEnd()
     })
 
-    selector.on('dropFromOutside', point => {
+    selector.on('dropFromOutside', (point) => {
       if (!this.context.draggable.onDropFromOutside) return
 
       const bounds = getBoundsForNode(node)
@@ -231,7 +231,7 @@ class WeekWrapper extends React.Component {
       this.handleDropFromOutside(point, bounds)
     })
 
-    selector.on('dragOverFromOutside', point => {
+    selector.on('dragOverFromOutside', (point) => {
       if (!this.context.draggable.dragFromOutsideItem) return
 
       const bounds = getBoundsForNode(node)
