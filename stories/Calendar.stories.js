@@ -46,11 +46,13 @@ Selectable.args = {
   defaultDate: new Date(),
 }
 Selectable.argTypes = {
-  defaultView: { type: null },
-  events: { type: null },
-  min: { type: null },
-  max: { type: null },
-  defaultDate: { type: null },
+  defaultView: { table: { disable: true } },
+  events: { table: { disable: true } },
+  min: { table: { disable: true } },
+  max: { table: { disable: true } },
+  defaultDate: { table: { disable: true } },
+  onSelectEvent: { table: { disable: true } },
+  onSelectSlot: { table: { disable: true } },
 }
 
 export const AddCustomDateHeader = Template.bind({})
@@ -113,24 +115,37 @@ export const AgendaWithLength = () => (
 AgendaWithLength.storyName = 'Agenda view - with length prop'
 
 export const CustomNowIsTheFirstOfMonth = () => {
+  const [day, setDay] = React.useState(1)
   const customNow = () => {
     let now = new Date()
-    now.setDate(1)
+    now.setDate(day)
     return now
   }
+
+  function handleChange() {
+    setDay((prevState) => {
+      if (prevState >= 29) {
+        return 1
+      }
+      return prevState + 1
+    })
+  }
+
   return (
-    <Calendar
-      defaultView={Views.WEEK}
-      getNow={customNow}
-      min={moment('12:00am', 'h:mma').toDate()}
-      max={moment('11:59pm', 'h:mma').toDate()}
-      events={events}
-      onSelectEvent={action('event selected')}
-      defaultDate={new Date()}
-    />
+    <>
+      <button onClick={handleChange}>Change Now</button>
+      <Calendar
+        defaultView={Views.WEEK}
+        getNow={customNow}
+        min={moment('12:00am', 'h:mma').toDate()}
+        max={moment('11:59pm', 'h:mma').toDate()}
+        events={events}
+        onSelectEvent={action('event selected')}
+        defaultDate={new Date()}
+      />
+    </>
   )
 }
-CustomNowIsTheFirstOfMonth.storyName = 'Custom now is the first of the month'
 
 export const CustomTimeGutterHeader = () => {
   const TimeGutter = () => <p>Custom gutter text</p>

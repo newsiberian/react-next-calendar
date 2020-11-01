@@ -2,6 +2,7 @@ import * as React from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 
+import useRerender from './hooks/useRerender'
 import * as TimeSlotUtils from './utils/TimeSlots'
 import TimeSlotGroup from './TimeSlotGroup'
 
@@ -19,6 +20,7 @@ const TimeGutter = React.forwardRef(function TimeGutter(
   },
   ref
 ) {
+  const rerender = useRerender()
   const slotMetrics = React.useRef(
     TimeSlotUtils.getSlotMetrics({
       min: new Date(min),
@@ -35,7 +37,8 @@ const TimeGutter = React.forwardRef(function TimeGutter(
       timeslots,
       step,
     })
-  }, [min, max, timeslots, step])
+    rerender()
+  }, [min, max, timeslots, step, rerender])
 
   function renderSlot(value, idx) {
     if (idx !== 0) return null

@@ -180,7 +180,7 @@ export default function TimeGrid({
 
     return res.map(([id, resource], i) =>
       range.map((date, jj) => {
-        let daysEvents = (groupedEvents.get(id) || []).filter((event) =>
+        const daysEvents = (groupedEvents.get(id) || []).filter((event) =>
           dates.inRange(
             date,
             accessors.start(event),
@@ -204,21 +204,16 @@ export default function TimeGrid({
             components={components}
             getters={getters}
             localizer={localizer}
-            showMultiDayTimes={showMultiDayTimes}
-            // TODO: do we need this?
-            // culture={}
             timeslots={timeslots}
             selected={selected}
             selectable={selectable}
-            // TODO: do we need this?
-            // eventOffset={}
             longPressThreshold={longPressThreshold}
             onSelecting={onSelecting}
             onSelectSlot={onSelectSlot}
             onSelectEvent={onSelectEvent}
             onDoubleClickEvent={onDoubleClickEvent}
             onKeyPressEvent={onKeyPressEvent}
-            resource={resource && id}
+            resourceId={resource && id}
             dayLayoutAlgorithm={dayLayoutAlgorithm}
           />
         )

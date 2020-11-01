@@ -1,5 +1,3 @@
-/*eslint no-unused-vars: "off"*/
-
 import overlap from './layout-algorithms/overlap'
 import noOverlap from './layout-algorithms/no-overlap'
 
@@ -12,19 +10,12 @@ function isFunction(a) {
   return !!(a && a.constructor && a.call && a.apply)
 }
 
-//
-export function getStyledEvents({
-  events,
-  minimumStartDifference,
-  slotMetrics,
-  accessors,
-  dayLayoutAlgorithm, // one of DefaultAlgorithms keys
-  // or custom function
-}) {
-  let algorithm = dayLayoutAlgorithm
+export function getStyledEvents(props) {
+  // one of DefaultAlgorithms keys or custom function
+  let algorithm = props.dayLayoutAlgorithm
 
-  if (dayLayoutAlgorithm in DefaultAlgorithms)
-    algorithm = DefaultAlgorithms[dayLayoutAlgorithm]
+  if (props.dayLayoutAlgorithm in DefaultAlgorithms)
+    algorithm = DefaultAlgorithms[props.dayLayoutAlgorithm]
 
   if (!isFunction(algorithm)) {
     // invalid algorithm
