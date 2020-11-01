@@ -56,16 +56,10 @@ function DayColumn({
   // This is a current time position, a line at the day slot
   const [timeIndicatorPosition, setTimeIndicatorPosition] = React.useState(null)
   const prevGetNow = usePrevious(getNow)
-  // const prevGetNow = React.useRef(getNow)
-  // const prevIsNow = React.useRef(isNow)
   const prevIsNow = usePrevious(isNow)
-  // const prevDate = React.useRef(date)
   const prevDate = usePrevious(date)
-  // const prevMin = React.useRef(min)
   const prevMin = usePrevious(min)
-  // const prevMax = React.useRef(max)
   const prevMax = usePrevious(max)
-  // const prevTimeIndicatorPosition = React.useRef(null)
   const prevTimeIndicatorPosition = usePrevious(timeIndicatorPosition)
   const dayRef = React.useRef()
   const intervalTriggered = React.useRef(false)
@@ -265,12 +259,6 @@ function DayColumn({
     timeIndicatorPosition,
     positionTimeIndicator,
     setTimeIndicatorPositionUpdateInterval,
-    prevGetNow,
-    prevIsNow,
-    prevMin,
-    prevMax,
-    prevDate,
-    prevTimeIndicatorPosition,
   ])
 
   function clearTimeIndicatorInterval() {
