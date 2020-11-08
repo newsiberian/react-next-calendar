@@ -82,9 +82,12 @@ export function getSlotMetrics({ min: start, max: end, step, timeslots }) {
     },
 
     nextSlot(slot) {
-      let next = slots[Math.min(slots.indexOf(slot) + 1, slots.length - 1)]
-      // in the case of the last slot we won't a long enough range so manually get it
-      if (next === slot) next = dates.add(slot, step, 'minutes')
+      const next = slots[Math.min(slots.indexOf(slot) + 1, slots.length - 1)]
+      // in the case of the last slot we won't a long enough range so manually
+      // get it
+      if (next === slot) {
+        return dates.add(slot, step, 'minutes')
+      }
       return next
     },
 
@@ -97,7 +100,7 @@ export function getSlotMetrics({ min: start, max: end, step, timeslots }) {
     },
 
     closestSlotFromPoint(point, boundaryRect) {
-      let range = Math.abs(boundaryRect.top - boundaryRect.bottom)
+      const range = Math.abs(boundaryRect.top - boundaryRect.bottom)
       return this.closestSlotToPosition((point.y - boundaryRect.top) / range)
     },
 
@@ -147,9 +150,7 @@ export function getSlotMetrics({ min: start, max: end, step, timeslots }) {
 
     getCurrentTimePosition(rangeStart) {
       const rangeStartMin = positionFromDate(rangeStart)
-      const top = (rangeStartMin / (step * numSlots)) * 100
-
-      return top
+      return (rangeStartMin / (step * numSlots)) * 100
     },
   }
 }

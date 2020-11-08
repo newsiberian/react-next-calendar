@@ -6,18 +6,17 @@
  *    ... otherwise null
  */
 export function accessor(data, field) {
-  var value = null
-
-  if (typeof field === 'function') value = field(data)
-  else if (
+  if (typeof field === 'function') {
+    return field(data)
+  }
+  if (
     typeof field === 'string' &&
     typeof data === 'object' &&
     data != null &&
     field in data
-  )
-    value = data[field]
-
-  return value
+  ) {
+    return data[field]
+  }
 }
 
-export const wrapAccessor = acc => data => accessor(data, acc)
+export const wrapAccessor = (acc) => (data) => accessor(data, acc)

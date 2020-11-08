@@ -30,27 +30,27 @@ const MILLI = {
 const MONTHS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 export function monthsInYear(year) {
-  let date = new Date(year, 0, 1)
+  const date = new Date(year, 0, 1)
 
-  return MONTHS.map(i => dates.month(date, i))
+  return MONTHS.map((i) => dates.month(date, i))
 }
 
 export function firstVisibleDay(date, localizer) {
-  let firstOfMonth = dates.startOf(date, 'month')
+  const firstOfMonth = dates.startOf(date, 'month')
 
   return dates.startOf(firstOfMonth, 'week', localizer.startOfWeek())
 }
 
 export function lastVisibleDay(date, localizer) {
-  let endOfMonth = dates.endOf(date, 'month')
+  const endOfMonth = dates.endOf(date, 'month')
 
   return dates.endOf(endOfMonth, 'week', localizer.startOfWeek())
 }
 
 export function visibleDays(date, localizer) {
-  let current = firstVisibleDay(date, localizer),
-    last = lastVisibleDay(date, localizer),
-    days = []
+  let current = firstVisibleDay(date, localizer)
+  const last = lastVisibleDay(date, localizer)
+  const days = []
 
   while (dates.lte(current, last, 'day')) {
     days.push(current)
@@ -61,14 +61,14 @@ export function visibleDays(date, localizer) {
 }
 
 export function ceil(date, unit) {
-  let floor = dates.startOf(date, unit)
+  const floor = dates.startOf(date, unit)
 
   return dates.eq(floor, date) ? floor : dates.add(floor, 1, unit)
 }
 
 export function range(start, end, unit = 'day') {
-  let current = start,
-    days = []
+  let current = start
+  const days = []
 
   while (dates.lte(current, end, unit)) {
     days.push(current)
@@ -79,10 +79,16 @@ export function range(start, end, unit = 'day') {
 }
 
 export function merge(date, time) {
-  if (time == null && date == null) return null
+  if (time == null && date == null) {
+    return null
+  }
 
-  if (time == null) time = new Date()
-  if (date == null) date = new Date()
+  if (time == null) {
+    time = new Date()
+  }
+  if (date == null) {
+    date = new Date()
+  }
 
   date = dates.startOf(date, 'day')
   date = dates.hours(date, dates.hours(time))
@@ -131,8 +137,8 @@ export function diff(dateA, dateB, unit) {
 }
 
 export function total(date, unit) {
-  let ms = date.getTime(),
-    div = 1
+  const ms = date.getTime()
+  let div = 1
 
   switch (unit) {
     case 'week':
@@ -151,7 +157,7 @@ export function total(date, unit) {
 }
 
 export function week(date) {
-  var d = new Date(date)
+  const d = new Date(date)
   d.setHours(0, 0, 0)
   d.setDate(d.getDate() + 4 - (d.getDay() || 7))
   return Math.ceil(((d - new Date(d.getFullYear(), 0, 1)) / 8.64e7 + 1) / 7)

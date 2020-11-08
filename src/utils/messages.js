@@ -1,4 +1,4 @@
-let defaultMessages = {
+const defaultMessages = {
   date: 'Date',
   time: 'Time',
   event: 'Event',
@@ -16,7 +16,7 @@ let defaultMessages = {
 
   noEventsInRange: 'There are no events in this range.',
 
-  showMore: total => `+${total} more`,
+  showMore: (total) => `+${total} more`,
 }
 
 export default function messages(msgs) {

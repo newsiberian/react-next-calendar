@@ -1,13 +1,13 @@
 export function isSelected(event, selected) {
-  if (!event || selected == null) return false
+  if (!event || selected == null) {
+    return false
+  }
   return [].concat(selected).indexOf(event) !== -1
 }
 
 export function slotWidth(rowBox, slots) {
-  let rowWidth = rowBox.right - rowBox.left
-  let cellWidth = rowWidth / slots
-
-  return cellWidth
+  const rowWidth = rowBox.right - rowBox.left
+  return rowWidth / slots
 }
 
 export function getSlotAtX(rowBox, x, rtl, slots) {
@@ -18,7 +18,7 @@ export function getSlotAtX(rowBox, x, rtl, slots) {
 }
 
 export function pointInBox(box, { x, y }) {
-  return y >= box.top && y <= box.bottom && (x >= box.left && x <= box.right)
+  return y >= box.top && y <= box.bottom && x >= box.left && x <= box.right
 }
 
 export function dateCellSelection(start, rowBox, box, slots, rtl) {
@@ -26,20 +26,20 @@ export function dateCellSelection(start, rowBox, box, slots, rtl) {
   let endIdx = -1
   let lastSlotIdx = slots - 1
 
-  let cellWidth = slotWidth(rowBox, slots)
+  const cellWidth = slotWidth(rowBox, slots)
 
   // cell under the mouse
-  let currentSlot = getSlotAtX(rowBox, box.x, rtl, slots)
+  const currentSlot = getSlotAtX(rowBox, box.x, rtl, slots)
 
   // Identify row as either the initial row
   // or the row under the current mouse point
-  let isCurrentRow = rowBox.top < box.y && rowBox.bottom > box.y
-  let isStartRow = rowBox.top < start.y && rowBox.bottom > start.y
+  const isCurrentRow = rowBox.top < box.y && rowBox.bottom > box.y
+  const isStartRow = rowBox.top < start.y && rowBox.bottom > start.y
 
   // this row's position relative to the start point
-  let isAboveStart = start.y > rowBox.bottom
-  let isBelowStart = rowBox.top > start.y
-  let isBetween = box.top < rowBox.top && box.bottom > rowBox.bottom
+  const isAboveStart = start.y > rowBox.bottom
+  const isBelowStart = rowBox.top > start.y
+  const isBetween = box.top < rowBox.top && box.bottom > rowBox.bottom
 
   // this row is between the current and start rows, so entirely selected
   if (isBetween) {
@@ -64,8 +64,12 @@ export function dateCellSelection(start, rowBox, box, slots, rtl) {
       : Math.floor((start.x - rowBox.left) / cellWidth)
 
     if (isCurrentRow) {
-      if (currentSlot < startIdx) startIdx = currentSlot
-      else endIdx = currentSlot //select current range
+      if (currentSlot < startIdx) {
+        startIdx = currentSlot
+      } else {
+        // select current range
+        endIdx = currentSlot
+      }
     } else if (start.y < box.y) {
       // the current row is below start row
       // select cells to the right of the start cell

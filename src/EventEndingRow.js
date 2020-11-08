@@ -9,7 +9,7 @@ const isSegmentInSlot = (seg, slot) => seg.left <= slot && seg.right >= slot
 const eventsInSlot = (segments, slot) =>
   segments.filter((seg) => isSegmentInSlot(seg, slot)).length
 
-function EventEndingRow({ segments, slotMetrics, onShowMore, ...props }) {
+function EventEndingRow({ segments, onShowMore, ...props }) {
   function canRenderSlotEvent(slot, span) {
     return range(slot, slot + span).every((s) => {
       const count = eventsInSlot(segments, s)
@@ -42,7 +42,7 @@ function EventEndingRow({ segments, slotMetrics, onShowMore, ...props }) {
   let lastEnd = 1
   const row = []
 
-  while (current <= slotMetrics.slots) {
+  while (current <= props.slotMetrics.slots) {
     const key = '_lvl_' + current
 
     const { event, left, right, span } =
@@ -59,20 +59,26 @@ function EventEndingRow({ segments, slotMetrics, onShowMore, ...props }) {
       let content = EventRowMixin.renderEvent(props, event)
 
       if (gap) {
-        row.push(EventRowMixin.renderSpan(slotMetrics.slots, gap, key + '_gap'))
+        row.push(
+          EventRowMixin.renderSpan(props.slotMetrics.slots, gap, key + '_gap')
+        )
       }
 
-      row.push(EventRowMixin.renderSpan(slotMetrics.slots, span, key, content))
+      row.push(
+        EventRowMixin.renderSpan(props.slotMetrics.slots, span, key, content)
+      )
 
       lastEnd = current = right + 1
     } else {
       if (gap) {
-        row.push(EventRowMixin.renderSpan(slotMetrics.slots, gap, key + '_gap'))
+        row.push(
+          EventRowMixin.renderSpan(props.slotMetrics.slots, gap, key + '_gap')
+        )
       }
 
       row.push(
         EventRowMixin.renderSpan(
-          slotMetrics.slots,
+          props.slotMetrics.slots,
           1,
           key,
           renderShowMore(segments, current)

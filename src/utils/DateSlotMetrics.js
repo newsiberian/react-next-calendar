@@ -1,4 +1,5 @@
 import memoize from 'memoize-one'
+
 import * as dates from './dates'
 import { eventSegments, endOfRange, eventLevels } from './eventLevels'
 
@@ -8,13 +9,14 @@ const isEqual = (a, b) =>
   a[0].range === b[0].range && a[0].events === b[0].events
 
 export function getSlotMetrics() {
-  return memoize(options => {
+  return memoize((options) => {
     const { range, events, maxRows, minRows, accessors } = options
-    let { first, last } = endOfRange(range)
+    const { first, last } = endOfRange(range)
 
-    let segments = events.map(evt => eventSegments(evt, range, accessors))
+    const segments = events.map((evt) => eventSegments(evt, range, accessors))
 
-    let { levels, extra } = eventLevels(segments, Math.max(maxRows - 1, 1))
+    const { levels, extra } = eventLevels(segments, Math.max(maxRows - 1, 1))
+
     while (levels.length < minRows) levels.push([])
 
     return {
@@ -36,13 +38,13 @@ export function getSlotMetrics() {
       },
 
       getSlotForDate(date) {
-        return range.find(r => dates.eq(r, date, 'day'))
+        return range.find((r) => dates.eq(r, date, 'day'))
       },
 
       getEventsForSlot(slot) {
         return segments
-          .filter(seg => isSegmentInSlot(seg, slot))
-          .map(seg => seg.event)
+          .filter((seg) => isSegmentInSlot(seg, slot))
+          .map((seg) => seg.event)
       },
 
       continuesPrior(event) {

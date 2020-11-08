@@ -1,4 +1,4 @@
-var idCount = 0
+let idCount = 0
 
 function uniqueId(prefix) {
   return '' + ((prefix == null ? '' : prefix) + ++idCount)
@@ -51,5 +51,5 @@ export function isFirstFocusedRender(component) {
  * @function {function} callback - map condition
  * @return {function(function): Array | null}
  */
-export const arrayMap = arr => callback =>
-  Array.isArray(arr) && arr.length ? arr.map(callback) : null;
+export const arrayMap = (arr) => (callback) =>
+  Array.isArray(arr) && arr.length ? arr.map(callback) : null
