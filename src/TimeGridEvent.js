@@ -1,5 +1,5 @@
+import * as React from 'react'
 import clsx from 'clsx'
-import React from 'react'
 
 function stringifyPercent(v) {
   return typeof v === 'string' ? v : v + '%'

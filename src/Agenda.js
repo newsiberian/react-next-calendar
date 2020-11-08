@@ -1,5 +1,5 @@
+import * as React from 'react'
 import PropTypes from 'prop-types'
-import React, { useRef, useEffect } from 'react'
 import addClass from 'dom-helpers/addClass'
 import removeClass from 'dom-helpers/removeClass'
 import getWidth from 'dom-helpers/width'
@@ -20,27 +20,27 @@ function Agenda({
   date,
   events,
 }) {
-  const headerRef = useRef(null)
-  const dateColRef = useRef(null)
-  const timeColRef = useRef(null)
-  const contentRef = useRef(null)
-  const tbodyRef = useRef(null)
+  const headerRef = React.useRef(null)
+  const dateColRef = React.useRef(null)
+  const timeColRef = React.useRef(null)
+  const contentRef = React.useRef(null)
+  const tbodyRef = React.useRef(null)
 
-  useEffect(() => {
+  React.useEffect(() => {
     _adjustHeader()
   })
 
   const renderDay = (day, events, dayKey) => {
     const { event: Event, date: AgendaDate } = components
 
-    events = events.filter(e =>
+    events = events.filter((e) =>
       inRange(e, dates.startOf(day, 'day'), dates.endOf(day, 'day'), accessors)
     )
 
     return events.map((event, idx) => {
-      let title = accessors.title(event)
-      let end = accessors.end(event)
-      let start = accessors.start(event)
+      const title = accessors.title(event)
+      const end = accessors.end(event)
+      const start = accessors.start(event)
 
       const userProps = getters.eventProp(
         event,
@@ -49,8 +49,8 @@ function Agenda({
         isSelected(event, selected)
       )
 
-      let dateLabel = idx === 0 && localizer.format(day, 'agendaDateFormat')
-      let first =
+      const dateLabel = idx === 0 && localizer.format(day, 'agendaDateFormat')
+      const first =
         idx === 0 ? (
           <td rowSpan={events.length} className="rbc-agenda-date-cell">
             {AgendaDate ? (
@@ -59,9 +59,7 @@ function Agenda({
               dateLabel
             )}
           </td>
-        ) : (
-          false
-        )
+        ) : null
 
       return (
         <tr
@@ -80,12 +78,12 @@ function Agenda({
   }
 
   const timeRangeLabel = (day, event) => {
-    let labelClass = '',
-      TimeComponent = components.time,
-      label = localizer.messages.allDay
+    let labelClass = ''
+    let label = localizer.messages.allDay
+    const TimeComponent = components.time
 
-    let end = accessors.end(event)
-    let start = accessors.start(event)
+    const end = accessors.end(event)
+    const start = accessors.start(event)
 
     if (!accessors.allDay(event)) {
       if (dates.eq(start, end)) {
@@ -114,14 +112,18 @@ function Agenda({
   }
 
   const _adjustHeader = () => {
-    if (!tbodyRef.current) return
+    if (!tbodyRef.current) {
+      return
+    }
 
-    let header = headerRef.current
-    let firstRow = tbodyRef.current.firstChild
+    const header = headerRef.current
+    const firstRow = tbodyRef.current.firstChild
 
-    if (!firstRow) return
+    if (!firstRow) {
+      return
+    }
 
-    let isOverflowing =
+    const isOverflowing =
       contentRef.current.scrollHeight > contentRef.current.clientHeight
 
     let _widths = []
@@ -142,13 +144,11 @@ function Agenda({
     }
   }
 
-  let { messages } = localizer
-  let end = dates.add(date, length, 'day')
+  const { messages } = localizer
+  const end = dates.add(date, length, 'day')
+  const range = dates.range(date, end, 'day')
 
-  let range = dates.range(date, end, 'day')
-
-  events = events.filter(event => inRange(event, date, end, accessors))
-
+  events = events.filter((event) => inRange(event, date, end, accessors))
   events.sort((a, b) => +accessors.start(a) - +accessors.start(b))
 
   return (

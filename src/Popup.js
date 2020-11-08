@@ -1,5 +1,5 @@
+import * as React from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
 import getOffset from 'dom-helpers/offset'
 import getScrollTop from 'dom-helpers/scrollTop'
 import getScrollLeft from 'dom-helpers/scrollLeft'
