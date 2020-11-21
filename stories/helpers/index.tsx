@@ -3,16 +3,15 @@ import { addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
-import {
-  Calendar as BaseCalendar,
-  momentLocalizer,
-} from '../../packages/core/src';
-
 // For Testing SASS styling
 import '../../packages/core/src/sass/styles.scss';
 import '../../packages/dnd/styles.scss';
 
-import withDragAndDrop from '../../packages/dnd/src';
+import {
+  Calendar as BaseCalendar,
+  momentLocalizer,
+} from '../../packages/core/src';
+import { useDragAndDrop } from '../../packages/dnd/src';
 
 export { Views } from '../../packages/core/src';
 
@@ -26,13 +25,33 @@ export { default as resourcesEvents } from './resourceEvents';
 
 export const date = (...args) => moment(...args).toDate();
 
-export const Calendar = props => (
+export const Calendar = (props: Record<string, unknown>) => (
   <BaseCalendar localizer={localizer} {...props} />
 );
 
-export const DragAndDropCalendar = withDragAndDrop(Calendar);
+// export const DragAndDropCalendar = withDragAndDrop(Calendar);
+export const DragAndDropCalendar = props => {
+  const [
+    context,
+    components,
+    selectable,
+    elementProps,
+    className,
+  ] = useDragAndDrop(props);
 
-export const DraggableCalendar = props => {
+  return (
+    <Calendar
+      {...props}
+      context={context}
+      components={components}
+      selectable={selectable}
+      elementProps={elementProps}
+      className={className}
+    />
+  );
+};
+
+export const DraggableCalendar = (props: Record<string, unknown>) => {
   return (
     <DragAndDropCalendar
       popup

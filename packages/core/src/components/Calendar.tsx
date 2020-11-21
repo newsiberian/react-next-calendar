@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import omit from 'lodash/omit';
 import defaults from 'lodash/defaults';
 
+import CalendarContext from '../CalendarContext';
 import { wrapAccessor } from '../utils/accessors';
 import { notify } from '../utils/helpers';
 import { navigate, views } from '../utils/constants';
@@ -21,7 +22,7 @@ export interface CalendarProps {
    * Props passed to main calendar `<div>`.
    *
    */
-  elementProps?: React.HTMLAttributes<unknown>[];
+  elementProps?: React.HTMLAttributes<unknown>[] & React.MouseEventHandler[];
 
   /**
    * The current date value of the calendar. Determines the visible view range.
@@ -614,6 +615,12 @@ export interface CalendarProps {
    * or custom `Function(events, minimumStartDifference, slotMetrics, accessors)`
    */
   dayLayoutAlgorithm: DayLayoutAlgorithm;
+
+  /**
+   * All provided data will be passed to CalendarContext. This is useful for
+   * plugins
+   */
+  context: Record<string, unknown>;
 }
 
 function getViewNames(availableViews: View[] | CustomViews): View[] {
@@ -684,7 +691,8 @@ function Calendar({
   rtl = false,
   dayLayoutAlgorithm = 'overlap',
 
-  elementProps = {} as React.HTMLAttributes<unknown>[],
+  elementProps = {} as React.HTMLAttributes<unknown>[] &
+    React.MouseEventHandler[],
 
   getDrilldownView: getDrilldownViewProp,
   getNow = () => new Date(),
@@ -705,6 +713,8 @@ function Calendar({
   dayPropGetter,
 
   components: componentsProp = {} as Components,
+
+  context = {},
 
   ...props
 }: CalendarProps): React.ReactElement {
@@ -785,9 +795,9 @@ function Calendar({
           typeof viewsProp[view as View] === 'boolean' &&
           viewsProp[view as View]
         ) {
-          transformedViews[view as View] = VIEWS[view as View] as ExtendedFC<
-            unknown
-          >;
+          transformedViews[view as View] = VIEWS[
+            view as View
+          ] as ExtendedFC<unknown>;
         } else {
           transformedViews[view as View] = viewsProp[
             view as View
@@ -899,6 +909,7 @@ function Calendar({
   }
 
   // TODO: take styles from `getters`
+  // TODO: this className seems to be came from dnd addon
   const { style, className, ...rest } = props;
 
   const current = currentDate || getNow();
@@ -910,50 +921,52 @@ function Calendar({
   const label = View.title(current, { localizer, length });
 
   return (
-    <div
-      {...elementProps}
-      className={clsx(className, 'rbc-calendar', rtl && 'rbc-rtl')}
-      style={style}
-    >
-      {toolbar && (
-        <CalToolbar
+    <CalendarContext.Provider value={context}>
+      <div
+        {...elementProps}
+        className={clsx(className, 'rbc-calendar', rtl && 'rbc-rtl')}
+        style={style}
+      >
+        {toolbar && (
+          <CalToolbar
+            date={current}
+            view={view}
+            views={viewNames}
+            label={label}
+            onView={handleViewChange}
+            onNavigate={handleNavigate}
+            localizer={localizer}
+          />
+        )}
+        <View
+          {...rest}
+          events={events}
           date={current}
-          view={view}
-          views={viewNames}
-          label={label}
-          onView={handleViewChange}
-          onNavigate={handleNavigate}
+          getNow={getNow}
+          step={step}
+          length={length}
+          selectable={selectable}
+          rtl={rtl}
           localizer={localizer}
+          getters={getters}
+          components={components}
+          accessors={accessors}
+          longPressThreshold={longPressThreshold}
+          showMultiDayTimes={showMultiDayTimes}
+          getDrilldownView={getDrillDownView}
+          onDrillDown={handleDrillDown}
+          onSelectEvent={handleSelectEvent}
+          onDoubleClickEvent={handleDoubleClickEvent}
+          onKeyPressEvent={handleKeyPressEvent}
+          onSelectSlot={handleSelectSlot}
+          // TODO: propagate popup to Month view only
+          onShowMore={onShowMore}
+          // TODO: propagate popup to Month view only
+          popup={popup}
+          dayLayoutAlgorithm={dayLayoutAlgorithm}
         />
-      )}
-      <View
-        {...rest}
-        events={events}
-        date={current}
-        getNow={getNow}
-        step={step}
-        length={length}
-        selectable={selectable}
-        rtl={rtl}
-        localizer={localizer}
-        getters={getters}
-        components={components}
-        accessors={accessors}
-        longPressThreshold={longPressThreshold}
-        showMultiDayTimes={showMultiDayTimes}
-        getDrilldownView={getDrillDownView}
-        onDrillDown={handleDrillDown}
-        onSelectEvent={handleSelectEvent}
-        onDoubleClickEvent={handleDoubleClickEvent}
-        onKeyPressEvent={handleKeyPressEvent}
-        onSelectSlot={handleSelectSlot}
-        // TODO: propagate popup to Month view only
-        onShowMore={onShowMore}
-        // TODO: propagate popup to Month view only
-        popup={popup}
-        dayLayoutAlgorithm={dayLayoutAlgorithm}
-      />
-    </div>
+      </div>
+    </CalendarContext.Provider>
   );
 }
 

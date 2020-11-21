@@ -171,4 +171,5 @@ ZeroDurationOddities.storyName = 'Zero duration oddities';
 
 export default {
   title: 'Issues',
+  component: Calendar,
 };

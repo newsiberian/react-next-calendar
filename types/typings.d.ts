@@ -57,6 +57,10 @@ declare global {
     | 'dropFromOutside'
     | 'dragOverFromOutside';
 
+  type DragAction = 'resize' | 'move';
+
+  type DragDirection = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+
   type View = 'month' | 'week' | 'work_week' | 'day' | 'agenda';
 
   type CustomViews = Record<View, boolean | ExtendedFC>;
@@ -154,7 +158,9 @@ declare global {
     minRows: number;
   }
 
-  interface DateSlotMetrics<DateSlotMetricsOptions> {
+  interface DateSlotMetrics<
+    DateSlotMetricsOptions = Record<string, undefined>
+  > {
     clone: (
       options: DateSlotMetricsOptions,
     ) => DateSlotMetrics<DateSlotMetricsOptions>;
@@ -246,26 +252,30 @@ declare global {
     tooltip: (event: RNC.Event) => string;
   }
 
+  type Component = <P = Record<string, unknown>>(
+    props: P,
+  ) => React.ReactElement;
+
   type AgendaComponents = {
-    event?: (props) => React.ReactElement;
-    time?: (props) => React.ReactElement;
-    date?: (props) => React.ReactElement;
+    event?: Component;
+    time?: Component;
+    date?: Component;
   };
 
   type DayComponents = {
-    event?: (props) => React.ReactElement;
-    header?: (props) => React.ReactElement;
+    event?: Component;
+    header?: Component;
   };
 
   type WeekComponents = {
-    event?: (props) => React.ReactElement;
-    header?: (props) => React.ReactElement;
+    event?: Component;
+    header?: Component;
   };
 
   type MonthComponents = {
-    event?: (props) => React.ReactElement;
-    header?: (props) => React.ReactElement;
-    dateHeader?: (props) => React.ReactElement;
+    event?: Component;
+    header?: Component;
+    dateHeader?: Component;
   };
 
   /**
@@ -307,16 +317,16 @@ declare global {
    * ```
    */
   type Components = {
-    eventWrapper: (props) => React.ReactElement;
-    eventContainerWrapper: (props) => React.ReactElement;
-    dateCellWrapper: (props) => React.ReactElement;
-    timeSlotWrapper: (props) => React.ReactElement;
-    weekWrapper: (props) => React.ReactElement;
+    eventWrapper: Component;
+    eventContainerWrapper: Component;
+    dateCellWrapper: Component;
+    timeSlotWrapper: Component;
+    weekWrapper: Component;
 
-    event?: (props) => React.ReactElement;
-    timeGutterHeader?: (props) => React.ReactElement;
-    resourceHeader?: (props) => React.ReactElement;
-    toolbar?: (props) => React.ReactElement;
+    event?: Component;
+    timeGutterHeader?: Component;
+    resourceHeader?: Component;
+    toolbar?: Component;
 
     /**
      * with the agenda view use a different component to render events

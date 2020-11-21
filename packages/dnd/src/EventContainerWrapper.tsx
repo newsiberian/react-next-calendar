@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import TimeGridEvent from '@react-next-calendar/core/src/components/TimeGridEvent';
 import NoopWrapper from '@react-next-calendar/core/src/components/NoopWrapper';
 import * as dates from '@react-next-calendar/core/src/utils/dates';
+import { CalendarContext } from '@react-next-calendar/core/src';
 
 import Selection, {
   getBoundsForNode,
@@ -27,16 +28,7 @@ class EventContainerWrapper extends React.Component {
     resource: PropTypes.any,
   };
 
-  static contextTypes = {
-    draggable: PropTypes.shape({
-      onStart: PropTypes.func,
-      onEnd: PropTypes.func,
-      onDropFromOutside: PropTypes.func,
-      onBeginAction: PropTypes.func,
-      dragAndDropAction: PropTypes.object,
-      dragFromOutsideItem: PropTypes.func,
-    }),
-  };
+  static contextType = CalendarContext;
 
   constructor(...args) {
     super(...args);

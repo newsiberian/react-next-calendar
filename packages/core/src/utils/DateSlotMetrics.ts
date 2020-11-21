@@ -12,66 +12,69 @@ const isEqual = (a: DateSlotMetricsOptions[], b: DateSlotMetricsOptions[]) =>
 export function getSlotMetrics(): (
   options: DateSlotMetricsOptions,
 ) => DateSlotMetrics<DateSlotMetricsOptions> {
-  return memoizeOne((options: DateSlotMetricsOptions): DateSlotMetrics<
-    DateSlotMetricsOptions
-  > => {
-    const { range, events, maxRows, minRows, accessors } = options;
-    const { first, last } = endOfRange(range);
+  return memoizeOne(
+    (
+      options: DateSlotMetricsOptions,
+    ): DateSlotMetrics<DateSlotMetricsOptions> => {
+      const { range, events, maxRows, minRows, accessors } = options;
+      const { first, last } = endOfRange(range);
 
-    const segments = events.map(evt => eventSegments(evt, range, accessors));
+      const segments = events.map(evt => eventSegments(evt, range, accessors));
 
-    const { levels, extra } = eventLevels(segments, Math.max(maxRows - 1, 1));
+      const { levels, extra } = eventLevels(segments, Math.max(maxRows - 1, 1));
 
-    while (levels.length < minRows) levels.push([]);
+      while (levels.length < minRows) levels.push([]);
 
-    return {
-      first,
-      last,
+      return {
+        first,
+        last,
 
-      levels,
-      extra,
-      range,
-      slots: range.length,
+        levels,
+        extra,
+        range,
+        slots: range.length,
 
-      clone(args) {
-        const metrics = getSlotMetrics();
-        return metrics({ ...options, ...args });
-      },
+        clone(args) {
+          const metrics = getSlotMetrics();
+          return metrics({ ...options, ...args });
+        },
 
-      getDateForSlot(slotNumber) {
-        return range[slotNumber];
-      },
+        getDateForSlot(slotNumber) {
+          return range[slotNumber];
+        },
 
-      /**
-       * @deprecated
-       * @param {Date} date
-       */
-      getSlotForDate(date) {
-        return range.find(r => dates.eq(r, date, 'day'));
-      },
+        /**
+         * @deprecated
+         * @param {Date} date
+         */
+        getSlotForDate(date) {
+          return range.find(r => dates.eq(r, date, 'day'));
+        },
 
-      getEventsForSlot(slot) {
-        return segments
-          .filter(seg => isSegmentInSlot(seg, slot))
-          .map(seg => seg.event);
-      },
+        getEventsForSlot(slot) {
+          return segments
+            .filter(seg => isSegmentInSlot(seg, slot))
+            .map(seg => seg.event);
+        },
 
-      continuesPrior(event: RNC.Event): boolean {
-        return dates.lt(accessors.start(event), first, 'day');
-      },
+        continuesPrior(event: RNC.Event): boolean {
+          return dates.lt(accessors.start(event), first, 'day');
+        },
 
-      continuesAfter(event: RNC.Event): boolean {
-        const eventEnd = accessors.end(event);
-        const singleDayDuration = dates.eq(
-          accessors.start(event),
-          eventEnd,
-          'minutes',
-        );
+        continuesAfter(event: RNC.Event): boolean {
+          const eventEnd = accessors.end(event);
+          const singleDayDuration = dates.eq(
+            accessors.start(event),
+            eventEnd,
+            'minutes',
+          );
 
-        return singleDayDuration
-          ? dates.gte(eventEnd, last, 'minutes')
-          : dates.gt(eventEnd, last, 'minutes');
-      },
-    };
-  }, isEqual);
+          return singleDayDuration
+            ? dates.gte(eventEnd, last, 'minutes')
+            : dates.gt(eventEnd, last, 'minutes');
+        },
+      };
+    },
+    isEqual,
+  );
 }

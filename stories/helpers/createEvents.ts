@@ -1,7 +1,7 @@
 export default function createEvents(idx = 0, date = new Date()) {
-  const y = date.getFullYear()
-  const m = date.getMonth()
-  const d = date.getDate()
+  const y = date.getFullYear();
+  const m = date.getMonth();
+  const d = date.getDate();
 
   const sets = [
     [
@@ -209,7 +209,7 @@ export default function createEvents(idx = 0, date = new Date()) {
         end: new Date(y, m, d, 11, 30, 0, 0),
       },
     ],
-  ]
+  ];
 
-  return sets[idx]
+  return sets[idx];
 }

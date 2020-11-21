@@ -14,11 +14,10 @@
     "url": "https://github.com/newsiberian/react-big-calendar/issues"
   },
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "module": "dist/react-big-calendar.esm.js",
-  "style": "lib/css/react-big-calendar.css",
+  "style": "dist/css/react-big-calendar.css",
   "files": [
-    "lib/",
     "dist/",
     "LICENSE",
     "README.md"

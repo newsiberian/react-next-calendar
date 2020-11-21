@@ -3,14 +3,14 @@ import moment from 'moment';
 import { action } from '@storybook/addon-actions';
 
 import '../packages/core/src/sass/styles.scss';
-// import '../packages/dnd/styles.scss';
+import '../packages/dnd/styles.scss';
 
 import demoEvents from './helpers/events';
 import createEvents from './helpers/createEvents';
 import customComponents from './helpers/customComponents';
 import { events, Views, Calendar } from './helpers';
 
-const Template = props => <Calendar {...props} />;
+const Template = (props: Record<string, unknown>) => <Calendar {...props} />;
 
 export const Demo = Template.bind({});
 Demo.storyName = 'Demo';

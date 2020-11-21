@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
 import EventRow from '@react-next-calendar/core/src/components/EventRow';
 import * as dates from '@react-next-calendar/core/src/utils/dates';
@@ -8,43 +7,36 @@ import {
   pointInBox,
 } from '@react-next-calendar/core/src/utils/selection';
 import { eventSegments } from '@react-next-calendar/core/src/utils/eventLevels';
+import { CalendarContext } from '@react-next-calendar/core/src';
 
 import Selection, { getBoundsForNode } from './Selection';
 import { dragAccessors } from './common';
 
-const propTypes = {};
+export interface WeekWrapperProps {
+  isAllDay: boolean;
+  slotMetrics: DateSlotMetrics;
+
+  accessors: Accessors;
+  getters: Getters;
+  components: Components;
+
+  resourceId: string | number;
+}
 
 const eventTimes = (event, accessors) => {
-  let start = accessors.start(event);
-  let end = accessors.end(event);
+  const start = accessors.start(event);
+  const end = accessors.end(event);
 
   const isZeroDuration =
     dates.eq(start, end, 'minutes') && start.getMinutes() === 0;
   // make zero duration midnight events at least one day long
-  if (isZeroDuration) end = dates.add(end, 1, 'day');
-  return { start, end };
+  const modifiedEnd = isZeroDuration ? dates.add(end, 1, 'day') : end;
+
+  return { start, end: modifiedEnd };
 };
 
-class WeekWrapper extends React.Component {
-  static propTypes = {
-    isAllDay: PropTypes.bool,
-    slotMetrics: PropTypes.object.isRequired,
-    accessors: PropTypes.object.isRequired,
-    getters: PropTypes.object.isRequired,
-    components: PropTypes.object.isRequired,
-    resourceId: PropTypes.any,
-  };
-
-  static contextTypes = {
-    draggable: PropTypes.shape({
-      onStart: PropTypes.func,
-      onEnd: PropTypes.func,
-      dragAndDropAction: PropTypes.object,
-      onDropFromOutside: PropTypes.func,
-      onBeginAction: PropTypes.func,
-      dragFromOutsideItem: PropTypes.func,
-    }),
-  };
+class WeekWrapper extends React.Component<WeekWrapperProps> {
+  static contextType = CalendarContext;
 
   constructor(...args) {
     super(...args);
@@ -302,7 +294,5 @@ class WeekWrapper extends React.Component {
     );
   }
 }
-
-WeekWrapper.propTypes = propTypes;
 
 export default WeekWrapper;

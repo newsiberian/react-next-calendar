@@ -1,27 +1,27 @@
-const rencontreDate = new Date()
-rencontreDate.setDate(2)
-rencontreDate.setHours(5)
-rencontreDate.setMinutes(30)
+const rencontreDate = new Date();
+rencontreDate.setDate(2);
+rencontreDate.setHours(5);
+rencontreDate.setMinutes(30);
 
-const anotherDate = new Date()
-anotherDate.setDate(1)
-anotherDate.setHours(2)
-anotherDate.setMinutes(30)
+const anotherDate = new Date();
+anotherDate.setDate(1);
+anotherDate.setHours(2);
+anotherDate.setMinutes(30);
 
-const aDate = new Date()
-aDate.setDate(4)
-aDate.setHours(5)
-aDate.setMinutes(30)
+const aDate = new Date();
+aDate.setDate(4);
+aDate.setHours(5);
+aDate.setMinutes(30);
 
-const bDate = new Date()
-bDate.setDate(4)
-bDate.setHours(5)
-bDate.setMinutes(30)
+const bDate = new Date();
+bDate.setDate(4);
+bDate.setHours(5);
+bDate.setMinutes(30);
 
-const cDate = new Date()
-cDate.setDate(4)
-cDate.setHours(5)
-cDate.setMinutes(30)
+const cDate = new Date();
+cDate.setDate(4);
+cDate.setHours(5);
+cDate.setMinutes(30);
 
 export default {
   events: [
@@ -71,4 +71,4 @@ export default {
       title: 'Room C',
     },
   ],
-}
+};

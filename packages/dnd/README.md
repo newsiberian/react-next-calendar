@@ -1,20 +1,31 @@
-### Drag and Drop
+### Drag and Drop addon for React Next Calendar
 
-```js
-import { Calendar } from 'react-big-calendar'
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+```jsx
+import { Calendar } from '@react-next-calendar/core'
+import useDragAndDrop from '@react-next-calendar/dnd'
 
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
+import '@react-next-calendar/dnd/styles.css'
 
-const DraggableCalendar = withDragAndDrop(Calendar)
+function MyCalendar(props) {
+  const [
+    context,
+    components,
+    selectable,
+    elementProps,
+    className,
+  ] = useDragAndDrop(props);
 
-/* ... */
+  /* ... */
 
-return (
-  <DraggableCalendar
-    localizer={myLocalizer}
-    events={events}
-    draggableAccessor={event => true}
-  />
-)
+  return (
+    <Calendar
+      {...props} 
+      context={context}
+      components={components}
+      selectable={selectable}
+      elementProps={elementProps}
+      className={className}
+    />
+  )
+}
 ```
