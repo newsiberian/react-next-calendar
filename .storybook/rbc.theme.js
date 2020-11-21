@@ -1,4 +1,4 @@
-import { create } from '@storybook/theming'
+import { create } from '@storybook/theming';
 
 export default create({
   base: 'light',
@@ -23,6 +23,6 @@ export default create({
   inputTextColor: 'black',
   inputBorderRadius: 4,
 
-  brandTitle: 'Big Calendar',
-  brandUrl: 'http://intljusticemission.github.io/react-big-calendar/examples',
-})
+  brandTitle: 'React Next Calendar',
+  brandUrl: 'https://github.com/newsiberian/react-next-calendar',
+});

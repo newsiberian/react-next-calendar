@@ -1,0 +1,16 @@
+{
+  "name": "@react-next-calendar/dnd",
+  "version": "0.1.0",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "sass": "node-sass styles.scss dist/css/styles.css",
+    "build:tsc": "tsc"
+  },
+  "peerDependencies": {
+    "@react-next-calendar/core": "*"
+  }
+}

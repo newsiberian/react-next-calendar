@@ -1,0 +1,77 @@
+{
+  "name": "@react-next-calendar/core",
+  "version": "0.24.5",
+  "description": "Calendar! with events",
+  "author": {
+    "name": "Jason Quense",
+    "email": "monastic.panic@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newsiberian/react-big-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/newsiberian/react-big-calendar/issues"
+  },
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "dist/react-big-calendar.esm.js",
+  "style": "lib/css/react-big-calendar.css",
+  "files": [
+    "lib/",
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "scheduler",
+    "react-component",
+    "react",
+    "calendar",
+    "events",
+    "full calendar"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "sass": "node-sass src/sass/styles.scss ./dist/css/react-big-calendar.css",
+    "autoprefixer": "postcss --use autoprefixer -b 'ie >= 11, safari >= 8, last 2 versions' < ./dist/css/react-big-calendar.css",
+    "build:css": "npm run sass && npm run autoprefixer",
+    "assets": "cpy src/sass/* dist/sass",
+    "build:umd": "BABEL_ENV=esm yarn rollup -c",
+    "build:tsc": "tsc",
+    "build": "yarn clean && yarn build:tsc && yarn build:umd && yarn assets && yarn build:css",
+    "lint": "eslint src",
+    "test": "npm run lint && jest",
+    "tdd": "jest --watch",
+    "prepublishOnly": "npm run build",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.js": "eslint",
+    "test/**/*.js": "eslint",
+    "*.{js,ts,tsx,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "dependencies": {
+    "clsx": "1.1.1",
+    "date-arithmetic": "^4.0.1",
+    "dom-helpers": "^5.1.0",
+    "invariant": "^2.2.4",
+    "lodash": "^4.17.11",
+    "lodash-es": "^4.17.11",
+    "memoize-one": "^5.1.1",
+    "prop-types": "^15.7.2",
+    "react-overlays": "4.1.1",
+    "uncontrollable": "^7.0.0"
+  }
+}
