@@ -1,5 +1,6 @@
 import * as React from 'react';
 import clsx from 'clsx';
+import useLatest from '@react-next-calendar/core/src/hooks/useLatest';
 
 import EventWrapper from './EventWrapper';
 import EventContainerWrapper from './EventContainerWrapper';
@@ -7,10 +8,11 @@ import WeekWrapper from './WeekWrapper';
 import { mergeComponents } from './common';
 
 interface InteractionInfo {
-  event: RNC.Event;
+  event?: RNC.Event;
   start: Date;
   end: Date;
   resourceId: string | number;
+  isAllDay?: boolean;
 }
 
 export interface DragAndDropCalendarProps {
@@ -23,7 +25,7 @@ export interface DragAndDropCalendarProps {
   }: {
     event: RNC.Event;
     action: DragAction;
-    direction: DragDirection;
+    direction?: DragDirection;
   }) => void;
   onDragOver: (event: RNC.Event) => void;
   onDropFromOutside?: ({
@@ -34,8 +36,10 @@ export interface DragAndDropCalendarProps {
   }: {
     start: Date;
     end: Date;
+    // TODO rename to isAllDay
     allDay: boolean;
-    resource: string | number;
+    // TODO rename to resourceId
+    resource?: string | number;
   }) => void;
 
   dragFromOutsideItem?: () => RNC.Event;
@@ -53,7 +57,7 @@ export interface DragAndDropCalendarProps {
 
 export interface DraggableContext {
   onStart: () => void;
-  onEnd: (interactionInfo: InteractionInfo) => void;
+  onEnd: (interactionInfo: InteractionInfo | null) => void;
   onBeginAction?: (
     event: RNC.Event,
     action: DragAction,
@@ -68,7 +72,7 @@ export interface DraggableContext {
     start: Date;
     end: Date;
     allDay: boolean;
-    resource: string | number;
+    resource?: string | number;
   }) => void;
   dragFromOutsideItem?: () => RNC.Event;
   draggableAccessor?: (event: RNC.Event) => boolean;
@@ -163,18 +167,19 @@ export default function useDragAndDrop({
   const [action, setAction] = React.useState<DragAction | null>(null);
   const [direction, setDirection] = React.useState<DragDirection | null>(null);
   const [event, setEvent] = React.useState<RNC.Event | null>(null);
+  const latestAction = useLatest(action);
 
   const handleInteractionStart = React.useCallback((): void => {
-    if (!interacting) {
-      setInteracting(true);
-    }
-  }, [interacting]);
+    setInteracting(true);
+  }, []);
 
   const handleInteractionEnd = React.useCallback(
     (interactionInfo: InteractionInfo): void => {
-      if (!action) {
+      if (!latestAction.current) {
         return;
       }
+
+      const actionCopy = latestAction.current;
 
       setAction(null);
       setDirection(null);
@@ -184,24 +189,27 @@ export default function useDragAndDrop({
         return;
       }
 
-      interactionInfo.event = event as RNC.Event;
+      setEvent(prevState => {
+        interactionInfo.event = prevState as RNC.Event;
+        return null;
+      });
 
-      setEvent(null);
-
-      if (action === 'move') {
-        onEventDrop(interactionInfo);
-      } else if (action === 'resize') {
-        onEventResize(interactionInfo);
+      if (actionCopy === 'move') {
+        onEventDrop && onEventDrop(interactionInfo);
+      } else if (actionCopy === 'resize') {
+        onEventResize && onEventResize(interactionInfo);
       }
     },
-    [action, event],
+    [],
   );
 
   const handleBeginAction = React.useCallback(
-    (event: RNC.Event, action: DragAction, direction: DragDirection) => {
+    (event: RNC.Event, action: DragAction, direction?: DragDirection) => {
       setAction(action);
       setEvent(event);
-      setDirection(direction);
+      if (direction) {
+        setDirection(direction);
+      }
 
       if (onDragStart) {
         onDragStart({ event, action, direction });

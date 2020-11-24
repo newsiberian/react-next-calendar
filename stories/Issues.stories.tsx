@@ -37,43 +37,53 @@ export const EndOfTheWeekAllDayEvent = (): React.ReactElement => (
 );
 EndOfTheWeekAllDayEvent.storyName = 'End of the week all-day event';
 
-export const EventAtEndOfWeek = (): React.ReactElement => (
-  <Calendar
-    events={[
-      {
-        title: 'has time',
-        start: moment(new Date(2016, 11, 3))
-          .add(1, 'days')
-          .subtract(5, 'hours')
-          .toDate(),
-        end: moment(new Date(2016, 11, 3))
-          .add(1, 'days')
-          .subtract(4, 'hours')
-          .toDate(),
-      },
-    ]}
-  />
-);
-EventAtEndOfWeek.storyName = 'Event at end of week';
+export const EventAtEndOfWeek = (): React.ReactElement => {
+  const days = 1;
+  const start = moment(new Date(2016, 11, 3))
+    .add(days, 'days')
+    .subtract(5, 'hours')
+    .toDate();
 
-export const EventAtStartOfWeek = (): React.ReactElement => (
-  <Calendar
-    events={[
-      {
-        title: 'has time',
-        start: moment(new Date(2016, 11, 4))
-          .add(1, 'days')
-          .subtract(5, 'hours')
-          .toDate(),
-        end: moment(new Date(2016, 11, 4))
-          .add(1, 'days')
-          .subtract(4, 'hours')
-          .toDate(),
-      },
-    ]}
-  />
-);
-EventAtStartOfWeek.storyName = 'Event at start of week';
+  const end = moment(new Date(2016, 11, 3))
+    .add(days, 'days')
+    .subtract(4, 'hours')
+    .toDate();
+
+  return (
+    <Calendar
+      events={[
+        {
+          title: 'has time',
+          start,
+          end,
+        },
+      ]}
+    />
+  );
+};
+EventAtEndOfWeek.storyName = 'Event at the end of the week';
+
+export const EventAtStartOfWeek = (): React.ReactElement => {
+  const days = 1;
+  return (
+    <Calendar
+      events={[
+        {
+          title: 'has time',
+          start: moment(new Date(2016, 11, 4))
+            .add(days, 'days')
+            .subtract(5, 'hours')
+            .toDate(),
+          end: moment(new Date(2016, 11, 4))
+            .add(days, 'days')
+            .subtract(4, 'hours')
+            .toDate(),
+        },
+      ]}
+    />
+  );
+};
+EventAtStartOfWeek.storyName = 'Event at the beginning of the week';
 
 export const EventsOnConstrainedDayColumn = (): React.ReactElement => (
   <Calendar
@@ -107,7 +117,6 @@ export const NoDuration = (): React.ReactElement => (
     ]}
   />
 );
-
 NoDuration.storyName = 'No duration';
 
 export const SingleDaysShouldOnlySpanOneSlotMultiDaysMultiple = (): React.ReactElement => (

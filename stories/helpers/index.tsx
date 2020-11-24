@@ -25,11 +25,10 @@ export { default as resourcesEvents } from './resourceEvents';
 
 export const date = (...args) => moment(...args).toDate();
 
-export const Calendar = (props: Record<string, unknown>) => (
-  <BaseCalendar localizer={localizer} {...props} />
-);
+export const Calendar = (
+  props: Record<string, unknown>,
+): React.ReactElement => <BaseCalendar localizer={localizer} {...props} />;
 
-// export const DragAndDropCalendar = withDragAndDrop(Calendar);
 export const DragAndDropCalendar = props => {
   const [
     context,

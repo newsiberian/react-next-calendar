@@ -4,7 +4,7 @@ import { wrapAccessor } from '@react-next-calendar/core/src/utils/accessors';
 export const dragAccessors = {
   start: wrapAccessor((e: RNC.Event) => e.start),
   end: wrapAccessor((e: RNC.Event) => e.end),
-};
+} as Pick<Accessors, 'start' | 'end'>;
 
 export interface NextProps {
   children: React.ReactNode;

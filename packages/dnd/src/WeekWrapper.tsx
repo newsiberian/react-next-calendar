@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { findDOMNode } from 'react-dom';
 import EventRow from '@react-next-calendar/core/src/components/EventRow';
 import * as dates from '@react-next-calendar/core/src/utils/dates';
 import {
@@ -7,23 +6,28 @@ import {
   pointInBox,
 } from '@react-next-calendar/core/src/utils/selection';
 import { eventSegments } from '@react-next-calendar/core/src/utils/eventLevels';
+import useSelection, {
+  getBoundsForNode,
+} from '@react-next-calendar/core/src/hooks/useSelection';
 import { CalendarContext } from '@react-next-calendar/core/src';
+import useLatest from '@react-next-calendar/core/src/hooks/useLatest';
 
-import Selection, { getBoundsForNode } from './Selection';
 import { dragAccessors } from './common';
+import { DraggableContext } from './useDragAndDrop';
 
 export interface WeekWrapperProps {
+  children: React.ReactElement;
   isAllDay: boolean;
   slotMetrics: DateSlotMetrics;
-
   accessors: Accessors;
-  getters: Getters;
-  components: Components;
-
   resourceId: string | number;
+  rootRef: React.RefObject<HTMLDivElement>;
 }
 
-const eventTimes = (event, accessors) => {
+const eventTimes = (
+  event: RNC.Event,
+  accessors: Accessors,
+): { start: Date; end: Date } => {
   const start = accessors.start(event);
   const end = accessors.end(event);
 
@@ -35,264 +39,290 @@ const eventTimes = (event, accessors) => {
   return { start, end: modifiedEnd };
 };
 
-class WeekWrapper extends React.Component<WeekWrapperProps> {
-  static contextType = CalendarContext;
+function WeekWrapper({
+  children,
+  isAllDay,
+  slotMetrics,
+  accessors,
+  resourceId,
+  rootRef,
+  ...props
+}: WeekWrapperProps): React.ReactElement {
+  const context = React.useContext(CalendarContext) as {
+    draggable: DraggableContext;
+  };
+  const actionLatest = useLatest(context.draggable.dragAndDropAction);
+  const [segment, setSegment] = React.useState<Segment | null>(null);
+  const segmentLatest = useLatest(segment);
+  const [initialized, setInitialized] = React.useState<boolean>(false);
+  const container = rootRef.current?.closest(
+    '.rbc-month-view, .rbc-time-view',
+  ) as HTMLDivElement | null;
 
-  constructor(...args) {
-    super(...args);
-    this.state = {};
+  const [on] = useSelection(
+    { current: container },
+    // TODO: pass selectable here vvv
+    true,
+  );
+
+  React.useEffect(() => {
+    if (!initialized) {
+      initSelectable();
+      setInitialized(true);
+    }
+  }, [initialized, on]);
+
+  const initSelectable = React.useCallback(() => {
+    on('beforeSelect', (point: InitialSelection): boolean => {
+      return (
+        actionLatest.current.action === 'move' ||
+        (actionLatest.current.action === 'resize' &&
+          (!isAllDay ||
+            pointInBox(
+              getBoundsForNode(rootRef.current as HTMLDivElement),
+              point,
+            )))
+      );
+    });
+
+    on('selecting', (box: SelectedRect) => {
+      const bounds = getBoundsForNode(rootRef.current as HTMLDivElement);
+
+      if (actionLatest.current.action === 'move') {
+        handleMove(box, bounds);
+      } else if (actionLatest.current.action === 'resize') {
+        handleResize(box, bounds);
+      }
+    });
+
+    on('selectStart', () => context.draggable.onStart());
+    on('select', (point: SelectedRect): void => {
+      const bounds = getBoundsForNode(rootRef.current as HTMLDivElement);
+
+      if (segmentLatest.current) {
+        handleInteractionEnd();
+
+        if (!pointInBox(bounds, point)) {
+          reset();
+        } else {
+          handleInteractionEnd();
+        }
+      }
+    });
+
+    on('dropFromOutside', (point: Point): void => {
+      if (!context.draggable.onDropFromOutside) {
+        return;
+      }
+
+      const bounds = getBoundsForNode(rootRef.current as HTMLDivElement);
+
+      if (!pointInBox(bounds, point)) {
+        return;
+      }
+
+      handleDropFromOutside(point, bounds);
+    });
+
+    on('dragOverFromOutside', (point: Point): void => {
+      if (!context.draggable.dragFromOutsideItem) {
+        return;
+      }
+
+      const bounds = getBoundsForNode(rootRef.current as HTMLDivElement);
+
+      handleDragOverFromOutside(point, bounds);
+    });
+
+    on('click', () => context.draggable.onEnd(null));
+
+    on('reset', () => {
+      reset();
+      context.draggable.onEnd(null);
+    });
+  }, [on]);
+
+  function reset() {
+    if (segmentLatest.current) {
+      setSegment(null);
+    }
   }
 
-  componentDidMount() {
-    this._selectable();
-  }
-
-  componentWillUnmount() {
-    this._teardownSelectable();
-  }
-
-  reset() {
-    if (this.state.segment) this.setState({ segment: null });
-  }
-
-  update(event, start, end) {
-    const segment = eventSegments(
-      { ...event, end, start, __isPreview: true },
-      this.props.slotMetrics.range,
+  function update(event: RNC.Event, start: Date, end: Date): void {
+    const eventSegment = eventSegments(
+      { ...event, end, start, __isPreview: true } as RNC.Event & {
+        __isPreview: boolean;
+      },
+      slotMetrics.range,
       dragAccessors,
     );
 
-    const { segment: lastSegment } = this.state;
     if (
-      lastSegment &&
-      segment.span === lastSegment.span &&
-      segment.left === lastSegment.left &&
-      segment.right === lastSegment.right
+      segmentLatest.current &&
+      eventSegment.span === segmentLatest.current.span &&
+      eventSegment.left === segmentLatest.current.left &&
+      eventSegment.right === segmentLatest.current.right
     ) {
       return;
     }
-    this.setState({ segment });
+
+    setSegment(eventSegment);
   }
 
-  handleMove = ({ x, y }, node, draggedEvent) => {
-    const event =
-      this.context.draggable.dragAndDropAction.event || draggedEvent;
-    const metrics = this.props.slotMetrics;
-    const { accessors } = this.props;
+  function handleMove(
+    { x, y }: Point | SelectedRect,
+    node: NodeBounds,
+    // this event is defined when dragged from outside
+    draggedEvent?: RNC.Event,
+  ): void {
+    const event = actionLatest.current.event || draggedEvent;
 
-    if (!event) return;
+    if (!event) {
+      return;
+    }
 
-    let rowBox = getBoundsForNode(node);
+    const rowBox = getBoundsForNode(node);
 
     if (!pointInBox(rowBox, { x, y })) {
-      this.reset();
+      reset();
       return;
     }
 
     // Make sure to maintain the time of the start date while moving it to the new slot
-    let start = dates.merge(
-      metrics.getDateForSlot(getSlotAtX(rowBox, x, false, metrics.slots)),
+    const start = dates.merge(
+      slotMetrics.getDateForSlot(
+        getSlotAtX(rowBox, x, false, slotMetrics.slots),
+      ),
       accessors.start(event),
     );
 
-    let end = dates.add(
+    const end = dates.add(
       start,
       dates.diff(accessors.start(event), accessors.end(event), 'minutes'),
       'minutes',
     );
 
-    this.update(event, start, end);
-  };
+    update(event, start as Date, end);
+  }
 
-  handleDropFromOutside = (point, rowBox) => {
-    if (!this.context.draggable.onDropFromOutside) return;
-    const { slotMetrics: metrics } = this.props;
+  function handleDropFromOutside(point: Point, rowBox: NodeBounds): void {
+    if (context.draggable.onDropFromOutside) {
+      const start = slotMetrics.getDateForSlot(
+        getSlotAtX(rowBox, point.x, false, slotMetrics.slots),
+      );
 
-    let start = metrics.getDateForSlot(
-      getSlotAtX(rowBox, point.x, false, metrics.slots),
-    );
+      context.draggable.onDropFromOutside({
+        start,
+        end: dates.add(start, 1, 'day'),
+        allDay: false,
+      });
+    }
+  }
 
-    this.context.draggable.onDropFromOutside({
-      start,
-      end: dates.add(start, 1, 'day'),
-      allDay: false,
-    });
-  };
+  function handleDragOverFromOutside({ x, y }: Point, node: NodeBounds): void {
+    if (context.draggable.dragFromOutsideItem) {
+      handleMove(
+        { x, y } as Point,
+        node,
+        context.draggable.dragFromOutsideItem(),
+      );
+    }
+  }
 
-  handleDragOverFromOutside = ({ x, y }, node) => {
-    if (!this.context.draggable.dragFromOutsideItem) return;
+  function handleResize(point: SelectedRect, node: NodeBounds): void {
+    const { event, direction } = actionLatest.current;
 
-    this.handleMove(
-      { x, y },
-      node,
-      this.context.draggable.dragFromOutsideItem(),
-    );
-  };
+    let { start, end } = eventTimes(event as RNC.Event, accessors);
 
-  handleResize(point, node) {
-    const { event, direction } = this.context.draggable.dragAndDropAction;
-    const { accessors, slotMetrics: metrics } = this.props;
-
-    let { start, end } = eventTimes(event, accessors);
-
-    let rowBox = getBoundsForNode(node);
-    let cursorInRow = pointInBox(rowBox, point);
+    const rowBox = getBoundsForNode(node);
+    const cursorInRow = pointInBox(rowBox, point);
 
     if (direction === 'RIGHT') {
       if (cursorInRow) {
-        if (metrics.last < start) return this.reset();
+        if (slotMetrics.last < start) {
+          reset();
+          return;
+        }
         // add min
         end = dates.add(
-          metrics.getDateForSlot(
-            getSlotAtX(rowBox, point.x, false, metrics.slots),
+          slotMetrics.getDateForSlot(
+            getSlotAtX(rowBox, point.x, false, slotMetrics.slots),
           ),
           1,
           'day',
         );
       } else if (
-        dates.inRange(start, metrics.first, metrics.last) ||
-        (rowBox.bottom < point.y && +metrics.first > +start)
+        dates.inRange(start, slotMetrics.first, slotMetrics.last) ||
+        (rowBox.bottom < point.y && +slotMetrics.first > +start)
       ) {
-        end = dates.add(metrics.last, 1, 'milliseconds');
+        end = dates.add(slotMetrics.last, 1, 'milliseconds');
       } else {
-        this.setState({ segment: null });
+        setSegment(null);
         return;
       }
 
       end = dates.max(end, dates.add(start, 1, 'day'));
     } else if (direction === 'LEFT') {
-      // inbetween Row
+      // in between Row
       if (cursorInRow) {
-        if (metrics.first > end) return this.reset();
+        if (slotMetrics.first > end) {
+          reset();
+          return;
+        }
 
-        start = metrics.getDateForSlot(
-          getSlotAtX(rowBox, point.x, false, metrics.slots),
+        start = slotMetrics.getDateForSlot(
+          getSlotAtX(rowBox, point.x, false, slotMetrics.slots),
         );
       } else if (
-        dates.inRange(end, metrics.first, metrics.last) ||
-        (rowBox.top > point.y && +metrics.last < +end)
+        dates.inRange(end, slotMetrics.first, slotMetrics.last) ||
+        (rowBox.top > point.y && +slotMetrics.last < +end)
       ) {
-        start = dates.add(metrics.first, -1, 'milliseconds');
+        start = dates.add(slotMetrics.first, -1, 'milliseconds');
       } else {
-        this.reset();
+        reset();
         return;
       }
 
       start = dates.min(dates.add(end, -1, 'day'), start);
     }
 
-    this.update(event, start, end);
+    update(event as RNC.Event, start, end);
   }
 
-  _selectable = () => {
-    let node = findDOMNode(this).closest('.rbc-month-row, .rbc-allday-cell');
-    let container = node.closest('.rbc-month-view, .rbc-time-view');
+  function handleInteractionEnd() {
+    if (segmentLatest.current) {
+      const { event } = segmentLatest.current;
 
-    let selector = (this._selector = new Selection(() => container));
+      reset();
 
-    selector.on('beforeSelect', point => {
-      const { isAllDay } = this.props;
-      const { action } = this.context.draggable.dragAndDropAction;
-
-      return (
-        action === 'move' ||
-        (action === 'resize' &&
-          (!isAllDay || pointInBox(getBoundsForNode(node), point)))
-      );
-    });
-
-    selector.on('selecting', box => {
-      const bounds = getBoundsForNode(node);
-      const { dragAndDropAction } = this.context.draggable;
-
-      if (dragAndDropAction.action === 'move') this.handleMove(box, bounds);
-      if (dragAndDropAction.action === 'resize') this.handleResize(box, bounds);
-    });
-
-    selector.on('selectStart', () => this.context.draggable.onStart());
-    selector.on('select', point => {
-      const bounds = getBoundsForNode(node);
-
-      if (!this.state.segment) return;
-      this.handleInteractionEnd();
-
-      if (!pointInBox(bounds, point)) {
-        this.reset();
-      } else {
-        this.handleInteractionEnd();
-      }
-    });
-
-    selector.on('dropFromOutside', point => {
-      if (!this.context.draggable.onDropFromOutside) return;
-
-      const bounds = getBoundsForNode(node);
-
-      if (!pointInBox(bounds, point)) return;
-
-      this.handleDropFromOutside(point, bounds);
-    });
-
-    selector.on('dragOverFromOutside', point => {
-      if (!this.context.draggable.dragFromOutsideItem) return;
-
-      const bounds = getBoundsForNode(node);
-
-      this.handleDragOverFromOutside(point, bounds);
-    });
-
-    selector.on('click', () => this.context.draggable.onEnd(null));
-
-    selector.on('reset', () => {
-      this.reset();
-      this.context.draggable.onEnd(null);
-    });
-  };
-
-  handleInteractionEnd = () => {
-    const { resourceId, isAllDay } = this.props;
-    const { event } = this.state.segment;
-
-    this.reset();
-
-    this.context.draggable.onEnd({
-      start: event.start,
-      end: event.end,
-      resourceId,
-      isAllDay,
-    });
-  };
-
-  _teardownSelectable = () => {
-    if (!this._selector) return;
-    this._selector.teardown();
-    this._selector = null;
-  };
-
-  render() {
-    const { children, accessors } = this.props;
-
-    let { segment } = this.state;
-
-    return (
-      <div className="rbc-addons-dnd-row-body">
-        {children}
-
-        {segment && (
-          <EventRow
-            {...this.props}
-            selected={null}
-            className="rbc-addons-dnd-drag-row"
-            segments={[segment]}
-            accessors={{
-              ...accessors,
-              ...dragAccessors,
-            }}
-          />
-        )}
-      </div>
-    );
+      context.draggable.onEnd({
+        start: event.start,
+        end: event.end,
+        resourceId,
+        isAllDay,
+      });
+    }
   }
+
+  return (
+    <div className="rbc-addons-dnd-row-body">
+      {children}
+
+      {segment && (
+        <EventRow
+          {...props}
+          selected={undefined}
+          className="rbc-addons-dnd-drag-row"
+          segments={[segment]}
+          accessors={{
+            ...accessors,
+            ...dragAccessors,
+          }}
+          slotMetrics={slotMetrics}
+        />
+      )}
+    </div>
+  );
 }
 
 export default WeekWrapper;
