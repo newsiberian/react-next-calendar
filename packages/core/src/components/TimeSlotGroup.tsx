@@ -8,9 +8,9 @@ type SlotGetters = Pick<Getters, 'slotGroupProp' | 'slotProp'>;
 export interface TimeSlotGroupProps {
   group: Date[];
   resourceId?: string | number;
-  renderSlot: (date: Date, idx: number) => React.ReactElement | null;
+  renderSlot?: (date: Date, idx: number) => React.ReactElement | null;
   getters: SlotGetters;
-  components?: Partial<Components>;
+  components?: Partial<Pick<Components, 'timeSlotWrapper'>>;
 }
 
 export default function TimeSlotGroup({

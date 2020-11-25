@@ -2,7 +2,7 @@ import * as React from 'react';
 import clsx from 'clsx';
 
 import usePrevious from '../hooks/usePrevious';
-import useRerender from '../hooks/useRerender';
+import useLatest from '../hooks/useLatest';
 import useSelection, { getBoundsForNode, isEvent } from '../hooks/useSelection';
 import * as dates from '../utils/dates';
 import * as TimeSlotUtils from '../utils/TimeSlots';
@@ -40,7 +40,7 @@ interface DayColumnProps {
   onDoubleClickEvent: <P>(args: P) => void;
   onKeyPressEvent: <P>(args: P) => void;
 
-  resourceId: string | number | Record<string, undefined> | null;
+  resourceId?: string | number;
 
   dayLayoutAlgorithm: DayLayoutAlgorithm;
 }
@@ -80,10 +80,13 @@ export default function DayColumn({
   // we need most of these as refs because Selection doesn't see state changes
   // internally
 
-  const selecting = React.useRef<boolean>(false);
+  const [selecting, setSelecting] = React.useState<boolean>(false);
+  const selectingLatest = useLatest(selecting);
+  const [selection, setSelection] = React.useState<RNC.Selection>(
+    {} as RNC.Selection,
+  );
   // TODO: let initial be undefined or null
-  const selectionRef = React.useRef<RNC.Selection>({} as RNC.Selection);
-  const rerender = useRerender();
+  const selectionLatest = useLatest(selection);
   // default state must be non-equal to selectable, so it is not a boolean
   const [prevSelectable, setPrevSelectable] = React.useState<Selectable | null>(
     null,
@@ -100,7 +103,7 @@ export default function DayColumn({
   const prevTimeIndicatorPosition = usePrevious(timeIndicatorPosition);
   const dayRef = React.useRef<HTMLDivElement>(null);
   const intervalTriggered = React.useRef<boolean>(false);
-  const timeSlotMetrics = React.useRef(
+  const [timeSlotMetrics, setTimeSlotMetrics] = React.useState(
     TimeSlotUtils.getSlotMetrics({
       min: new Date(min),
       max: new Date(max),
@@ -108,6 +111,15 @@ export default function DayColumn({
       step,
     }),
   );
+  const timeSlotMetricsLatest = useLatest(timeSlotMetrics);
+  // const timeSlotMetrics = React.useRef(
+  //   TimeSlotUtils.getSlotMetrics({
+  //     min: new Date(min),
+  //     max: new Date(max),
+  //     timeslots,
+  //     step,
+  //   }),
+  // );
   const timeIndicatorTimeout = React.useRef<number | null>(null);
   const initialSlot = React.useRef<Date>();
 
@@ -126,7 +138,7 @@ export default function DayColumn({
     const current = getNow();
 
     if (current >= min && current <= max) {
-      const top = timeSlotMetrics.current.getCurrentTimePosition(current);
+      const top = timeSlotMetricsLatest.current.getCurrentTimePosition(current);
       intervalTriggered.current = true;
       setTimeIndicatorPosition(top);
     } else {
@@ -180,6 +192,7 @@ export default function DayColumn({
         slots,
         start: startDate,
         end: endDate,
+        // TODO: resourceId could be staled. test it and use useLatest
         resourceId,
         action,
         bounds,
@@ -200,14 +213,15 @@ export default function DayColumn({
   }, []);
 
   React.useEffect(() => {
-    timeSlotMetrics.current = timeSlotMetrics.current.update({
-      min: new Date(min),
-      max: new Date(max),
-      step,
-      timeslots,
-    });
-    rerender();
-  }, [min, max, timeslots, step, rerender]);
+    setTimeSlotMetrics(prevState =>
+      prevState.update({
+        min: new Date(min),
+        max: new Date(max),
+        step,
+        timeslots,
+      }),
+    );
+  }, [min, max, timeslots, step]);
 
   React.useEffect(() => {
     function initSelectable() {
@@ -217,8 +231,9 @@ export default function DayColumn({
 
         if (onSelecting) {
           if (
-            (dates.eq(selectionRef.current.startDate, start, 'minutes') &&
-              dates.eq(selectionRef.current.endDate, end, 'minutes')) ||
+            (dates.eq(selectionLatest.current.startDate, start, 'minutes') &&
+              dates.eq(selectionLatest.current.endDate, end, 'minutes')) ||
+            // TODO: resourceId could be staled here. use useLatest?
             !onSelecting({ start, end, resourceId })
           ) {
             return;
@@ -226,39 +241,38 @@ export default function DayColumn({
         }
 
         if (
-          selectionRef.current.start !== state.start ||
-          selectionRef.current.end !== state.end
+          selectionLatest.current.start !== state.start ||
+          selectionLatest.current.end !== state.end
         ) {
-          selectionRef.current = state;
-          rerender();
+          setSelection(state);
         }
 
-        if (!selecting.current) {
-          selecting.current = true;
+        if (!selectingLatest.current) {
+          setSelecting(true);
         }
       };
 
       const getSelectionState = (
         point: Point | SelectedRect,
       ): RNC.Selection => {
-        let currentSlot = timeSlotMetrics.current.closestSlotFromPoint(
+        let currentSlot = timeSlotMetricsLatest.current.closestSlotFromPoint(
           point,
           getBoundsForNode(dayRef.current as HTMLDivElement),
         );
 
-        if (!selecting.current) {
+        if (!selectingLatest.current) {
           initialSlot.current = currentSlot;
         }
 
         let initial = initialSlot.current as Date;
 
         if (dates.lte(initial, currentSlot)) {
-          currentSlot = timeSlotMetrics.current.nextSlot(currentSlot);
+          currentSlot = timeSlotMetricsLatest.current.nextSlot(currentSlot);
         } else if (dates.gt(initial, currentSlot)) {
-          initial = timeSlotMetrics.current.nextSlot(initial);
+          initial = timeSlotMetricsLatest.current.nextSlot(initial);
         }
 
-        const selectRange = timeSlotMetrics.current.getRange(
+        const selectRange = timeSlotMetricsLatest.current.getRange(
           dates.min(initial, currentSlot),
           dates.max(initial, currentSlot),
         );
@@ -283,7 +297,7 @@ export default function DayColumn({
             box,
           });
         }
-        selecting.current = false;
+        setSelecting(false);
       };
 
       on('selecting', maybeSelect);
@@ -304,22 +318,20 @@ export default function DayColumn({
       );
 
       on('select', (bounds: SelectedRect) => {
-        if (selecting.current) {
+        if (selectingLatest.current) {
           selectSlot({
-            startDate: selectionRef.current.startDate,
-            endDate: selectionRef.current.endDate,
+            startDate: selectionLatest.current.startDate,
+            endDate: selectionLatest.current.endDate,
             action: 'select',
             bounds,
           });
-          selecting.current = false;
-          rerender();
+          setSelecting(false);
         }
       });
 
       on('reset', () => {
-        if (selecting.current) {
-          selecting.current = false;
-          rerender();
+        if (selectingLatest.current) {
+          setSelecting(false);
         }
       });
     }
@@ -331,15 +343,7 @@ export default function DayColumn({
 
       setPrevSelectable(selectable);
     }
-  }, [
-    selectable,
-    prevSelectable,
-    on,
-    onSelecting,
-    resourceId,
-    selectSlot,
-    rerender,
-  ]);
+  }, [selectable, prevSelectable, on, onSelecting, resourceId, selectSlot]);
 
   React.useEffect(() => {
     const getNowChanged = !dates.eq(prevGetNow(), getNow(), 'minutes');
@@ -397,7 +401,7 @@ export default function DayColumn({
     const styledEvents = DayEventLayout.getStyledEvents({
       events,
       accessors,
-      slotMetrics: timeSlotMetrics.current,
+      slotMetrics: timeSlotMetrics,
       minimumStartDifference: Math.ceil((step * timeslots) / 2),
       dayLayoutAlgorithm,
     });
@@ -408,8 +412,8 @@ export default function DayColumn({
       let format = 'eventTimeRangeFormat';
       let label;
 
-      const startsBeforeDay = timeSlotMetrics.current.startsBeforeDay(start);
-      const startsAfterDay = timeSlotMetrics.current.startsAfterDay(end);
+      const startsBeforeDay = timeSlotMetrics.startsBeforeDay(start);
+      const startsAfterDay = timeSlotMetrics.startsAfterDay(end);
 
       if (startsBeforeDay) {
         format = 'eventTimeRangeEndFormat';
@@ -424,9 +428,8 @@ export default function DayColumn({
       }
 
       const continuesEarlier =
-        startsBeforeDay || timeSlotMetrics.current.startsBefore(start);
-      const continuesLater =
-        startsAfterDay || timeSlotMetrics.current.startsAfter(end);
+        startsBeforeDay || timeSlotMetrics.startsBefore(start);
+      const continuesLater = startsAfterDay || timeSlotMetrics.startsAfter(end);
 
       return (
         <TimeGridEvent
@@ -458,11 +461,11 @@ export default function DayColumn({
         'rbc-time-column',
         isNow && 'rbc-now',
         isNow && 'rbc-today', // WHY
-        selecting.current && 'rbc-slot-selecting',
+        selecting && 'rbc-slot-selecting',
       )}
       ref={dayRef}
     >
-      {timeSlotMetrics.current.groups.map((grp, idx) => (
+      {timeSlotMetrics.groups.map((grp, idx) => (
         <TimeSlotGroup
           key={idx}
           group={grp}
@@ -473,31 +476,32 @@ export default function DayColumn({
       ))}
 
       <EventContainer
-        localizer={localizer}
-        resource={resourceId}
+        rootRef={dayRef}
+        slotMetrics={timeSlotMetrics}
+        resourceId={resourceId}
         accessors={accessors}
-        getters={restGetters}
         components={restComponents}
-        slotMetrics={timeSlotMetrics.current}
+        getters={restGetters}
+        localizer={localizer}
       >
         <div className={clsx('rbc-events-container', rtl && 'rtl')}>
           {renderEvents()}
         </div>
       </EventContainer>
 
-      {selecting.current && (
+      {selecting && (
         <div
           className="rbc-slot-selection"
           style={{
-            top: selectionRef.current.top,
-            height: selectionRef.current.height,
+            top: selection.top,
+            height: selection.height,
           }}
         >
           <span>
             {localizer.format(
               {
-                start: selectionRef.current.startDate,
-                end: selectionRef.current.endDate,
+                start: selection.startDate,
+                end: selection.endDate,
               },
               'selectRangeFormat',
             )}

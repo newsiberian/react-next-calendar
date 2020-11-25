@@ -184,7 +184,9 @@ declare global {
     timeslots: number;
   }
 
-  interface TimeSlotMetrics<TimeSlotMetricsOptions> {
+  interface TimeSlotMetrics<
+    TimeSlotMetricsOptions = Record<string, undefined>
+  > {
     groups: Date[][];
     update: (
       options: TimeSlotMetricsOptions,
@@ -227,10 +229,13 @@ declare global {
 
   interface StyledEventStyle {
     height: number | string;
-    top: number;
+    top: number | 'inherit';
     left?: number;
     width: number | string;
-    xOffset: number | string;
+    /**
+     * xOffset will not be defined while dragging
+     */
+    xOffset?: number | string;
   }
 
   interface StyledEvent {

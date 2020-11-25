@@ -11,7 +11,7 @@ interface InteractionInfo {
   event?: RNC.Event;
   start: Date;
   end: Date;
-  resourceId: string | number;
+  resourceId?: string | number;
   isAllDay?: boolean;
 }
 

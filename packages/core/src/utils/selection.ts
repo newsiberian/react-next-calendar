@@ -24,7 +24,7 @@ export function getSlotAtX(
 
 export function pointInBox(
   box: { top: number; left: number; right: number; bottom: number },
-  { x, y }: Point,
+  { x, y }: { x: number; y: number },
 ): boolean {
   return y >= box.top && y <= box.bottom && x >= box.left && x <= box.right;
 }

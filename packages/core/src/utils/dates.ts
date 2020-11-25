@@ -82,15 +82,17 @@ export function range(start: Date, end: Date, unit: Unit = 'day'): Date[] {
   return days;
 }
 
-export function merge(date: Date, time: Date): Date | null {
-  if (time == null && date == null) {
+export function merge(date: undefined, time: undefined): null;
+export function merge(date?: Date, time?: Date): Date;
+export function merge(date?: Date, time?: Date): Date | null {
+  if (!time && !date) {
     return null;
   }
 
-  if (time == null) {
+  if (!time) {
     time = new Date();
   }
-  if (date == null) {
+  if (!date) {
     date = new Date();
   }
 

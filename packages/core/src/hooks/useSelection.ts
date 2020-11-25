@@ -114,7 +114,7 @@ export default function useSelection(
   }
 
   function emit(type: ActionType, ...args) {
-    let result;
+    let result: unknown;
     const handlers = listeners.current[type] || [];
 
     handlers.forEach(fn => {

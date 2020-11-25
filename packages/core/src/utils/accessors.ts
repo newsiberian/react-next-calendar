@@ -5,6 +5,8 @@ type Field =
 
 type Data = RNC.Event | Resource;
 
+type AccessorType = string | number | boolean | Date | null;
+
 /**
  * Retrieve via an accessor-like property
  *
@@ -12,10 +14,7 @@ type Data = RNC.Event | Resource;
  *    accessor(data, func)    // => retrieves func(data)
  *    ... otherwise null
  */
-export function accessor(
-  data: Data,
-  field: Field,
-): string | number | boolean | Date | null {
+export function accessor(data: Data, field: Field): AccessorType {
   if (typeof field === 'function') {
     return field(data);
   }
@@ -25,4 +24,5 @@ export function accessor(
   return null;
 }
 
-export const wrapAccessor = (acc: Field) => (data: Data) => accessor(data, acc);
+export const wrapAccessor = (acc: Field) => (data: Data): AccessorType =>
+  accessor(data, acc);

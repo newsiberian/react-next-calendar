@@ -226,22 +226,26 @@ function DateContentRow({
 
       <div className="rbc-row-content">
         {renderHeader && (
-          <div className="rbc-row " ref={headingRowRef}>
+          <div className="rbc-row" ref={headingRowRef}>
             {range.map(renderHeadingCell)}
           </div>
         )}
-        <WeekWrapper isAllDay={isAllDay} {...eventRowProps}>
-          {levels.map((segments, idx) => (
-            <EventRow key={idx} segments={segments} {...eventRowProps} />
-          ))}
-          {!!extra.length && (
-            <EventEndingRow
-              segments={extra}
-              onShowMore={handleShowMore}
-              {...eventRowProps}
-            />
-          )}
-        </WeekWrapper>
+        {/* We need to wait till rootRef DOM element will be linked. This is
+        important for useSelection hook */}
+        {Boolean(rootRef.current) && (
+          <WeekWrapper isAllDay={isAllDay} rootRef={rootRef} {...eventRowProps}>
+            {levels.map((segments, idx) => (
+              <EventRow key={idx} segments={segments} {...eventRowProps} />
+            ))}
+            {!!extra.length && (
+              <EventEndingRow
+                segments={extra}
+                onShowMore={handleShowMore}
+                {...eventRowProps}
+              />
+            )}
+          </WeekWrapper>
+        )}
       </div>
     </div>
   );

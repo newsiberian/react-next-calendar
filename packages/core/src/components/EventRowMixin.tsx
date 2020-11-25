@@ -11,11 +11,11 @@ export interface EventProps {
   getters: Getters;
   localizer: Localizer;
 
-  onSelect: (event: RNC.Event, e: React.MouseEvent) => void;
-  onDoubleClick: (event: RNC.Event, e: React.MouseEvent) => void;
-  onKeyPress: (event: RNC.Event, e: React.KeyboardEvent) => void;
+  onSelect?: (event: RNC.Event, e: React.MouseEvent) => void;
+  onDoubleClick?: (event: RNC.Event, e: React.MouseEvent) => void;
+  onKeyPress?: (event: RNC.Event, e: React.KeyboardEvent) => void;
 
-  slotMetrics: DateSlotMetrics<DateSlotMetricsOptions>;
+  slotMetrics: DateSlotMetrics;
 }
 
 export function renderEvent(

@@ -29,7 +29,9 @@ export const Calendar = (
   props: Record<string, unknown>,
 ): React.ReactElement => <BaseCalendar localizer={localizer} {...props} />;
 
-export const DragAndDropCalendar = props => {
+export const DragAndDropCalendar = (
+  props: Record<string, unknown>,
+): React.ReactElement => {
   const [
     context,
     components,
@@ -50,7 +52,9 @@ export const DragAndDropCalendar = props => {
   );
 };
 
-export const DraggableCalendar = (props: Record<string, unknown>) => {
+export const DraggableCalendar = (
+  props: Record<string, unknown>,
+): React.ReactElement => {
   return (
     <DragAndDropCalendar
       popup

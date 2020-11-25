@@ -18,7 +18,7 @@ export function endOfRange(
 export function eventSegments(
   event: RNC.Event,
   range: Date[],
-  accessors: Accessors,
+  accessors: Pick<Accessors, 'start' | 'end'>,
 ): Segment {
   const { first, last } = endOfRange(range);
 

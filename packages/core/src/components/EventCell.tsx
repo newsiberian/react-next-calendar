@@ -8,6 +8,9 @@ interface EventCellProps {
   slotStart: Date;
   slotEnd: Date;
 
+  // TODO: children are not currently being passed to EventCell from anywhere
+  children?: (content: React.ReactNode) => React.ReactNode;
+
   selected: boolean;
   isAllDay?: boolean;
   continuesPrior: boolean;
@@ -18,9 +21,9 @@ interface EventCellProps {
   getters: Getters;
   localizer: Localizer;
 
-  onSelect: (event: RNC.Event, e: React.MouseEvent) => void;
-  onDoubleClick: (event: RNC.Event, e: React.MouseEvent) => void;
-  onKeyPress: (event: RNC.Event, e: React.KeyboardEvent) => void;
+  onSelect?: (event: RNC.Event, e: React.MouseEvent) => void;
+  onDoubleClick?: (event: RNC.Event, e: React.MouseEvent) => void;
+  onKeyPress?: (event: RNC.Event, e: React.KeyboardEvent) => void;
 }
 
 function EventCell(props: EventCellProps): React.ReactElement {

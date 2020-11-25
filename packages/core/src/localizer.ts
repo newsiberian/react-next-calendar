@@ -1,14 +1,10 @@
-import PropTypes from 'prop-types';
 import invariant from 'invariant';
 
 interface DateLocalizerProps {
-  propType: () => void;
   firstOfWeek: StartOfWeek;
   format: Format;
   formats: Formats;
 }
-
-const localePropType = PropTypes.oneOfType([PropTypes.string, PropTypes.func]);
 
 function _format(
   localizer: Localizer,
@@ -46,7 +42,6 @@ export class DateLocalizer {
       'date localizer `firstOfWeek(..)` must be a function',
     );
 
-    this.propType = spec.propType || localePropType;
     this.startOfWeek = spec.firstOfWeek;
     this.formats = spec.formats;
     this.format = (...args) => _format(this, spec.format, ...args);
