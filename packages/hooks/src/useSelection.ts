@@ -2,7 +2,6 @@ import * as React from 'react';
 import contains from 'dom-helpers/contains';
 import closest from 'dom-helpers/closest';
 import listen from 'dom-helpers/listen';
-
 import { EventHandler } from 'dom-helpers/addEventListener';
 
 const clickTolerance = 5;
@@ -15,17 +14,25 @@ type NodePossibleBounds = {
   bottom?: number;
 };
 
+type On = <T extends ActionType, A>(
+  type: T,
+  handler: (args: A, type?: T) => boolean | void,
+) => { remove: () => void };
+
+type AddEventListener = <K extends keyof HTMLElementEventMap>(
+  type: K,
+  handler: EventHandler<K>,
+  target: HTMLElement,
+) => () => void;
+
 export default function useSelection(
   node: React.RefObject<HTMLElement>,
   selectable: Selectable,
   { global = false, longPressThreshold = 250 } = {},
 ): [
-  on: <T, A>(
-    type: T,
-    handler: (args: A, type?: T) => boolean | void,
-  ) => { remove: () => void },
+  on: On,
   isSelected: (nodeRef: HTMLElement) => boolean,
-  filter: (items) => items,
+  filter: (items: HTMLElement[]) => HTMLElement[],
 ] {
   const isDetached = React.useRef<boolean>(false);
   const selecting = React.useRef<boolean>(false);
@@ -39,15 +46,23 @@ export default function useSelection(
    */
   const ctrl = React.useRef<boolean>(false);
 
-  const removeTouchMoveWindowListener = React.useRef<EventListener>();
-  const removeKeyUpListener = React.useRef<EventListener>();
-  const removeKeyDownListener = React.useRef<EventListener>();
-  const removeDropFromOutsideListener = React.useRef<EventListener>();
-  const removeDragOverFromOutsideListener = React.useRef<EventListener>();
-  const removeInitialEventListener = React.useRef<EventListener>();
-  const removeEndListener = React.useRef<EventListener>();
-  const onEscListener = React.useRef<EventListener>();
-  const removeMoveListener = React.useRef<EventListener>();
+  const removeTouchMoveWindowListener = React.useRef<
+    ReturnType<AddEventListener>
+  >();
+  const removeKeyUpListener = React.useRef<ReturnType<AddEventListener>>();
+  const removeKeyDownListener = React.useRef<ReturnType<AddEventListener>>();
+  const removeDropFromOutsideListener = React.useRef<
+    ReturnType<AddEventListener>
+  >();
+  const removeDragOverFromOutsideListener = React.useRef<
+    ReturnType<AddEventListener>
+  >();
+  const removeInitialEventListener = React.useRef<
+    ReturnType<AddEventListener>
+  >();
+  const removeEndListener = React.useRef<ReturnType<AddEventListener>>();
+  const onEscListener = React.useRef<ReturnType<AddEventListener>>();
+  const removeMoveListener = React.useRef<ReturnType<AddEventListener>>();
 
   React.useEffect(() => {
     if (selectable) {
@@ -98,7 +113,7 @@ export default function useSelection(
     dropFromOutsideListener,
   ]);
 
-  function on(type: ActionType, handler: () => void) {
+  const on: On = (type, handler) => {
     const handlers = listeners.current[type] || (listeners.current[type] = []);
 
     handlers.push(handler);
@@ -111,13 +126,13 @@ export default function useSelection(
         }
       },
     };
-  }
+  };
 
-  function emit(type: ActionType, ...args) {
-    let result: unknown;
+  function emit<T>(type: ActionType, ...args: T[]) {
+    let result: unknown | undefined;
     const handlers = listeners.current[type] || [];
 
-    handlers.forEach(fn => {
+    handlers.forEach((fn: (...args: T[]) => unknown) => {
       if (typeof result === 'undefined') {
         result = fn(...args);
       }
@@ -133,131 +148,13 @@ export default function useSelection(
     return objectsCollide(selectRect.current, getBoundsForNode(nodeRef));
   }
 
-  function filter(items) {
+  function filter(items: HTMLElement[]) {
     // not selecting
     if (!selectRect.current || !selecting.current) {
       return [];
     }
     return items.filter(isSelected);
   }
-
-  // Adds a listener that will call the handler only after the user has pressed
-  // on the screen without moving their finger for 250ms.
-  const addLongPressListener = React.useCallback(
-    (handler, initialEvent: TouchEvent) => {
-      let timer: ReturnType<typeof setTimeout> | null = null;
-      let removeTouchMoveListener: EventListener | null = null;
-      let removeTouchEndListener: EventListener | null = null;
-
-      const handleTouchStart = (initialEvent: TouchEvent) => {
-        timer = setTimeout(() => {
-          cleanup();
-          handler(initialEvent);
-        }, longPressThreshold);
-        removeTouchMoveListener = addEventListener('touchmove', () =>
-          cleanup(),
-        );
-        removeTouchEndListener = addEventListener('touchend', () => cleanup());
-      };
-
-      const removeTouchStartListener = addEventListener(
-        'touchstart',
-        handleTouchStart,
-      );
-
-      const cleanup = () => {
-        if (timer) {
-          clearTimeout(timer);
-        }
-        if (removeTouchMoveListener) {
-          removeTouchMoveListener();
-        }
-        if (removeTouchEndListener) {
-          removeTouchEndListener();
-        }
-
-        timer = null;
-        removeTouchMoveListener = null;
-        removeTouchEndListener = null;
-      };
-
-      if (initialEvent) {
-        handleTouchStart(initialEvent);
-      }
-
-      return () => {
-        cleanup();
-        removeTouchStartListener();
-      };
-    },
-    [longPressThreshold],
-  );
-
-  // Listen for mousedown and touchstart events. When one is received, disable
-  // the other and setup future event handling based on the type of event.
-  const addInitialEventListener = React.useCallback(() => {
-    const removeMouseDownListener = addEventListener(
-      'mousedown',
-      (e: MouseEvent) => {
-        removeInitialEventListener.current();
-        handleInitialEvent(e);
-        removeInitialEventListener.current = addEventListener(
-          'mousedown',
-          handleInitialEvent,
-        );
-      },
-    );
-    const removeTouchStartListener = addEventListener(
-      'touchstart',
-      (e: TouchEvent) => {
-        removeInitialEventListener.current();
-        removeInitialEventListener.current = addLongPressListener(
-          handleInitialEvent,
-          e,
-        );
-      },
-    );
-
-    removeInitialEventListener.current = () => {
-      removeMouseDownListener();
-      removeTouchStartListener();
-    };
-  }, [addLongPressListener, handleInitialEvent]);
-
-  /**
-   * Fires when the user drop something from outside the calendar
-   */
-  const dropFromOutsideListener = React.useCallback((e: DragEvent): void => {
-    const { pageX, pageY, clientX, clientY } = getEventCoordinates(e);
-
-    emit('dropFromOutside', {
-      x: pageX,
-      y: pageY,
-      clientX: clientX,
-      clientY: clientY,
-    });
-
-    e.preventDefault();
-  }, []);
-
-  /**
-   * Fires when the user starts dragging outside the calendar
-   */
-  const dragOverFromOutsideListener = React.useCallback(
-    (e: DragEvent): void => {
-      const { pageX, pageY, clientX, clientY } = getEventCoordinates(e);
-
-      emit('dragOverFromOutside', {
-        x: pageX,
-        y: pageY,
-        clientX: clientX,
-        clientY: clientY,
-      });
-
-      e.preventDefault();
-    },
-    [],
-  );
 
   const handleClickEvent = React.useCallback((e: MouseEvent) => {
     const { pageX, pageY, clientX, clientY } = getEventCoordinates(e);
@@ -291,7 +188,9 @@ export default function useSelection(
 
   const handleTerminatingEvent = React.useCallback(
     (e: MouseEvent | TouchEvent | KeyboardEvent) => {
-      const { pageX, pageY } = getEventCoordinates(e);
+      const { pageX, pageY } = getEventCoordinates(
+        e as MouseEvent | TouchEvent,
+      );
 
       selecting.current = false;
 
@@ -302,12 +201,13 @@ export default function useSelection(
         return;
       }
 
-      const inRoot = !node.current || contains(node.current, e.target);
+      const inRoot =
+        !node.current || contains(node.current, e.target as Element);
       const click = isClick(pageX, pageY);
 
       initialEventData.current = null;
 
-      if (e.key === 'Escape') {
+      if ((e as KeyboardEvent).key === 'Escape') {
         return emit('reset');
       }
 
@@ -316,7 +216,7 @@ export default function useSelection(
       }
 
       if (click && inRoot) {
-        return handleClickEvent(e);
+        return handleClickEvent(e as MouseEvent);
       }
 
       // User drag-clicked in the Selectable area
@@ -370,7 +270,7 @@ export default function useSelection(
   }, []);
 
   const handleInitialEvent = React.useCallback(
-    function handleInitialEvent(e: MouseEvent | TouchEvent) {
+    (e: MouseEvent | TouchEvent) => {
       if (isDetached.current) {
         return;
       }
@@ -380,13 +280,17 @@ export default function useSelection(
       // Right clicks
       if (
         e.which === 3 ||
-        e.button === 2 ||
+        (e as MouseEvent).button === 2 ||
         !isOverContainer(node.current, clientX, clientY)
       ) {
         return;
       }
 
-      if (!globalMouse && node.current && !contains(node.current, e.target)) {
+      if (
+        !globalMouse &&
+        node.current &&
+        !contains(node.current, e.target as HTMLElement)
+      ) {
         const { top, left, bottom, right } = normalizeDistance(0);
 
         const offsetData = getBoundsForNode(node.current);
@@ -454,6 +358,126 @@ export default function useSelection(
     [globalMouse, handleMoveEvent, handleTerminatingEvent],
   );
 
+  // Adds a listener that will call the handler only after the user has pressed
+  // on the screen without moving their finger for 250ms.
+  const addLongPressListener = React.useCallback(
+    (handler, initialEvent: TouchEvent) => {
+      let timer: ReturnType<typeof setTimeout> | null = null;
+      let removeTouchMoveListener: ReturnType<AddEventListener> | null = null;
+      let removeTouchEndListener: ReturnType<AddEventListener> | null = null;
+
+      const handleTouchStart = (initialEvent: TouchEvent) => {
+        timer = setTimeout(() => {
+          cleanup();
+          handler(initialEvent);
+        }, longPressThreshold);
+        removeTouchMoveListener = addEventListener('touchmove', () =>
+          cleanup(),
+        );
+        removeTouchEndListener = addEventListener('touchend', () => cleanup());
+      };
+
+      const removeTouchStartListener = addEventListener(
+        'touchstart',
+        handleTouchStart,
+      );
+
+      const cleanup = () => {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        if (removeTouchMoveListener) {
+          removeTouchMoveListener();
+        }
+        if (removeTouchEndListener) {
+          removeTouchEndListener();
+        }
+
+        timer = null;
+        removeTouchMoveListener = null;
+        removeTouchEndListener = null;
+      };
+
+      if (initialEvent) {
+        handleTouchStart(initialEvent);
+      }
+
+      return () => {
+        cleanup();
+        removeTouchStartListener();
+      };
+    },
+    [longPressThreshold],
+  );
+
+  // Listen for mousedown and touchstart events. When one is received, disable
+  // the other and setup future event handling based on the type of event.
+  const addInitialEventListener = React.useCallback(() => {
+    const removeMouseDownListener = addEventListener(
+      'mousedown',
+      (e: MouseEvent) => {
+        removeInitialEventListener.current &&
+          removeInitialEventListener.current();
+        handleInitialEvent(e);
+        removeInitialEventListener.current = addEventListener(
+          'mousedown',
+          handleInitialEvent,
+        );
+      },
+    );
+    const removeTouchStartListener = addEventListener(
+      'touchstart',
+      (e: TouchEvent) => {
+        removeInitialEventListener.current &&
+          removeInitialEventListener.current();
+        removeInitialEventListener.current = addLongPressListener(
+          handleInitialEvent,
+          e,
+        );
+      },
+    );
+
+    removeInitialEventListener.current = () => {
+      removeMouseDownListener();
+      removeTouchStartListener();
+    };
+  }, [addLongPressListener, handleInitialEvent]);
+
+  /**
+   * Fires when the user drop something from outside the calendar
+   */
+  const dropFromOutsideListener = React.useCallback((e: DragEvent): void => {
+    const { pageX, pageY, clientX, clientY } = getEventCoordinates(e);
+
+    emit('dropFromOutside', {
+      x: pageX,
+      y: pageY,
+      clientX: clientX,
+      clientY: clientY,
+    });
+
+    e.preventDefault();
+  }, []);
+
+  /**
+   * Fires when the user starts dragging outside the calendar
+   */
+  const dragOverFromOutsideListener = React.useCallback(
+    (e: DragEvent): void => {
+      const { pageX, pageY, clientX, clientY } = getEventCoordinates(e);
+
+      emit('dragOverFromOutside', {
+        x: pageX,
+        y: pageY,
+        clientX: clientX,
+        clientY: clientY,
+      });
+
+      e.preventDefault();
+    },
+    [],
+  );
+
   function keyListener(e: KeyboardEvent) {
     ctrl.current = e.metaKey || e.ctrlKey;
   }
@@ -476,19 +500,27 @@ export default function useSelection(
 function addEventListener<K extends keyof HTMLElementEventMap>(
   type: K,
   handler: EventHandler<K>,
-  target: HTMLElement = document,
+  target?: HTMLElement = document,
 ) {
   return listen(target, type, handler, { passive: false });
 }
 
 function isOverContainer(
-  container: HTMLElement,
+  container: HTMLElement | null,
   x: number,
   y: number,
 ): boolean {
   return Boolean(
-    !container || contains(container, document.elementFromPoint(x, y)),
+    !container ||
+      contains(container, document.elementFromPoint(x, y) as Element),
   );
+}
+
+export function isEvent(
+  node: HTMLElement,
+  bounds: Point | InitialSelection,
+): boolean {
+  return !!getEventNodeFromPoint(node, bounds);
 }
 
 export function getEventNodeFromPoint(
@@ -499,27 +531,45 @@ export function getEventNodeFromPoint(
   return target ? closest(target, '.rbc-event', node) : null;
 }
 
-export function isEvent(
-  node: HTMLElement,
-  bounds: Point | InitialSelection,
-): boolean {
-  return !!getEventNodeFromPoint(node, bounds);
-}
-
 function getEventCoordinates(
-  e: MouseEvent | DragEvent,
+  e: MouseEvent | TouchEvent,
 ): { clientX: number; clientY: number; pageX: number; pageY: number } {
-  let target = e;
+  let target: MouseEvent | TouchEvent | Touch = e;
 
-  if (e.touches && e.touches.length) {
-    target = e.touches[0];
+  // when this is a touch event, take coordinates from current Touch
+  if ((e as TouchEvent).touches?.length) {
+    target = (e as TouchEvent).touches[0];
   }
 
   return {
-    clientX: target.clientX,
-    clientY: target.clientY,
-    pageX: target.pageX,
-    pageY: target.pageY,
+    clientX: (target as MouseEvent).clientX,
+    clientY: (target as MouseEvent).clientY,
+    pageX: (target as MouseEvent).pageX,
+    pageY: (target as MouseEvent).pageY,
+  };
+}
+
+/**
+ * Given a node, get everything needed to calculate its boundaries
+ * @param {HTMLElement} node
+ * @return {NodeBounds}
+ */
+export function getBoundsForNode(
+  node: HTMLElement | NodePossibleBounds,
+): NodeBounds {
+  if (typeof (node as HTMLElement).getBoundingClientRect !== 'function') {
+    return node as NodeBounds;
+  }
+
+  const rect = (node as HTMLElement).getBoundingClientRect();
+  const left = rect.left + pageOffset('left');
+  const top = rect.top + pageOffset();
+
+  return {
+    top,
+    left,
+    right: ((node as HTMLElement).offsetWidth || 0) + left,
+    bottom: ((node as HTMLElement).offsetHeight || 0) + top,
   };
 }
 
@@ -582,30 +632,6 @@ export function objectsCollide(
       aLeft + tolerance > bRight
     )
   );
-}
-
-/**
- * Given a node, get everything needed to calculate its boundaries
- * @param {HTMLElement} node
- * @return {NodeBounds}
- */
-export function getBoundsForNode(
-  node: HTMLElement | NodePossibleBounds,
-): NodeBounds {
-  if (typeof (node as HTMLElement).getBoundingClientRect !== 'function') {
-    return node as NodeBounds;
-  }
-
-  const rect = (node as HTMLElement).getBoundingClientRect();
-  const left = rect.left + pageOffset('left');
-  const top = rect.top + pageOffset();
-
-  return {
-    top,
-    left,
-    right: ((node as HTMLElement).offsetWidth || 0) + left,
-    bottom: ((node as HTMLElement).offsetHeight || 0) + top,
-  };
 }
 
 function pageOffset(dir?: 'left'): number {
