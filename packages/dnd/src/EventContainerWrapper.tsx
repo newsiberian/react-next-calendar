@@ -1,7 +1,9 @@
 import * as React from 'react';
-import TimeGridEvent from '@react-next-calendar/core/src/components/TimeGridEvent';
-import NoopWrapper from '@react-next-calendar/core/src/components/NoopWrapper';
-import { CalendarContext } from '@react-next-calendar/core/src';
+import {
+  CalendarContext,
+  NoopWrapper,
+  TimeGridEvent,
+} from '@react-next-calendar/core';
 import {
   useLatest,
   useSelection,
@@ -123,7 +125,8 @@ function EventContainerWrapper({
   }
 
   function handleResize(point: SelectedRect, bounds: NodeBounds): void {
-    let start, end;
+    let start;
+    let end;
     const currentSlot = slotMetrics.closestSlotFromPoint(point, bounds);
 
     if (actionLatest.current.direction === 'UP') {
@@ -134,7 +137,7 @@ function EventContainerWrapper({
       end = dates.max(currentSlot, slotMetrics.closestSlotFromDate(start));
     }
 
-    update(slotMetrics.getRange(start, end));
+    update(slotMetrics.getRange(start as Date, end as Date));
   }
 
   function handleDropFromOutside(point: Point, bounds: NodeBounds): void {
@@ -143,12 +146,14 @@ function EventContainerWrapper({
       bounds,
     );
 
-    context.draggable.onDropFromOutside({
-      start,
-      end: slotMetrics.nextSlot(start),
-      allDay: false,
-      resource: resourceId,
-    });
+    // todo is this ok to call this from `dragOverFromOutside`?
+    context.draggable.onDropFromOutside &&
+      context.draggable.onDropFromOutside({
+        start,
+        end: slotMetrics.nextSlot(start),
+        allDay: false,
+        resource: resourceId,
+      });
   }
 
   function initSelectable() {

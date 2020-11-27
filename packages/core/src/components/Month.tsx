@@ -351,7 +351,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   );
 };
 
-MonthView.range = (date, { localizer }) => {
+MonthView.range = (date, { localizer }: { localizer: Localizer }) => {
   const start = dates.firstVisibleDay(date, localizer);
   const end = dates.lastVisibleDay(date, localizer);
   return { start, end };

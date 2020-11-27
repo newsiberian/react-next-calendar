@@ -1,4 +1,7 @@
-export default function createEvents(idx = 0, date = new Date()) {
+export default function createEvents(
+  idx = 0,
+  date = new Date(),
+): Partial<RNC.Event>[] {
   const y = date.getFullYear();
   const m = date.getMonth();
   const d = date.getDate();

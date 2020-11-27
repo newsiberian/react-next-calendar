@@ -1,7 +1,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { accessor } from '@react-next-calendar/utils';
-import { CalendarContext } from '@react-next-calendar/core/src';
+import { CalendarContext } from '@react-next-calendar/core';
 
 import { DraggableContext } from './useDragAndDrop';
 

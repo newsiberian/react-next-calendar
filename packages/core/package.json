@@ -15,8 +15,8 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/react-big-calendar.esm.js",
-  "style": "dist/css/react-big-calendar.css",
+  "module": "dist/react-next-calendar.esm.js",
+  "style": "dist/react-next-calendar.css",
   "files": [
     "dist/",
     "LICENSE",
@@ -36,22 +36,19 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "sass": "node-sass src/sass/styles.scss ./dist/css/react-big-calendar.css",
-    "autoprefixer": "postcss --use autoprefixer -b 'ie >= 11, safari >= 8, last 2 versions' < ./dist/css/react-big-calendar.css",
+    "sass": "node-sass src/sass/styles.scss ./dist/react-next-calendar.css",
+    "autoprefixer": "postcss --use autoprefixer -b 'ie >= 11, safari >= 8, last 2 versions' < ./dist/react-next-calendar.css",
     "build:css": "npm run sass && npm run autoprefixer",
-    "assets": "cpy src/sass/* dist/sass",
     "build:umd": "BABEL_ENV=esm yarn rollup -c",
     "build:tsc": "tsc",
-    "build": "yarn clean && yarn build:tsc && yarn build:umd && yarn assets && yarn build:css",
-    "lint": "eslint src",
+    "build": "yarn clean && yarn build:tsc && yarn build:umd && yarn build:css",
     "test": "npm run lint && jest",
-    "tdd": "jest --watch",
     "prepublishOnly": "npm run build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "src/**/*.js": "eslint",
-    "test/**/*.js": "eslint",
+    "src/**/*.{ts,tsx}": "eslint",
+    "test/**/*.ts": "eslint",
     "*.{js,ts,tsx,json,css,md}": [
       "prettier --write",
       "git add"
@@ -66,12 +63,12 @@
     "@react-next-calendar/utils": "^0.1.0",
     "clsx": "1.1.1",
     "dom-helpers": "^5.1.0",
-    "invariant": "^2.2.4",
     "lodash": "^4.17.11",
     "lodash-es": "^4.17.11",
     "memoize-one": "^5.1.1",
     "prop-types": "^15.7.2",
     "react-overlays": "4.1.1",
+    "tiny-invariant": "^1.1.0",
     "uncontrollable": "^7.0.0"
   }
 }

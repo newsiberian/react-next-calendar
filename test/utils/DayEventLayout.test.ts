@@ -1,17 +1,24 @@
-import { getStyledEvents } from '../../src/utils/DayEventLayout'
-import { getSlotMetrics } from '../../src/utils/TimeSlots'
-import * as dates from '../../src/utils/dates'
+import { getStyledEvents } from '../../packages/core/src/utils/DayEventLayout';
+import { getSlotMetrics } from '../../packages/core/src/utils/TimeSlots';
+import { dates } from '../../packages/utils/src';
 
 describe('getStyledEvents', () => {
-  const d = (...args) => new Date(2015, 3, 1, ...args)
-  const min = dates.startOf(d(), 'day')
-  const max = dates.endOf(d(), 'day')
-  const slotMetrics = getSlotMetrics({ min, max, step: 30, timeslots: 4 })
-  const accessors = { start: e => e.start, end: e => e.end }
-  const dayLayoutAlgorithm = 'overlap'
+  const d = (...args: number[]) => new Date(2015, 3, 1, ...args);
+  const min = dates.startOf(d(), 'day');
+  const max = dates.endOf(d(), 'day');
+  const slotMetrics = getSlotMetrics({ min, max, step: 30, timeslots: 4 });
+  const accessors = {
+    start: e => e.start,
+    end: e => e.end,
+  } as Pick<Accessors, 'start' | 'end'>;
+  const dayLayoutAlgorithm = 'overlap';
 
   describe('matrix', () => {
-    function compare(title, events, expectedResults) {
+    function compare(
+      title: string,
+      events: { start: Date; end: Date }[],
+      expectedResults: { width: number; xOffset: number }[],
+    ) {
       it(title, () => {
         const styledEvents = getStyledEvents({
           events,
@@ -19,16 +26,17 @@ describe('getStyledEvents', () => {
           slotMetrics,
           minimumStartDifference: 10,
           dayLayoutAlgorithm,
-        })
+        } as GetStyledEventsOptions);
+
         const results = styledEvents.map(result => ({
-          width: Math.floor(result.style.width),
-          xOffset: Math.floor(result.style.xOffset),
-        }))
-        expect(results).toEqual(expectedResults)
-      })
+          width: Math.floor(result.style.width as number),
+          xOffset: Math.floor(result.style.xOffset as number),
+        }));
+        expect(results).toEqual(expectedResults);
+      });
     }
 
-    const toCheck = [
+    [
       [
         'single event',
         [{ start: d(11), end: d(12) }],
@@ -106,7 +114,6 @@ describe('getStyledEvents', () => {
           { width: 33, xOffset: 66 },
         ],
       ],
-    ]
-    toCheck.forEach(args => compare(...args))
-  })
-})
+    ].forEach(args => compare(...args));
+  });
+});

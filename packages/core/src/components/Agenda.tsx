@@ -214,7 +214,7 @@ const Agenda: ExtendedFC<AgendaProps> = function Agenda({
   );
 };
 
-Agenda.range = (start: Date, { length = defaultLength }) => {
+Agenda.range = (start, { length = defaultLength }: { length?: number }) => {
   const end = dates.add(start, length, 'day');
   return { start, end };
 };

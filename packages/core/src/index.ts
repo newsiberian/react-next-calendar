@@ -10,6 +10,10 @@ export { default as Calendar } from './components/Calendar';
 
 export { default as CalendarContext } from './CalendarContext';
 
+export { default as EventRow } from './components/EventRow';
+export { default as NoopWrapper } from './components/NoopWrapper';
+export { default as TimeGridEvent } from './components/TimeGridEvent';
+
 export { DateLocalizer } from './localizer';
 export { default as momentLocalizer } from './localizers/moment';
 export { default as globalizeLocalizer } from './localizers/globalize';

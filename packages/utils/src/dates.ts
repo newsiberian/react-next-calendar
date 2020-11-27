@@ -33,7 +33,7 @@ const MONTHS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
  *
  * @param year
  */
-export function monthsInYear(year: number): number[] {
+export function monthsInYear(year: number): Date[] {
   const date = new Date(year, 0, 1);
 
   return MONTHS.map(i => dates.month(date, i));
@@ -64,7 +64,7 @@ export function visibleDays(date: Date, localizer: Localizer): Date[] {
   return days;
 }
 
-export function ceil(date: Date, unit: Unit): Date {
+export function ceil(date: Date, unit: Exclude<Unit, 'week'>): Date {
   const floor = dates.startOf(date, unit);
 
   return dates.eq(floor, date) ? floor : dates.add(floor, 1, unit);
@@ -141,7 +141,7 @@ export function duration(
   start: Date,
   end: Date,
   unit: Unit,
-  firstOfWeek,
+  firstOfWeek: StartOfWeek,
 ): number {
   if (unit === 'day') {
     unit = 'date';
@@ -152,13 +152,16 @@ export function duration(
   );
 }
 
-export function diff(dateA: Date, dateB: Date, unit?: Unit): number {
+export function diff(
+  dateA: Date,
+  dateB: Date,
+  unit?: Exclude<Unit, 'week'>,
+): number {
   if (!unit || unit === 'milliseconds') {
     return Math.abs(+dateA - +dateB);
   }
 
-  // the .round() handles an edge case
-  // with DST where the total won't be exact
+  // the .round() handles an edge case with DST where the total won't be exact
   // since one day in the range may be shorter/longer by an hour
   return Math.round(
     Math.abs(

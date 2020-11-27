@@ -7,13 +7,10 @@ import moment from 'moment';
 import '../../packages/core/src/sass/styles.scss';
 import '../../packages/dnd/styles.scss';
 
-import {
-  Calendar as BaseCalendar,
-  momentLocalizer,
-} from '../../packages/core/src';
-import { useDragAndDrop } from '../../packages/dnd/src';
+import { Calendar as BaseCalendar, momentLocalizer } from '../../packages/core';
+import { useDragAndDrop } from '../../packages/dnd';
 
-export { Views } from '../../packages/core/src';
+export { Views } from '../../packages/core';
 
 addDecorator(function WithHeight(fn) {
   return <div style={{ height: 600 }}>{fn()}</div>;
@@ -23,7 +20,9 @@ const localizer = momentLocalizer(moment);
 
 export { default as resourcesEvents } from './resourceEvents';
 
-export const date = (...args) => moment(...args).toDate();
+export const date = (...args) => {
+  moment(...args).toDate();
+};
 
 export const Calendar = (
   props: Record<string, unknown>,

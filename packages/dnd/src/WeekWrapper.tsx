@@ -1,5 +1,5 @@
 import * as React from 'react';
-import EventRow from '@react-next-calendar/core/src/components/EventRow';
+import { CalendarContext, EventRow } from '@react-next-calendar/core';
 import {
   useLatest,
   useSelection,
@@ -11,7 +11,6 @@ import {
   getSlotAtX,
   pointInBox,
 } from '@react-next-calendar/utils';
-import { CalendarContext } from '@react-next-calendar/core/src';
 
 import { dragAccessors } from './common';
 import { DraggableContext } from './useDragAndDrop';

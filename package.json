@@ -12,7 +12,8 @@
     "clean": "lerna run clean",
     "storybook": "start-storybook -p 9001",
     "build-storybook": "build-storybook",
-    "deploy-storybook": "storybook-to-ghpages"
+    "deploy-storybook": "storybook-to-ghpages",
+    "test": "jest -c test/jest.config.json"
   },
   "lint-staged": {
     "src/**/*.js": "eslint",
@@ -31,6 +32,7 @@
     "@storybook/addon-controls": "6.1.7",
     "@storybook/addon-docs": "6.1.7",
     "@storybook/react": "6.1.7",
+    "@types/jest": "26.0.15",
     "@types/lodash": "4.14.165",
     "@types/react": "16.9.56",
     "@typescript-eslint/eslint-plugin": "4.8.2",
@@ -64,9 +66,7 @@
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-typescript2": "0.29.0",
     "sass-loader": "10.1.0",
+    "ts-jest": "26.4.4",
     "typescript": "4.1.2"
-  },
-  "dependencies": {
-    "@babel/runtime": "7.12.5"
   }
 }

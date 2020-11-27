@@ -23,14 +23,15 @@ declare global {
   }
 
   interface ExtendedFC<P = Record<string, unknown>> extends React.FC<P> {
-    range: (
+    range(
       date: Date,
       options?: { localizer?: Localizer; length?: number },
-    ) => Date[] | { start: Date; end: Date };
+    ): Date[] | { start: Date; end: Date };
+
     navigate: (
       date: Date,
       action: Action,
-      options?: { length?: number },
+      options: { length?: number },
     ) => Date;
     title: (
       date: Date,
@@ -450,7 +451,7 @@ declare global {
     local: Localizer,
   ) => string;
 
-  type StartOfWeek = (culture?: string) => number;
+  type StartOfWeek = (culture?: string) => 0 | 1 | 2 | 3 | 4 | 5 | 6;
   type Format = (
     value: Date | { start: Date; end: Date },
     format: string,

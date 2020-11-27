@@ -7,7 +7,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "../../types/typings.d.ts"
+    "../../types/index.d.ts"
   ],
   "exclude": ["src/**/__tests__/*.ts", "node_modules", "dist"]
 }

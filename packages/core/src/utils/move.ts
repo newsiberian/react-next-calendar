@@ -1,4 +1,4 @@
-import invariant from 'invariant';
+import invariant from 'tiny-invariant';
 
 import { navigate } from './constants';
 import VIEWS from '../components/Views';

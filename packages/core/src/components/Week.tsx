@@ -28,7 +28,7 @@ Week.navigate = (date, action) => {
   }
 };
 
-Week.range = (date, { localizer }) => {
+Week.range = (date, { localizer }: { localizer: Localizer }) => {
   const firstOfWeek = localizer.startOfWeek();
   const start = dates.startOf(date, 'week', firstOfWeek);
   const end = dates.endOf(date, 'week', firstOfWeek);
