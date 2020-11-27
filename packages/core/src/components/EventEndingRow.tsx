@@ -1,7 +1,7 @@
 import * as React from 'react';
 import range from 'lodash/range';
+import { eventLevels } from '@react-next-calendar/utils';
 
-import { eventLevels } from '../utils/eventLevels';
 import { renderEvent, renderSpan, EventProps } from './EventRowMixin';
 
 interface EventEndingRowProps extends EventProps {

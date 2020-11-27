@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { isSelected } from '@react-next-calendar/utils';
 
-import { isSelected } from '../utils/selection';
 import EventCell from './EventCell';
 
 export interface EventProps {

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import clsx from 'clsx';
-
-import * as dates from '../utils/dates';
+import { dates } from '@react-next-calendar/utils';
 
 interface EventCellProps {
   event: RNC.Event;

@@ -1,10 +1,18 @@
 import * as React from 'react';
 import clsx from 'clsx';
+import {
+  useSelection,
+  getBoundsForNode,
+  isEvent,
+} from '@react-next-calendar/hooks';
+import {
+  dates,
+  dateCellSelection,
+  getSlotAtX,
+  pointInBox,
+} from '@react-next-calendar/utils';
 
-import useSelection, { getBoundsForNode, isEvent } from '../hooks/useSelection';
-import * as dates from '../utils/dates';
 import { notify } from '../utils/helpers';
-import { dateCellSelection, getSlotAtX, pointInBox } from '../utils/selection';
 
 interface BackgroundCellsProps {
   components: Components;

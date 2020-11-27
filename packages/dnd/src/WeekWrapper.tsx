@@ -1,16 +1,17 @@
 import * as React from 'react';
 import EventRow from '@react-next-calendar/core/src/components/EventRow';
-import * as dates from '@react-next-calendar/core/src/utils/dates';
 import {
+  useLatest,
+  useSelection,
+  getBoundsForNode,
+} from '@react-next-calendar/hooks';
+import {
+  eventSegments,
+  dates,
   getSlotAtX,
   pointInBox,
-} from '@react-next-calendar/core/src/utils/selection';
-import { eventSegments } from '@react-next-calendar/core/src/utils/eventLevels';
-import useSelection, {
-  getBoundsForNode,
-} from '@react-next-calendar/core/src/hooks/useSelection';
+} from '@react-next-calendar/utils';
 import { CalendarContext } from '@react-next-calendar/core/src';
-import useLatest from '@react-next-calendar/core/src/hooks/useLatest';
 
 import { dragAccessors } from './common';
 import { DraggableContext } from './useDragAndDrop';

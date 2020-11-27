@@ -1,7 +1,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
+import { useRerender } from '@react-next-calendar/hooks';
 
-import useRerender from '../hooks/useRerender';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import TimeSlotGroup from './TimeSlotGroup';
 

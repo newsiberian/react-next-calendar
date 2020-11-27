@@ -1,12 +1,11 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import * as animationFrame from 'dom-helpers/animationFrame';
 import memoize from 'memoize-one';
+import * as animationFrame from 'dom-helpers/animationFrame';
 import getWidth from 'dom-helpers/width';
+import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
-import * as dates from '../utils/dates';
 import { notify } from '../utils/helpers';
-import { inRange, sortEvents } from '../utils/eventLevels';
 import Resources from '../utils/Resources';
 import DayColumn from './DayColumn';
 import TimeGutter from './TimeGutter';

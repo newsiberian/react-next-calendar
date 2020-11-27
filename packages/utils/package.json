@@ -1,5 +1,5 @@
 {
-  "name": "@react-next-calendar/hooks",
+  "name": "@react-next-calendar/utils",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
@@ -17,5 +17,8 @@
     "clean": "rimraf dist",
     "build:tsc": "tsc",
     "build": "yarn build:tsc"
+  },
+  "dependencies": {
+    "date-arithmetic": "^4.0.1"
   }
 }

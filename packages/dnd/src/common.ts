@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { wrapAccessor } from '@react-next-calendar/core/src/utils/accessors';
+import { wrapAccessor } from '@react-next-calendar/utils';
 
 export const dragAccessors = {
   start: wrapAccessor((e: RNC.Event) => e.start),

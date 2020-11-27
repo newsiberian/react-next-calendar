@@ -1,4 +1,4 @@
-import * as dates from './dates';
+import { dates } from '@react-next-calendar/utils';
 
 const getDstOffset = (start: Date, end: Date) =>
   start.getTimezoneOffset() - end.getTimezoneOffset();

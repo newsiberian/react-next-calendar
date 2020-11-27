@@ -1,13 +1,14 @@
 import * as React from 'react';
 import TimeGridEvent from '@react-next-calendar/core/src/components/TimeGridEvent';
 import NoopWrapper from '@react-next-calendar/core/src/components/NoopWrapper';
-import * as dates from '@react-next-calendar/core/src/utils/dates';
 import { CalendarContext } from '@react-next-calendar/core/src';
-import useSelection, {
+import {
+  useLatest,
+  useSelection,
   getBoundsForNode,
   getEventNodeFromPoint,
-} from '@react-next-calendar/core/src/hooks/useSelection';
-import useLatest from '@react-next-calendar/core/src/hooks/useLatest';
+} from '@react-next-calendar/hooks';
+import { dates } from '@react-next-calendar/utils';
 
 import { dragAccessors } from './common';
 import { DraggableContext } from './useDragAndDrop';

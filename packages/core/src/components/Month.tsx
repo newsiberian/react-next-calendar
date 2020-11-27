@@ -4,10 +4,9 @@ import getPosition from 'dom-helpers/position';
 import * as animationFrame from 'dom-helpers/animationFrame';
 import chunk from 'lodash/chunk';
 import Overlay from 'react-overlays/Overlay';
+import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
-import * as dates from '../utils/dates';
 import { navigate, views } from '../utils/constants';
-import { inRange, sortEvents } from '../utils/eventLevels';
 import { notify } from '../utils/helpers';
 import Popup from './Popup';
 import DateContentRow from './DateContentRow';

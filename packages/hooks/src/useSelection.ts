@@ -64,83 +64,6 @@ export default function useSelection(
   const onEscListener = React.useRef<ReturnType<AddEventListener>>();
   const removeMoveListener = React.useRef<ReturnType<AddEventListener>>();
 
-  React.useEffect(() => {
-    if (selectable) {
-      // `isDetached` must be flushed to default to allow events be handled after
-      // several `selectable` switching
-      isDetached.current = false;
-      // Fixes an iOS 10 bug where scrolling could not be prevented on the window.
-      // https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
-      removeTouchMoveWindowListener.current = addEventListener(
-        'touchmove',
-        () => {},
-        window,
-      );
-      removeKeyDownListener.current = addEventListener('keydown', keyListener);
-      removeKeyUpListener.current = addEventListener('keyup', keyListener);
-      removeDropFromOutsideListener.current = addEventListener(
-        'drop',
-        dropFromOutsideListener,
-      );
-      removeDragOverFromOutsideListener.current = addEventListener(
-        'dragover',
-        dragOverFromOutsideListener,
-      );
-      addInitialEventListener();
-    }
-
-    return () => {
-      isDetached.current = true;
-      listeners.current = Object.create(null);
-      removeTouchMoveWindowListener.current &&
-        removeTouchMoveWindowListener.current();
-      removeInitialEventListener.current &&
-        removeInitialEventListener.current();
-      removeEndListener.current && removeEndListener.current();
-      onEscListener.current && onEscListener.current();
-      removeMoveListener.current && removeMoveListener.current();
-      removeKeyUpListener.current && removeKeyUpListener.current();
-      removeKeyDownListener.current && removeKeyDownListener.current();
-      removeDropFromOutsideListener.current &&
-        removeDropFromOutsideListener.current();
-      removeDragOverFromOutsideListener.current &&
-        removeDragOverFromOutsideListener.current();
-    };
-  }, [
-    selectable,
-    addInitialEventListener,
-    dragOverFromOutsideListener,
-    dropFromOutsideListener,
-  ]);
-
-  const on: On = (type, handler) => {
-    const handlers = listeners.current[type] || (listeners.current[type] = []);
-
-    handlers.push(handler);
-
-    return {
-      remove() {
-        const idx = handlers.indexOf(handler);
-        if (idx !== -1) {
-          handlers.splice(idx, 1);
-        }
-      },
-    };
-  };
-
-  function emit<T>(type: ActionType, ...args: T[]) {
-    let result: unknown | undefined;
-    const handlers = listeners.current[type] || [];
-
-    handlers.forEach((fn: (...args: T[]) => unknown) => {
-      if (typeof result === 'undefined') {
-        result = fn(...args);
-      }
-    });
-
-    return result;
-  }
-
   function isSelected(nodeRef: HTMLElement): boolean {
     if (!selectRect.current || !selecting.current) {
       return false;
@@ -410,39 +333,6 @@ export default function useSelection(
     [longPressThreshold],
   );
 
-  // Listen for mousedown and touchstart events. When one is received, disable
-  // the other and setup future event handling based on the type of event.
-  const addInitialEventListener = React.useCallback(() => {
-    const removeMouseDownListener = addEventListener(
-      'mousedown',
-      (e: MouseEvent) => {
-        removeInitialEventListener.current &&
-          removeInitialEventListener.current();
-        handleInitialEvent(e);
-        removeInitialEventListener.current = addEventListener(
-          'mousedown',
-          handleInitialEvent,
-        );
-      },
-    );
-    const removeTouchStartListener = addEventListener(
-      'touchstart',
-      (e: TouchEvent) => {
-        removeInitialEventListener.current &&
-          removeInitialEventListener.current();
-        removeInitialEventListener.current = addLongPressListener(
-          handleInitialEvent,
-          e,
-        );
-      },
-    );
-
-    removeInitialEventListener.current = () => {
-      removeMouseDownListener();
-      removeTouchStartListener();
-    };
-  }, [addLongPressListener, handleInitialEvent]);
-
   /**
    * Fires when the user drop something from outside the calendar
    */
@@ -477,6 +367,116 @@ export default function useSelection(
     },
     [],
   );
+
+  React.useEffect(() => {
+    if (selectable) {
+      // `isDetached` must be flushed to default to allow events be handled after
+      // several `selectable` switching
+      isDetached.current = false;
+      // Fixes an iOS 10 bug where scrolling could not be prevented on the window.
+      // https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
+      removeTouchMoveWindowListener.current = addEventListener(
+        'touchmove',
+        () => {},
+        window,
+      );
+      removeKeyDownListener.current = addEventListener('keydown', keyListener);
+      removeKeyUpListener.current = addEventListener('keyup', keyListener);
+      removeDropFromOutsideListener.current = addEventListener(
+        'drop',
+        dropFromOutsideListener,
+      );
+      removeDragOverFromOutsideListener.current = addEventListener(
+        'dragover',
+        dragOverFromOutsideListener,
+      );
+      addInitialEventListener();
+    }
+
+    return () => {
+      isDetached.current = true;
+      listeners.current = Object.create(null);
+      removeTouchMoveWindowListener.current &&
+        removeTouchMoveWindowListener.current();
+      removeInitialEventListener.current &&
+        removeInitialEventListener.current();
+      removeEndListener.current && removeEndListener.current();
+      onEscListener.current && onEscListener.current();
+      removeMoveListener.current && removeMoveListener.current();
+      removeKeyUpListener.current && removeKeyUpListener.current();
+      removeKeyDownListener.current && removeKeyDownListener.current();
+      removeDropFromOutsideListener.current &&
+        removeDropFromOutsideListener.current();
+      removeDragOverFromOutsideListener.current &&
+        removeDragOverFromOutsideListener.current();
+    };
+  }, [
+    selectable,
+    addInitialEventListener,
+    dragOverFromOutsideListener,
+    dropFromOutsideListener,
+  ]);
+
+  // Listen for mousedown and touchstart events. When one is received, disable
+  // the other and setup future event handling based on the type of event.
+  const addInitialEventListener = React.useCallback(() => {
+    const removeMouseDownListener = addEventListener(
+      'mousedown',
+      (e: MouseEvent) => {
+        removeInitialEventListener.current &&
+          removeInitialEventListener.current();
+        handleInitialEvent(e);
+        removeInitialEventListener.current = addEventListener(
+          'mousedown',
+          handleInitialEvent,
+        );
+      },
+    );
+    const removeTouchStartListener = addEventListener(
+      'touchstart',
+      (e: TouchEvent) => {
+        removeInitialEventListener.current &&
+          removeInitialEventListener.current();
+        removeInitialEventListener.current = addLongPressListener(
+          handleInitialEvent,
+          e,
+        );
+      },
+    );
+
+    removeInitialEventListener.current = () => {
+      removeMouseDownListener();
+      removeTouchStartListener();
+    };
+  }, [addLongPressListener, handleInitialEvent]);
+
+  const on: On = (type, handler) => {
+    const handlers = listeners.current[type] || (listeners.current[type] = []);
+
+    handlers.push(handler);
+
+    return {
+      remove() {
+        const idx = handlers.indexOf(handler);
+        if (idx !== -1) {
+          handlers.splice(idx, 1);
+        }
+      },
+    };
+  };
+
+  function emit<T>(type: ActionType, ...args: T[]) {
+    let result: unknown | undefined;
+    const handlers = listeners.current[type] || [];
+
+    handlers.forEach((fn: (...args: T[]) => unknown) => {
+      if (typeof result === 'undefined') {
+        result = fn(...args);
+      }
+    });
+
+    return result;
+  }
 
   function keyListener(e: KeyboardEvent) {
     ctrl.current = e.metaKey || e.ctrlKey;

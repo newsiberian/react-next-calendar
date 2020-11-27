@@ -1,6 +1,6 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import useLatest from '@react-next-calendar/core/src/hooks/useLatest';
+import { useLatest } from '@react-next-calendar/hooks';
 
 import EventWrapper from './EventWrapper';
 import EventContainerWrapper from './EventContainerWrapper';

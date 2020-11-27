@@ -1,12 +1,15 @@
 import * as React from 'react';
 import clsx from 'clsx';
+import {
+  useLatest,
+  usePrevious,
+  useSelection,
+  getBoundsForNode,
+  isEvent,
+} from '@react-next-calendar/hooks';
+import { dates, isSelected } from '@react-next-calendar/utils';
 
-import usePrevious from '../hooks/usePrevious';
-import useLatest from '../hooks/useLatest';
-import useSelection, { getBoundsForNode, isEvent } from '../hooks/useSelection';
-import * as dates from '../utils/dates';
 import * as TimeSlotUtils from '../utils/TimeSlots';
-import { isSelected } from '../utils/selection';
 import { notify } from '../utils/helpers';
 import * as DayEventLayout from '../utils/DayEventLayout';
 import TimeSlotGroup from './TimeSlotGroup';

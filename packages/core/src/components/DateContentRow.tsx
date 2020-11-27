@@ -2,9 +2,9 @@ import * as React from 'react';
 import clsx from 'clsx';
 import getHeight from 'dom-helpers/height';
 import qsa from 'dom-helpers/querySelectorAll';
+import { useEnhancedEffect } from '@react-next-calendar/hooks';
+import { dates } from '@react-next-calendar/utils';
 
-import useEnhancedEffect from '../hooks/useEnhancedEffect';
-import * as dates from '../utils/dates';
 import * as DateSlotMetrics from '../utils/DateSlotMetrics';
 import BackgroundCells from './BackgroundCells';
 import EventRow from './EventRow';

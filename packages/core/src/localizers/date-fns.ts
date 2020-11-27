@@ -1,4 +1,5 @@
-import * as dates from '../utils/dates';
+import { dates } from '@react-next-calendar/utils';
+
 import { DateLocalizer } from '../localizer';
 
 const dateRangeFormat: RangeFormat = ({ start, end }, culture, local) =>

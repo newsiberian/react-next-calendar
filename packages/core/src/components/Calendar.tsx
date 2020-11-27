@@ -3,9 +3,9 @@ import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
 import omit from 'lodash/omit';
 import defaults from 'lodash/defaults';
+import { wrapAccessor } from '@react-next-calendar/utils';
 
 import CalendarContext from '../CalendarContext';
-import { wrapAccessor } from '../utils/accessors';
 import { notify } from '../utils/helpers';
 import { navigate, views } from '../utils/constants';
 import message from '../utils/messages';

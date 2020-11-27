@@ -2,9 +2,8 @@ import * as React from 'react';
 import getOffset from 'dom-helpers/offset';
 import getScrollTop from 'dom-helpers/scrollTop';
 import getScrollLeft from 'dom-helpers/scrollLeft';
+import { dates, isSelected } from '@react-next-calendar/utils';
 
-import * as dates from '../utils/dates';
-import { isSelected } from '../utils/selection';
 import EventCell from './EventCell';
 
 export interface PopupProps {

@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { dates } from '@react-next-calendar/utils';
 
-import * as dates from '../utils/dates';
 import { navigate } from '../utils/constants';
 import TimeGrid, { TimeGridProps } from './TimeGrid';
 

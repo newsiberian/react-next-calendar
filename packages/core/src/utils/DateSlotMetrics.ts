@@ -1,7 +1,10 @@
 import memoizeOne from 'memoize-one';
-
-import * as dates from './dates';
-import { eventSegments, endOfRange, eventLevels } from './eventLevels';
+import {
+  dates,
+  eventSegments,
+  endOfRange,
+  eventLevels,
+} from '@react-next-calendar/utils';
 
 const isSegmentInSlot = (seg: Segment, slot: number) =>
   seg.left <= slot && seg.right >= slot;

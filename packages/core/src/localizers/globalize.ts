@@ -1,4 +1,5 @@
-import * as dates from '../utils/dates';
+import { dates } from '@react-next-calendar/utils';
+
 import oldGlobalize from './oldGlobalize';
 import { DateLocalizer } from '../localizer';
 

@@ -27,7 +27,6 @@ function _format(
 }
 
 export class DateLocalizer {
-  public propType: () => void;
   public startOfWeek: StartOfWeek;
   public formats: Formats;
   public format: Format;

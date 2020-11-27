@@ -4,11 +4,9 @@ import addClass from 'dom-helpers/addClass';
 import removeClass from 'dom-helpers/removeClass';
 import getWidth from 'dom-helpers/width';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
+import { dates, inRange, isSelected } from '@react-next-calendar/utils';
 
-import * as dates from '../utils/dates';
 import { navigate } from '../utils/constants';
-import { inRange } from '../utils/eventLevels';
-import { isSelected } from '../utils/selection';
 
 export interface AgendaProps {
   events: RNC.Event[];

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
+import { dates } from '@react-next-calendar/utils';
 
-import * as dates from '../utils/dates';
 import { notify } from '../utils/helpers';
 import DateContentRow from './DateContentRow';
 import Header from './Header';
