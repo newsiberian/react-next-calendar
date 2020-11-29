@@ -15,13 +15,13 @@ Include `@react-next-calendar/core/styles.css` for styles, and make sure your
 calendar's container element has a height, or the calendar won't be visible. To
 provide your own custom styling, see the [Custom Styling](#custom-styling) topic.
 
-## Run examples locally
+## Run storybook locally
 
 ```sh
-$ git clone git@github.com:intljusticemission/react-big-calendar.git
-$ cd react-big-calendar
+$ git clone git@github.com:newsiberian/react-next-calendar.git
+$ cd react-next-calendar
 $ yarn
-$ yarn examples
+$ yarn storybook
 ```
 
 - Open [localhost:3000/examples/index.html](http://localhost:3000/examples/index.html).
@@ -109,15 +109,11 @@ const MyCalendar = props => (
 
 ## Custom Styling
 
-Out of the box, you can include the compiled CSS files and be up and running. But, sometimes, you may want to style
-Big Calendar to match your application styling. For this reason, SASS files are included with Big Calendar.
+Out of the box, you can include the compiled CSS files and be up and running.
+But, sometimes, you may want to style React Next Calendar to match your application
+styling. In this case you can take styles from [here](https://github.com/newsiberian/react-next-calendar/tree/main/packages/core/src/sass)
 
-
-```
-  @import 'react-big-calendar/lib/sass/styles';
-  @import 'react-big-calendar/lib/addons/dragAndDrop/styles'; // if using DnD
-```
-
-SASS implementation provides a `variables` file containing color and sizing variables that you can
-update to fit your application. _Note:_ Changing and/or overriding styles can cause rendering issues with your
-Big Calendar. Carefully test each change accordingly.
+SASS implementation provides a `variables` file containing color and sizing
+variables that you can update to fit your application. _Note:_ Changing and/or
+overriding styles can cause rendering issues with your Raect Next Calendar.
+Carefully test each change accordingly.
