@@ -18,7 +18,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "sass": "node-sass styles.scss dist/styles.css",
-    "build:tsc": "tsc",
+    "build:tsc": "tsc -p tsconfig.build.json",
     "build": "yarn build:tsc && yarn sass"
   },
   "dependencies": {

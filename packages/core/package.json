@@ -41,7 +41,7 @@
     "autoprefixer": "postcss --use autoprefixer -b 'ie >= 11, safari >= 10, last 2 versions' < ./dist/styles.css",
     "build:css": "npm run sass && npm run autoprefixer",
     "build:umd": "BABEL_ENV=esm yarn rollup -c",
-    "build:tsc": "tsc",
+    "build:tsc": "tsc -p tsconfig.build.json",
     "build": "yarn clean && yarn build:tsc && yarn build:umd && yarn build:css",
     "test": "npm run lint && jest",
     "prepublishOnly": "npm run build",
@@ -67,7 +67,6 @@
     "lodash": "^4.17.11",
     "lodash-es": "^4.17.11",
     "memoize-one": "^5.1.1",
-    "prop-types": "^15.7.2",
     "react-overlays": "4.1.1",
     "tiny-invariant": "^1.1.0",
     "uncontrollable": "^7.0.0"

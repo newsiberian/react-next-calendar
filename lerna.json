@@ -6,6 +6,11 @@
     "publish": {
       "ignoreChanges": ["ignored-file", "*.md"],
       "message": "chore(release): publish"
+    },
+    "version": {
+      "allowBranch": "main",
+      "ignoreChanges": ["test/**", "**/__tests__/**", "stories/**", "**/*.md"],
+      "message": "chore(release): publish %s"
     }
   },
   "version": "1.0.0"
