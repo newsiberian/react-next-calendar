@@ -1,6 +1,6 @@
 import sortBy from 'lodash/sortBy';
 
-export class Event {
+class Event {
   public start: number;
   public end: number;
   public startMs: number;

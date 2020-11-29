@@ -5,7 +5,10 @@ import { renderEvent, renderSpan, EventProps } from './EventRowMixin';
 
 export interface EventRowProps extends EventProps {
   segments?: Segment[];
-  className: string;
+  /**
+   * Currently used by `dnd` addon
+   */
+  className?: string;
 }
 
 function EventRow({

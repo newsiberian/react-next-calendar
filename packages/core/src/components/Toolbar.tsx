@@ -5,6 +5,13 @@ import { navigate } from '../utils/constants';
 import { arrayMap } from '../utils/helpers';
 
 export interface ToolbarProps {
+  /**
+   * The current date value of the calendar.
+   */
+  date: Date;
+  /**
+   * Localized string that describes current period
+   */
   label: string;
   view: View;
   views: View[];

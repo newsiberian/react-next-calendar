@@ -19,7 +19,12 @@ export interface WeekWrapperProps {
   children: React.ReactElement;
   isAllDay: boolean;
   slotMetrics: DateSlotMetrics;
+
   accessors: Accessors;
+  components: Components;
+  getters: Getters;
+  localizer: Localizer;
+
   resourceId: string | number;
   rootRef: React.RefObject<HTMLDivElement>;
 }

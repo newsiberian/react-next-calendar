@@ -1,4 +1,4 @@
-import overlap, { Event } from './layout-algorithms/overlap';
+import overlap from './layout-algorithms/overlap';
 import noOverlap from './layout-algorithms/no-overlap';
 
 const defaultAlgorithms = {
@@ -16,7 +16,7 @@ function isFunction(func: unknown | CustomDayLayoutAlgorithm): boolean {
 }
 
 export function getStyledEvents(
-  this: Event,
+  this: unknown,
   options: GetStyledEventsOptions,
 ): StyledEvent[] {
   // one of defaultAlgorithms keys or custom function
