@@ -1,1 +1,1 @@
-### Hooks for React Next Calendar
+### Common utilities for React Next Calendar
