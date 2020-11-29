@@ -35,8 +35,6 @@ interface DateContentRowProps {
   ) => void;
   onSelectSlot: (slots: Date[], slot: Slot) => void;
   onSelect: (event: RNC.Event, e: React.MouseEvent) => void;
-  onSelectEnd: () => void;
-  onSelectStart: () => void;
   onDoubleClick: (event: RNC.Event, e: React.MouseEvent) => void;
   onKeyPress: (event: RNC.Event, e: React.KeyboardEvent) => void;
 
@@ -77,10 +75,6 @@ function DateContentRow({
   onShowMore,
   onSelectSlot,
   onSelect,
-  // TODO: not propagated
-  onSelectEnd,
-  // TODO: not propagated
-  onSelectStart,
   onDoubleClick,
   onKeyPress,
 
@@ -216,8 +210,6 @@ function DateContentRow({
         selectable={selectable}
         containerRef={containerRef || rootRef}
         getters={getters}
-        onSelectStart={onSelectStart}
-        onSelectEnd={onSelectEnd}
         onSelectSlot={handleSelectSlot}
         components={components}
         longPressThreshold={longPressThreshold}

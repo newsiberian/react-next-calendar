@@ -12,8 +12,6 @@ import {
   pointInBox,
 } from '@react-next-calendar/utils';
 
-import { notify } from '../utils/helpers';
-
 interface BackgroundCellsProps {
   components: Components;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -21,8 +19,6 @@ interface BackgroundCellsProps {
   getNow: () => Date;
   getters: Getters;
   longPressThreshold: number;
-  onSelectStart: () => void;
-  onSelectEnd: () => void;
   onSelectSlot: (slot: Slot) => void;
   selectable: Selectable;
   range: Date[];
@@ -39,8 +35,6 @@ function BackgroundCells({
   getNow,
   getters,
   longPressThreshold,
-  onSelectStart,
-  onSelectEnd,
   onSelectSlot,
   selectable,
   range,
@@ -104,7 +98,6 @@ function BackgroundCells({
     let end = -1;
 
     if (!selecting.current) {
-      notify(onSelectStart, box);
       initial.current = { x: box.x, y: box.y };
       selecting.current = true;
     }
@@ -131,8 +124,6 @@ function BackgroundCells({
     selecting.current = false;
     startEnd.current = { startIdx: -1, endIdx: -1 };
     setStartEnd({ startVisual: -1, endVisual: -1 });
-    // TODO: this is not passed here, so it always be undefined
-    notify(onSelectEnd, startIdx, endIdx, selecting.current);
   };
 
   const selectorClicksHandler = (
