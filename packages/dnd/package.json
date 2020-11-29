@@ -1,0 +1,29 @@
+{
+  "name": "@react-next-calendar/dnd",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "style": "dist/styles.css",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf dist",
+    "sass": "node-sass styles.scss dist/styles.css",
+    "build:tsc": "tsc",
+    "build": "yarn build:tsc && yarn sass"
+  },
+  "dependencies": {
+    "@react-next-calendar/core": "^1.0.0",
+    "@react-next-calendar/hooks": "^1.0.0",
+    "@react-next-calendar/utils": "^1.0.0"
+  }
+}
