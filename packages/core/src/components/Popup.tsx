@@ -25,8 +25,7 @@ export interface PopupProps {
     height: number;
     width: number;
   };
-  // TODO: remove?
-  show;
+  onDragEnd: (e: React.MouseEvent) => void;
   popupOffset: { x: number; y: number } | number;
 
   slotStart: Date;
@@ -56,7 +55,7 @@ const Popup = React.forwardRef(function Popup(
     onSelect,
     onDoubleClick,
     onKeyPress,
-    show,
+    onDragEnd,
     slotStart,
     slotEnd,
     style,
@@ -120,8 +119,7 @@ const Popup = React.forwardRef(function Popup(
           slotStart={slotStart}
           slotEnd={slotEnd}
           selected={isSelected(event, selected)}
-          // TODO: this one doesn't used anywhere
-          onDragEnd={show}
+          onDragEnd={onDragEnd}
         />
       ))}
     </div>

@@ -19,7 +19,9 @@ interface DateContentRowProps {
   resourceId?: string;
   renderForMeasure?: boolean;
   measureRowLimit?: (getRowLimit: () => number) => void;
-  renderHeader?: <P>(props: P) => React.ReactElement<P>;
+  renderHeader?: <P extends { date: Date; className: string }>(
+    props: P,
+  ) => React.ReactElement<P>;
 
   containerRef?: React.RefObject<HTMLDivElement>;
   selected?: RNC.Event;
@@ -141,7 +143,9 @@ function DateContentRow({
   }
 
   function renderHeadingCell(date: Date, index: number): React.ReactElement {
-    return (renderHeader as <P>(props: P) => React.ReactElement<P>)({
+    return (renderHeader as <P extends { date: Date; className: string }>(
+      props: P,
+    ) => React.ReactElement<P>)({
       date,
       key: `header_${index}`,
       className: clsx(

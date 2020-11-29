@@ -187,9 +187,9 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   }
 
   /**
-   * @deprecated
+   * This callback fires after event been dragged from popup to month view
    */
-  function overlayDisplay() {
+  function handleEventDragEnd() {
     setOverlay({});
   }
 
@@ -213,6 +213,40 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   function clearSelection() {
     clearTimeout(selectTimer.current);
     pendingSelection.current = [];
+  }
+
+  function readerDateHeading({
+    date: headerDate,
+    className,
+    ...props
+  }: {
+    date: Date;
+    className: string;
+  }): React.ReactElement {
+    const isOffRange = dates.month(headerDate) !== dates.month(date);
+    const isCurrent = dates.eq(headerDate, date, 'day');
+    const drillDownView = getDrilldownView(headerDate);
+    const label = localizer.format(headerDate, 'dateFormat');
+    const DateHeaderComponent = components.dateHeader || DateHeader;
+
+    return (
+      <div
+        {...props}
+        className={clsx(
+          className,
+          isOffRange && 'rbc-off-range',
+          isCurrent && 'rbc-current',
+        )}
+      >
+        <DateHeaderComponent
+          label={label}
+          date={headerDate}
+          drillDownView={drillDownView}
+          isOffRange={isOffRange}
+          onDrillDown={e => handleHeadingClick(headerDate, drillDownView, e)}
+        />
+      </div>
+    );
   }
 
   function renderWeek(week: Date[], weekIdx: number): React.ReactNode {
@@ -258,40 +292,6 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
     );
   }
 
-  function readerDateHeading({
-    date: headerDate,
-    className,
-    ...props
-  }: {
-    date: Date;
-    className: string;
-  }): React.ReactNode {
-    const isOffRange = dates.month(headerDate) !== dates.month(date);
-    const isCurrent = dates.eq(headerDate, date, 'day');
-    const drillDownView = getDrilldownView(headerDate);
-    const label = localizer.format(headerDate, 'dateFormat');
-    const DateHeaderComponent = components.dateHeader || DateHeader;
-
-    return (
-      <div
-        {...props}
-        className={clsx(
-          className,
-          isOffRange && 'rbc-off-range',
-          isCurrent && 'rbc-current',
-        )}
-      >
-        <DateHeaderComponent
-          label={label}
-          date={headerDate}
-          drillDownView={drillDownView}
-          isOffRange={isOffRange}
-          onDrillDown={e => handleHeadingClick(headerDate, drillDownView, e)}
-        />
-      </div>
-    );
-  }
-
   function renderHeaders(row: Date[]): React.ReactNode {
     const first = row[0];
     const last = row[row.length - 1];
@@ -327,7 +327,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
             components={components}
             localizer={localizer}
             position={overlay.position}
-            show={overlayDisplay}
+            onDragEnd={handleEventDragEnd}
             events={overlay.events}
             slotStart={overlay.date}
             slotEnd={overlay.end}
