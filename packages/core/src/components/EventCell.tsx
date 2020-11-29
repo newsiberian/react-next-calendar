@@ -27,8 +27,6 @@ interface EventCellProps {
 
 function EventCell(props: EventCellProps): React.ReactElement {
   const {
-    style,
-    className,
     event,
     selected,
     isAllDay,
@@ -87,8 +85,8 @@ function EventCell(props: EventCellProps): React.ReactElement {
       <div
         {...rest}
         tabIndex={0}
-        style={{ ...eventProps.style, ...style }}
-        className={clsx('rbc-event', className, eventProps.className, {
+        style={eventProps.style}
+        className={clsx('rbc-event', eventProps.className, {
           'rbc-selected': selected,
           'rbc-event-allday': showAsAllDay,
           'rbc-event-continues-prior': continuesPrior,
