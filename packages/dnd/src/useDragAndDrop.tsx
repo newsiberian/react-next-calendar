@@ -52,7 +52,7 @@ export interface DragAndDropCalendarProps {
 
   components: Components;
 
-  elementProps?: React.HTMLAttributes<unknown>[] & React.MouseEventHandler[];
+  elementProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 export interface DraggableContext {
@@ -86,18 +86,16 @@ export interface DraggableContext {
 }
 
 /**
- * Creates a higher-order component (HOC) supporting drag & drop and optionally
- * resizing of events:
+ * Creates a hook supporting drag & drop and optionally resizing of events:
  *
  * ```js
- *    import Calendar from 'react-big-calendar'
- *    import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
- *    export default withDragAndDrop(Calendar)
+ *    import Calendar from '@react-next-calendar/core'
+ *    import { useDragAndDrop } from '@react-next-calendar/dnd'
  * ```
  *
  * Set `resizable` to true in your calendar if you want events to be resizable.
  *
- * The HOC adds `onEventDrop`, `onEventResize`, and `onDragStart` callback
+ * The hook adds `onEventDrop`, `onEventResize`, and `onDragStart` callback
  * properties if the events are moved or resized. These callbacks are called
  * with these signatures:
  *
@@ -112,8 +110,7 @@ export interface DraggableContext {
  *
  * In some situations, non-allDay events are displayed in "row" format where
  * they are rendered horizontally. This is the case for ALL events in a month
- * view.
- * It is also occurs with multi-day events in a day or week view (unless
+ * view. It is also occurs with multi-day events in a day or week view (unless
  * `showMultiDayTimes` is set).
  *
  * When dropping or resizing non-allDay events into a the header area or when
@@ -124,15 +121,15 @@ export interface DraggableContext {
  * supplied in the callback to determine how the user dropped or resized the
  * event.
  *
- * Additionally, this HOC adds the callback props `onDropFromOutside` and
- * `onDragOver`.
- * By default, the calendar will not respond to outside draggable items being
- * dropped onto it. However, if `onDropFromOutside` callback is passed, then
- * when draggable DOM elements are dropped on the calendar, the callback will
- * fire, receiving an object with start and end times, and an allDay boolean.
+ * Additionally, this hook adds the callback props `onDropFromOutside` and
+ * `onDragOver`. By default, the calendar will not respond to outside draggable
+ * items being dropped onto it. However, if `onDropFromOutside` callback is
+ * passed, then when draggable DOM elements are dropped on the calendar, the
+ * callback will fire, receiving an object with start and end times, and an
+ * allDay boolean.
  *
  * If `onDropFromOutside` is passed, but `onDragOver` is not, any draggable
- * event will be droppable  onto the calendar by default. On the other hand, if
+ * event will be droppable onto the calendar by default. On the other hand, if
  * an `onDragOver` callback *is* passed, then it can discriminate as to whether
  * a draggable item is droppable on the calendar. To designate a draggable item
  * as droppable, call `event.preventDefault` inside `onDragOver`. If
@@ -143,14 +140,12 @@ export interface DraggableContext {
  *    function onDropFromOutside({ start, end, allDay }) {...}
  *    function onDragOver(DragEvent: event) {...}
  * ```
- * @param {*} Calendar
  */
 export default function useDragAndDrop({
   components,
 
   selectable,
   elementProps,
-  className,
 
   onDragStart,
   onDragOver,
@@ -254,6 +249,15 @@ export default function useDragAndDrop({
     ],
   );
 
+  const extendedElementProps = {
+    ...elementProps,
+    className: clsx(
+      elementProps?.className,
+      'rbc-addons-dnd',
+      interacting && 'rbc-addons-dnd-is-dragging',
+    ),
+  };
+
   return [
     context,
     mergeComponents(components, {
@@ -264,14 +268,9 @@ export default function useDragAndDrop({
     selectable ? 'ignoreEvents' : false,
     onDropFromOutside
       ? {
-          ...elementProps,
+          ...extendedElementProps,
           onDragOver: onDragOver || defaultOnDragOver,
         }
-      : elementProps,
-    clsx(
-      className,
-      'rbc-addons-dnd',
-      interacting && 'rbc-addons-dnd-is-dragging',
-    ),
+      : extendedElementProps,
   ] as const;
 }

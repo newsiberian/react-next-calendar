@@ -22,7 +22,7 @@ export interface CalendarProps {
    * Props passed to main calendar `<div>`.
    *
    */
-  elementProps?: React.HTMLAttributes<unknown>[] & React.MouseEventHandler[];
+  elementProps?: React.HTMLAttributes<HTMLDivElement>;
 
   /**
    * The current date value of the calendar. Determines the visible view range.
@@ -691,8 +691,7 @@ function Calendar({
   rtl = false,
   dayLayoutAlgorithm = 'overlap',
 
-  elementProps = {} as React.HTMLAttributes<unknown>[] &
-    React.MouseEventHandler[],
+  elementProps = {} as React.HTMLAttributes<HTMLDivElement>,
 
   getDrilldownView: getDrilldownViewProp,
   getNow = () => new Date(),
@@ -913,10 +912,6 @@ function Calendar({
     handleNavigate(navigate.DATE, date);
   }
 
-  // TODO: take styles from `getters`
-  // TODO: this className seems to be came from dnd addon
-  const { style, className, ...rest } = props;
-
   const current = currentDate || getNow();
 
   // TODO: memoize
@@ -929,8 +924,11 @@ function Calendar({
     <CalendarContext.Provider value={context}>
       <div
         {...elementProps}
-        className={clsx(className, 'rbc-calendar', rtl && 'rbc-rtl')}
-        style={style}
+        className={clsx(
+          elementProps?.className,
+          'rbc-calendar',
+          rtl && 'rbc-rtl',
+        )}
       >
         {toolbar && (
           <CalToolbar
@@ -944,7 +942,7 @@ function Calendar({
           />
         )}
         <View
-          {...rest}
+          {...props}
           events={events}
           date={current}
           getNow={getNow}

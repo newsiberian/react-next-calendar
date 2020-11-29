@@ -58,7 +58,6 @@ export function DragAndDropCalendar<P>(props: P): React.ReactElement {
     components,
     selectable,
     elementProps,
-    className,
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
   ] = useDragAndDrop(props);
@@ -70,7 +69,6 @@ export function DragAndDropCalendar<P>(props: P): React.ReactElement {
       components={components}
       selectable={selectable}
       elementProps={elementProps}
-      className={className}
     />
   );
 }

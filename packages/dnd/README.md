@@ -4,6 +4,7 @@
 import { Calendar } from '@react-next-calendar/core'
 import useDragAndDrop from '@react-next-calendar/dnd'
 
+import '@react-next-calendar/core/styles.css'
 import '@react-next-calendar/dnd/styles.css'
 
 function MyCalendar(props) {
@@ -12,7 +13,6 @@ function MyCalendar(props) {
     components,
     selectable,
     elementProps,
-    className,
   ] = useDragAndDrop(props);
 
   /* ... */
@@ -24,7 +24,6 @@ function MyCalendar(props) {
       components={components}
       selectable={selectable}
       elementProps={elementProps}
-      className={className}
     />
   )
 }
