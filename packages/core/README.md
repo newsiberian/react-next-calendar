@@ -24,12 +24,14 @@ $ yarn
 $ yarn storybook
 ```
 
-- Open [localhost:3000/examples/index.html](http://localhost:3000/examples/index.html).
+- Open [localhost:9001](http://localhost:9001/).
 
 ### Localization and Date Formatting
 
-`react-big-calendar` includes two options for handling the date formatting and culture localization, depending
-on your preference of DateTime libraries. You can use either the [Moment.js](http://momentjs.com/) or [Globalize.js](https://github.com/jquery/globalize) localizers.
+**React Next Calendar** includes three options for handling the date formatting and
+culture localization, depending on your preference of DateTime libraries. You can
+use either the [Moment.js](http://momentjs.com/) or [Globalize.js](https://github.com/jquery/globalize)
+or even better [date-fns](https://date-fns.org/) localizers.
 
 Regardless of your choice, you **must** choose a localizer to use this library:
 
