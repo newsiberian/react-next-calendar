@@ -130,28 +130,6 @@ export function isJustDate(date: Date): boolean {
   );
 }
 
-/**
- * @deprecated
- * @param start
- * @param end
- * @param unit
- * @param firstOfWeek
- */
-export function duration(
-  start: Date,
-  end: Date,
-  unit: Unit,
-  firstOfWeek: StartOfWeek,
-): number {
-  if (unit === 'day') {
-    unit = 'date';
-  }
-  return Math.abs(
-    dates[unit](start, undefined, firstOfWeek) -
-      dates[unit](end, undefined, firstOfWeek),
-  );
-}
-
 export function diff(
   dateA: Date,
   dateB: Date,

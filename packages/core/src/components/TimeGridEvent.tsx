@@ -20,7 +20,7 @@ export interface TimeGridEventProps {
 
   rtl: boolean;
 
-  label?: string;
+  label?: string | null;
   continuesEarlier: boolean;
   continuesLater: boolean;
   selected: boolean;
@@ -75,7 +75,7 @@ function TimeGridEvent(props: TimeGridEventProps): React.ReactElement {
         style={{
           ...eventProps.style,
           top: stringifyPercent(top),
-          [rtl ? 'right' : 'left']: stringifyPercent(xOffset),
+          [rtl ? 'right' : 'left']: stringifyPercent(xOffset as number),
           width: stringifyPercent(width),
           height: stringifyPercent(height),
         }}

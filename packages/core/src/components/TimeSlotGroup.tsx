@@ -18,7 +18,9 @@ export default function TimeSlotGroup({
   resourceId,
   renderSlot,
   getters,
-  components: { timeSlotWrapper: Wrapper = BackgroundWrapper } = {},
+  components: {
+    timeSlotWrapper: Wrapper = BackgroundWrapper as Component,
+  } = {},
 }: TimeSlotGroupProps): React.ReactElement {
   const groupProps = getters ? getters.slotGroupProp() : {};
   return (

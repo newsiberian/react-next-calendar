@@ -2,41 +2,65 @@ import * as React from 'react';
 import { addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
+import format from 'date-fns/format';
+import startOfWeek from 'date-fns/startOfWeek';
+import getDay from 'date-fns/getDay';
+import enLocale from 'date-fns/locale/en-US';
+import ruLocale from 'date-fns/locale/ru';
+
+const dateFnsLocales = {
+  'en-US': enLocale,
+  ru: ruLocale,
+};
 
 // For Testing SASS styling
 import '../../packages/core/src/sass/styles.scss';
 import '../../packages/dnd/styles.scss';
 
-import { Calendar as BaseCalendar, momentLocalizer } from '../../packages/core';
-import { useDragAndDrop } from '../../packages/dnd';
+import {
+  Calendar as BaseCalendar,
+  dateFnsLocalizer,
+  momentLocalizer,
+} from '@react-next-calendar/core';
+import { useDragAndDrop } from '@react-next-calendar/dnd';
 
-export { Views } from '../../packages/core';
+export { Views } from '@react-next-calendar/core';
 
 addDecorator(function WithHeight(fn) {
   return <div style={{ height: 600 }}>{fn()}</div>;
 });
 
-const localizer = momentLocalizer(moment);
+const localizerMoment = momentLocalizer(moment);
+const localizerDateFns = dateFnsLocalizer({
+  format,
+  startOfWeek,
+  getDay,
+  locales: dateFnsLocales,
+});
 
 export { default as resourcesEvents } from './resourceEvents';
 
-export const date = (...args) => {
-  moment(...args).toDate();
-};
-
 export const Calendar = (
   props: Record<string, unknown>,
-): React.ReactElement => <BaseCalendar localizer={localizer} {...props} />;
+): React.ReactElement => (
+  <BaseCalendar localizer={localizerMoment} {...props} />
+);
 
-export const DragAndDropCalendar = (
+export const CalendarDateFns = (
   props: Record<string, unknown>,
-): React.ReactElement => {
+): React.ReactElement => (
+  <BaseCalendar localizer={localizerDateFns} {...props} />
+);
+
+export function DragAndDropCalendar<P>(props: P): React.ReactElement {
   const [
     context,
     components,
     selectable,
     elementProps,
     className,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
   ] = useDragAndDrop(props);
 
   return (
@@ -49,7 +73,7 @@ export const DragAndDropCalendar = (
       className={className}
     />
   );
-};
+}
 
 export const DraggableCalendar = (
   props: Record<string, unknown>,
@@ -58,7 +82,7 @@ export const DraggableCalendar = (
     <DragAndDropCalendar
       popup
       selectable
-      localizer={localizer}
+      localizer={localizerDateFns}
       onEventDrop={action('event dropped')}
       onSelectEvent={action('event selected')}
       onSelectSlot={action('slot selected')}

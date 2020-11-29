@@ -14,28 +14,6 @@ describe('getStyledEvents', () => {
   const dayLayoutAlgorithm = 'overlap';
 
   describe('matrix', () => {
-    function compare(
-      title: string,
-      events: { start: Date; end: Date }[],
-      expectedResults: { width: number; xOffset: number }[],
-    ) {
-      it(title, () => {
-        const styledEvents = getStyledEvents({
-          events,
-          accessors,
-          slotMetrics,
-          minimumStartDifference: 10,
-          dayLayoutAlgorithm,
-        } as GetStyledEventsOptions);
-
-        const results = styledEvents.map(result => ({
-          width: Math.floor(result.style.width as number),
-          xOffset: Math.floor(result.style.xOffset as number),
-        }));
-        expect(results).toEqual(expectedResults);
-      });
-    }
-
     [
       [
         'single event',
@@ -114,6 +92,24 @@ describe('getStyledEvents', () => {
           { width: 33, xOffset: 66 },
         ],
       ],
-    ].forEach(args => compare(...args));
+    ].forEach(([title, events, expectedResults]) => {
+      it(title as string, () => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const styledEvents = getStyledEvents({
+          events,
+          accessors,
+          slotMetrics,
+          minimumStartDifference: 10,
+          dayLayoutAlgorithm,
+        });
+
+        const results = styledEvents.map(result => ({
+          width: Math.floor(result.style.width as number),
+          xOffset: Math.floor(result.style.xOffset as number),
+        }));
+        expect(results).toEqual(expectedResults);
+      });
+    });
   });
 });

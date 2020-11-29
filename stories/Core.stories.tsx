@@ -8,7 +8,7 @@ import '../packages/dnd/styles.scss';
 import demoEvents from './helpers/events';
 import createEvents from './helpers/createEvents';
 import customComponents from './helpers/customComponents';
-import { events, Views, Calendar } from './helpers';
+import { events, Views, Calendar, CalendarDateFns } from './helpers';
 
 const Template = (props: Record<string, unknown>) => <Calendar {...props} />;
 
@@ -18,6 +18,7 @@ Demo.args = {
   popup: true,
   popupOffset: { x: -10, y: -20 },
   events: demoEvents,
+  culture: 'en',
   onSelectEvent: action('event selected'),
 };
 Demo.argTypes = {
@@ -43,6 +44,12 @@ Demo.argTypes = {
       type: 'select',
       options: { Overlap: 'overlap', 'Without overlap': 'no-overlap' },
     },
+  },
+  culture: {
+    description: `Specify a specific culture code for the Calendar.
+
+    Note: it's generally better to handle this globally via your i18n library.
+    `,
   },
 };
 
@@ -258,6 +265,16 @@ export const ViewsAsObject = (): React.ReactElement => (
   />
 );
 ViewsAsObject.storyName = 'Views prop as object';
+
+export const DateFnsLocalizer = (): React.ReactElement => (
+  <CalendarDateFns events={events} culture="ru" />
+);
+DateFnsLocalizer.storyName = 'Date-fns localizer';
+
+export const MomentLocalizer = (): React.ReactElement => (
+  <Calendar events={events} culture="ru" />
+);
+MomentLocalizer.storyName = 'Moment localizer';
 
 export default {
   title: 'Core',

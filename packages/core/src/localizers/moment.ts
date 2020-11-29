@@ -41,18 +41,19 @@ export const formats = {
   agendaTimeRangeFormat: timeRangeFormat,
 };
 
-export default function (moment) {
-  const locale = (m, c) => (c ? m.locale(c) : m);
+export default function (moment: any): DateLocalizer {
+  const locale = (m: any, culture?: string) =>
+    culture ? m.locale(culture) : m;
 
   return new DateLocalizer({
     formats,
     firstOfWeek(culture) {
-      let data = culture ? moment.localeData(culture) : moment.localeData();
+      const data = culture ? moment.localeData(culture) : moment.localeData();
       return data ? data.firstDayOfWeek() : 0;
     },
 
     format(value, format, culture) {
-      return locale(moment(value), culture).format(format);
+      return locale(moment(value as Date), culture).format(format as string);
     },
   });
 }

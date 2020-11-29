@@ -5,7 +5,7 @@ const customComponents = {
   dateCellWrapper: dateCellWrapperProps => {
     // Show 'click me' text in arbitrary places by using the range prop
     const hasAlert = dateCellWrapperProps.range
-      ? dateCellWrapperProps.range.some(date => {
+      ? dateCellWrapperProps.range.some((date: Date) => {
           return date.getDate() % 12 === 0;
         })
       : false;

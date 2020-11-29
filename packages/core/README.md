@@ -1,11 +1,7 @@
-# react-big-calendar
+# React Next Calendar
 
-An events calendar component built for React and made for modern browsers (read: IE10+) and uses flexbox over the classic tables-ception approach.
-
-## Why custom?
-
-This is a custom version with only one accepted [PR](https://github.com/intljusticemission/react-big-calendar/pull/1182) from original package. This package will be dropped
-after PR will be merged.
+An events calendar component built for React and made for modern browsers and
+uses flexbox over the classic tables-ception approach.
 
 [**DEMO and Docs**](http://jquense.github.io/react-big-calendar/examples/index.html)
 
@@ -13,15 +9,11 @@ Inspired by [Full Calendar](http://fullcalendar.io/).
 
 ## Use and Setup
 
-`yarn add react-big-calendar` or `npm install --save react-big-calendar`
+`yarn add @react-next-calendar/core` or `npm install --save @react-next-calendar/core`
 
-Include `react-big-calendar/lib/css/react-big-calendar.css` for styles, and make sure your calendar's container
-element has a height, or the calendar won't be visible. To provide your own custom styling, see the [Custom Styling](#custom-styling) topic.
-
-## Starters
-
-- [react-big-calendar](https://github.com/arecvlohe/rbc-starter)
-- [react-big-calendar with drag and drop](https://github.com/arecvlohe/rbc-with-dnd-starter)
+Include `@react-next-calendar/core/styles.css` for styles, and make sure your
+calendar's container element has a height, or the calendar won't be visible. To
+provide your own custom styling, see the [Custom Styling](#custom-styling) topic.
 
 ## Run examples locally
 
@@ -43,8 +35,8 @@ Regardless of your choice, you **must** choose a localizer to use this library:
 
 #### Moment.js
 
-```js
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+```jsx
+import { Calendar, momentLocalizer } from 'react-next-calendar'
 import moment from 'moment'
 
 const localizer = momentLocalizer(moment)
@@ -64,8 +56,8 @@ const MyCalendar = props => (
 
 #### Globalize.js v0.1.1
 
-```js
-import { Calendar, globalizeLocalizer } from 'react-big-calendar'
+```jsx
+import { Calendar, globalizeLocalizer } from 'react-next-calendar'
 import globalize from 'globalize'
 
 const localizer = globalizeLocalizer(globalize)
@@ -83,10 +75,10 @@ const MyCalendar = props => (
 )
 ```
 
-#### date-fns 2.0
+#### date-fns
 
-```js
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+```jsx
+import { Calendar, dateFnsLocalizer } from 'react-next-calendar'
 import format from 'date-fns/format'
 import parse from 'date-fns/parse'
 import startOfWeek from 'date-fns/startOfWeek'
@@ -129,7 +121,3 @@ Big Calendar to match your application styling. For this reason, SASS files are 
 SASS implementation provides a `variables` file containing color and sizing variables that you can
 update to fit your application. _Note:_ Changing and/or overriding styles can cause rendering issues with your
 Big Calendar. Carefully test each change accordingly.
-
-## Join us on Reactiflux Discord
-
-Join us on [Reactiflux Discord](https://discord.gg/PPgj6tb) community under the channel #libraries if you have any questions.

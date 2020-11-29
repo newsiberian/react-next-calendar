@@ -18,6 +18,8 @@ import { DraggableContext } from './useDragAndDrop';
 export interface EventContainerWrapperProps {
   slotMetrics: TimeSlotMetrics;
 
+  children: React.ReactElement;
+
   resourceId?: string | number;
 
   rootRef: React.RefObject<HTMLDivElement>;
@@ -291,7 +293,9 @@ function EventContainerWrapper({
             className="rbc-addons-dnd-drag-preview"
             style={{ top, height, width: 100 }}
             getters={getters}
-            components={{ ...components, eventWrapper: NoopWrapper }}
+            components={
+              { ...components, eventWrapper: NoopWrapper } as Components
+            }
             accessors={{ ...accessors, ...dragAccessors }}
             continuesEarlier={startsBeforeDay}
             continuesLater={startsAfterDay}

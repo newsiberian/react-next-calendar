@@ -1,4 +1,5 @@
 const path = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
   stories: ['../stories/*.stories.@(ts|tsx|js|mdx)'],
@@ -9,7 +10,8 @@ module.exports = {
   ],
   // https://storybook.js.org/docs/react/configure/typescript#mainjs-configuration
   typescript: {
-    check: true, // type-check stories during Storybook build
+    check: false, // type-check stories during Storybook build
+    reactDocgen: 'react-docgen-typescript',
   },
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
@@ -22,6 +24,9 @@ module.exports = {
       use: ['style-loader', 'css-loader', 'sass-loader'],
       include: path.resolve(__dirname, '../'),
     });
+
+    // required to have access to packages by path @react-next-calendar/*
+    config.resolve.plugins.push(new TsconfigPathsPlugin());
 
     // Return the altered config
     return config;

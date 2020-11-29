@@ -22,6 +22,8 @@ declare global {
     }
   }
 
+  type ValueOf<T> = T[keyof T];
+
   interface ExtendedFC<P = Record<string, unknown>> extends React.FC<P> {
     range(
       date: Date,
@@ -352,7 +354,6 @@ declare global {
     format: Format;
     formats: Formats;
     messages: Messages;
-    propType: () => void;
     /**
      * Return the start of a week for the given culture.
      *
@@ -368,7 +369,7 @@ declare global {
      * Toolbar header format for the Agenda view, e.g. "4/1/2015 – 5/1/2015"
      */
     agendaHeaderFormat: RangeFormat;
-    agendaTimeFormat: string;
+    agendaTimeFormat: string | Record<string, string>;
     agendaTimeRangeFormat: RangeFormat;
 
     /**
@@ -423,7 +424,7 @@ declare global {
     /**
      * The timestamp cell formats in Week and Time views, e.g. "4:00 AM"
      */
-    timeGutterFormat: string;
+    timeGutterFormat: string | Record<string, string>;
 
     /**
      * Week day name format for the Month week day headings,
@@ -451,10 +452,11 @@ declare global {
     local: Localizer,
   ) => string;
 
-  type StartOfWeek = (culture?: string) => 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  type WeekStartsOn = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  type StartOfWeek = (culture?: string) => WeekStartsOn;
   type Format = (
     value: Date | { start: Date; end: Date },
-    format: string,
+    format: ValueOf<Formats>,
     culture?: string,
   ) => string;
 

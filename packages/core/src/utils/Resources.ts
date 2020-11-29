@@ -16,10 +16,11 @@ export default function Resources(
 ): Resources {
   return {
     map(fn: MapFn) {
-      if (!resources) return [fn([NONE, null], 0)];
-      return resources.map((resource, idx) =>
-        fn([accessors.resourceId(resource), resource], idx),
-      );
+      return !resources
+        ? [fn([NONE, null], 0)]
+        : resources.map((resource, idx) =>
+            fn([accessors.resourceId(resource), resource], idx),
+          );
     },
 
     groupEvents(

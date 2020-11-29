@@ -262,16 +262,6 @@ describe('inRange', () => {
   const accessors = { start: e => e.start, end: e => e.end } as Accessors;
 
   describe('matrix', () => {
-    function compare(
-      title: string,
-      event: RNC.Event,
-      [rangeStart, rangeEnd]: Date[],
-      result = true,
-    ) {
-      it(`${title}: inRange ${result}`, () => {
-        expect(inRange(event, rangeStart, rangeEnd, accessors)).toBe(result);
-      });
-    }
     const weekOfThe5th = [d(5), d(11)];
     const weekOfThe12th = [d(12), d(18)];
     [
@@ -372,7 +362,18 @@ describe('inRange', () => {
         weekOfThe12th,
         true,
       ],
-    ].forEach(g => compare(...g));
+    ].forEach(([title, event, range, result]) => {
+      it(`${title}: inRange ${result}`, () => {
+        expect(
+          inRange(
+            event as RNC.Event,
+            (range as Date[])[0],
+            (range as Date[])[1],
+            accessors,
+          ),
+        ).toBe(result);
+      });
+    });
   });
 
   test('it returns true when event starts before the range end and ends after the range start', () => {

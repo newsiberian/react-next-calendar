@@ -7,15 +7,19 @@ interface DateLocalizerProps {
 }
 
 function _format(
-  localizer: Localizer,
+  localizer: Omit<Localizer, 'messages'>,
   formatter: Format,
   value: Date | { start: Date; end: Date },
-  format: string | RangeFormat | RangeStartFormat | RangeEndFormat,
+  format: ValueOf<Formats>,
   culture?: string,
 ) {
   const result =
     typeof format === 'function'
-      ? format(value as { start: Date; end: Date }, culture, localizer)
+      ? format(
+          value as { start: Date; end: Date },
+          culture,
+          localizer as Localizer,
+        )
       : formatter.call(localizer, value, format, culture);
 
   invariant(
@@ -26,7 +30,7 @@ function _format(
   return result;
 }
 
-export class DateLocalizer {
+export class DateLocalizer implements Omit<Localizer, 'messages'> {
   public startOfWeek: StartOfWeek;
   public formats: Formats;
   public format: Format;
@@ -64,7 +68,12 @@ export function mergeWithDefaults(
     startOfWeek: () => localizer.startOfWeek(culture),
     format: (
       value: Date | { start: Date; end: Date },
-      format: keyof Formats | string,
-    ) => localizer.format(value, formats[format] || format, culture),
+      format: keyof Formats | ValueOf<Formats>,
+    ) =>
+      localizer.format(
+        value,
+        formats[format as keyof Formats] || format,
+        culture,
+      ),
   };
 }

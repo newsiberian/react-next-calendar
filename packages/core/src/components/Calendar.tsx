@@ -737,7 +737,12 @@ function Calendar({
       slotGroupProp: () => (slotGroupPropGetter && slotGroupPropGetter()) || {},
       dayProp: (date: Date) => (dayPropGetter && dayPropGetter(date)) || {},
     }),
-    [eventPropGetter, slotPropGetter, slotGroupPropGetter, dayPropGetter],
+    [
+      eventPropGetter,
+      slotPropGetter,
+      slotGroupPropGetter,
+      dayPropGetter,
+    ] as const,
   );
 
   const [components, viewNames] = React.useMemo<[Components, View[]]>(() => {
@@ -775,7 +780,7 @@ function Calendar({
       resourceAccessor,
       resourceIdAccessor,
       resourceTitleAccessor,
-    ],
+    ] as const,
   );
 
   function getViews(): Record<View, ExtendedFC<unknown>> {

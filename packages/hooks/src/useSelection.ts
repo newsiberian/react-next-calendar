@@ -29,11 +29,7 @@ export default function useSelection(
   node: React.RefObject<HTMLElement>,
   selectable: Selectable,
   { global = false, longPressThreshold = 250 } = {},
-): [
-  on: On,
-  isSelected: (nodeRef: HTMLElement) => boolean,
-  filter: (items: HTMLElement[]) => HTMLElement[],
-] {
+) {
   const isDetached = React.useRef<boolean>(false);
   const selecting = React.useRef<boolean>(false);
   const selectRect = React.useRef<SelectedRect | null>(null);
@@ -377,7 +373,11 @@ export default function useSelection(
       // https://github.com/metafizzy/flickity/issues/457#issuecomment-254501356
       removeTouchMoveWindowListener.current = addEventListener(
         'touchmove',
-        () => {},
+        () => {
+          // do nothing.
+        },
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         window,
       );
       removeKeyDownListener.current = addEventListener('keydown', keyListener);
@@ -412,6 +412,9 @@ export default function useSelection(
     };
   }, [
     selectable,
+    // TODO: drag breaks if we move `addInitialEventListener` up. Why?
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     addInitialEventListener,
     dragOverFromOutsideListener,
     dropFromOutsideListener,
@@ -494,12 +497,14 @@ export default function useSelection(
     return false;
   }
 
-  return [on, isSelected, filter];
+  return [on, isSelected, filter] as const;
 }
 
 function addEventListener<K extends keyof HTMLElementEventMap>(
   type: K,
   handler: EventHandler<K>,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   target?: HTMLElement = document,
 ) {
   return listen(target, type, handler, { passive: false });

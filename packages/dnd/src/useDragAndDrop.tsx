@@ -174,7 +174,7 @@ export default function useDragAndDrop({
   }, []);
 
   const handleInteractionEnd = React.useCallback(
-    (interactionInfo: InteractionInfo): void => {
+    (interactionInfo: InteractionInfo | null): void => {
       if (!latestAction.current) {
         return;
       }
@@ -260,7 +260,7 @@ export default function useDragAndDrop({
       eventWrapper: EventWrapper,
       eventContainerWrapper: EventContainerWrapper,
       weekWrapper: WeekWrapper,
-    }),
+    } as Pick<Components, 'eventWrapper' | 'eventContainerWrapper' | 'weekWrapper'>),
     selectable ? 'ignoreEvents' : false,
     onDropFromOutside
       ? {
@@ -273,5 +273,5 @@ export default function useDragAndDrop({
       'rbc-addons-dnd',
       interacting && 'rbc-addons-dnd-is-dragging',
     ),
-  ];
+  ] as const;
 }

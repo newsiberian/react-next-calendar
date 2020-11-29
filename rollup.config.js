@@ -12,7 +12,6 @@ const input = './src/index.ts';
 const name = 'ReactNextCalendar';
 const globals = {
   react: 'React',
-  'react-dom': 'ReactDOM',
 };
 const babelOptions = {
   exclude: /node_modules/,
@@ -26,7 +25,7 @@ export default [
   {
     input,
     output: {
-      file: './dist/react-big-calendar.js',
+      file: './dist/react-next-calendar.js',
       format: 'umd',
       name,
       globals,
@@ -44,7 +43,7 @@ export default [
   {
     input,
     output: {
-      file: './dist/react-big-calendar.min.js',
+      file: './dist/react-next-calendar.min.js',
       format: 'umd',
       name,
       globals,

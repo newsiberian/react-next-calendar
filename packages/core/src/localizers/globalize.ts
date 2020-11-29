@@ -1,6 +1,5 @@
 import { dates } from '@react-next-calendar/utils';
 
-import oldGlobalize from './oldGlobalize';
 import { DateLocalizer } from '../localizer';
 
 const dateRangeFormat: RangeFormat = ({ start, end }, culture, local) =>
@@ -46,21 +45,22 @@ export const formats = {
   agendaTimeRangeFormat: timeRangeFormat,
 };
 
-export default function (globalize) {
-  const locale = culture => (culture ? globalize(culture) : globalize);
+export default function (globalize: Globalize.Static): DateLocalizer {
+  const locale = (culture?: string) =>
+    culture ? globalize(culture) : globalize;
 
   // return the first day of the week from the locale data. Defaults to 'world'
   // territory if no territory is derivable from CLDR.
   // Failing to use CLDR supplemental (not loaded?), revert to the original
   // method of getting first day of week.
-  function firstOfWeek(culture) {
+  function firstOfWeek(culture?: string): WeekStartsOn {
     try {
       const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
       const cldr = locale(culture).cldr;
       const territory = cldr.attributes.territory;
       const weekData = cldr.get('supplemental').weekData;
       const firstDay = weekData.firstDay[territory || '001'];
-      return days.indexOf(firstDay);
+      return days.indexOf(firstDay) as WeekStartsOn;
     } catch (e) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(
@@ -76,18 +76,18 @@ export default function (globalize) {
         0,
       );
 
-      return Math.abs(date.getDay() - localeDay);
+      return Math.abs(date.getDay() - localeDay) as WeekStartsOn;
     }
   }
-
-  if (!globalize.load) return oldGlobalize(globalize);
 
   return new DateLocalizer({
     firstOfWeek,
     formats,
-    format(value, format, culture) {
-      format = typeof format === 'string' ? { raw: format } : format;
-      return locale(culture).formatDate(value, format);
+    format(value, options: Globalize.DateFormatterOptions | string, culture) {
+      return locale(culture).formatDate(
+        value as Date,
+        typeof options === 'string' ? { raw: options } : options,
+      );
     },
   });
 }
