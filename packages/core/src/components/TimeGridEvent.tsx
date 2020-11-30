@@ -25,9 +25,11 @@ export interface TimeGridEventProps {
   continuesLater: boolean;
   selected: boolean;
 
-  onClick: (e: React.MouseEvent) => void;
-  onDoubleClick: (e: React.MouseEvent) => void;
-  onKeyPress: (e: React.KeyboardEvent) => void;
+  // The handlers will not be passed while event drags from one place to another
+
+  onClick?: (e: React.MouseEvent) => void;
+  onDoubleClick?: (e: React.MouseEvent) => void;
+  onKeyPress?: (e: React.KeyboardEvent) => void;
 }
 
 function TimeGridEvent(props: TimeGridEventProps): React.ReactElement {

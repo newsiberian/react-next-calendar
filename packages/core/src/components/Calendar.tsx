@@ -5,7 +5,7 @@ import omit from 'lodash/omit';
 import defaults from 'lodash/defaults';
 import { wrapAccessor } from '@react-next-calendar/utils';
 
-import CalendarContext from '../CalendarContext';
+import { CalendarContext, PluginsContext } from '../CalendarContext';
 import { notify } from '../utils/helpers';
 import { navigate, views } from '../utils/constants';
 import message from '../utils/messages';
@@ -782,6 +782,21 @@ function Calendar({
     ] as const,
   );
 
+  const calendarContext = React.useMemo(
+    () => ({
+      rtl,
+    }),
+    [rtl],
+  );
+
+  const current = currentDate || getNow();
+
+  // TODO: memoize
+  const View = getView();
+
+  const CalToolbar = components.toolbar || Toolbar;
+  const label = View.title(current, { localizer, length });
+
   function getViews(): Record<View, ExtendedFC<unknown>> {
     if (Array.isArray(viewsProp)) {
       const transformedViews = {} as Record<View, ExtendedFC>;
@@ -912,63 +927,57 @@ function Calendar({
     handleNavigate(navigate.DATE, date);
   }
 
-  const current = currentDate || getNow();
-
-  // TODO: memoize
-  const View = getView();
-
-  const CalToolbar = components.toolbar || Toolbar;
-  const label = View.title(current, { localizer, length });
-
   return (
-    <CalendarContext.Provider value={context}>
-      <div
-        {...elementProps}
-        className={clsx(
-          elementProps?.className,
-          'rbc-calendar',
-          rtl && 'rbc-rtl',
-        )}
-      >
-        {toolbar && (
-          <CalToolbar
+    <CalendarContext.Provider value={calendarContext}>
+      <PluginsContext.Provider value={context}>
+        <div
+          {...elementProps}
+          className={clsx(
+            elementProps?.className,
+            'rbc-calendar',
+            rtl && 'rbc-rtl',
+          )}
+        >
+          {toolbar && (
+            <CalToolbar
+              date={current}
+              view={view}
+              views={viewNames}
+              label={label}
+              onView={handleViewChange}
+              onNavigate={handleNavigate}
+              localizer={localizer}
+            />
+          )}
+          <View
+            {...props}
+            events={events}
             date={current}
-            view={view}
-            views={viewNames}
-            label={label}
-            onView={handleViewChange}
-            onNavigate={handleNavigate}
+            getNow={getNow}
+            step={step}
+            length={length}
+            selectable={selectable}
+            rtl={rtl}
             localizer={localizer}
+            getters={getters}
+            components={components}
+            accessors={accessors}
+            longPressThreshold={longPressThreshold}
+            showMultiDayTimes={showMultiDayTimes}
+            getDrilldownView={getDrillDownView}
+            onDrillDown={handleDrillDown}
+            onSelectEvent={handleSelectEvent}
+            onDoubleClickEvent={handleDoubleClickEvent}
+            onKeyPressEvent={handleKeyPressEvent}
+            onSelectSlot={handleSelectSlot}
+            // TODO: propagate popup to Month view only
+            onShowMore={onShowMore}
+            // TODO: propagate popup to Month view only
+            popup={popup}
+            dayLayoutAlgorithm={dayLayoutAlgorithm}
           />
-        )}
-        <View
-          {...props}
-          events={events}
-          date={current}
-          getNow={getNow}
-          step={step}
-          length={length}
-          selectable={selectable}
-          rtl={rtl}
-          localizer={localizer}
-          getters={getters}
-          components={components}
-          accessors={accessors}
-          longPressThreshold={longPressThreshold}
-          showMultiDayTimes={showMultiDayTimes}
-          getDrilldownView={getDrillDownView}
-          onDrillDown={handleDrillDown}
-          onSelectEvent={handleSelectEvent}
-          onDoubleClickEvent={handleDoubleClickEvent}
-          onKeyPressEvent={handleKeyPressEvent}
-          onSelectSlot={handleSelectSlot}
-          // TODO: propagate popup to Month view only
-          onShowMore={onShowMore}
-          // TODO: propagate popup to Month view only
-          popup={popup}
-          dayLayoutAlgorithm={dayLayoutAlgorithm}
-        />
-      </div>
+        </div>
+      </PluginsContext.Provider>
     </CalendarContext.Provider>
   );
 }
