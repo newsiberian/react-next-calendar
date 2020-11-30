@@ -83,10 +83,12 @@ export default function (globalize: Globalize.Static): DateLocalizer {
   return new DateLocalizer({
     firstOfWeek,
     formats,
-    format(value, options: Globalize.DateFormatterOptions | string, culture) {
+    format(value, options, culture) {
       return locale(culture).formatDate(
         value as Date,
-        typeof options === 'string' ? { raw: options } : options,
+        typeof options === 'string'
+          ? { raw: options }
+          : (options as Globalize.DateFormatterOptions),
       );
     },
   });

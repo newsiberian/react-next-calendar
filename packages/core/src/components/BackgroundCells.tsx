@@ -23,7 +23,7 @@ interface BackgroundCellsProps {
   selectable: Selectable;
   range: Date[];
   rtl: boolean;
-  resourceId?: string;
+  resourceId?: string | number;
 }
 
 const initialSelection = { x: 0, y: 0 };

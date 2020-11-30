@@ -16,7 +16,7 @@ interface DateContentRowProps {
   range: Date[];
 
   rtl: boolean;
-  resourceId?: string;
+  resourceId?: string | number;
   renderForMeasure?: boolean;
   measureRowLimit?: (getRowLimit: () => number) => void;
   renderHeader?: <P extends { date: Date; className: string }>(

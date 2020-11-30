@@ -24,7 +24,7 @@ export interface TimeGridHeaderProps {
   width?: number;
 
   accessors: Accessors;
-  components: Components;
+  components: Components & WeekComponents;
   getters: Getters;
   localizer: Localizer;
 
