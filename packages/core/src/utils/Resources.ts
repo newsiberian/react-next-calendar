@@ -1,12 +1,9 @@
 import * as React from 'react';
 
-export const NONE = {};
+export const NONE = 'nothing-here';
 
 type MapFn = (
-  [id, resource]: [
-    id: string | number | Record<string, undefined>,
-    resource: Resource | null,
-  ],
+  [id, resource]: [id: string | number, resource: Resource | null],
   index: number,
 ) => React.ReactNode[];
 
@@ -23,13 +20,8 @@ export default function Resources(
           );
     },
 
-    groupEvents(
-      events: RNC.Event[],
-    ): Map<string | Record<string, undefined>, RNC.Event[]> {
-      const eventsByResource = new Map<
-        string | Record<string, undefined>,
-        RNC.Event[]
-      >();
+    groupEvents(events: RNC.Event[]): Map<string | number, RNC.Event[]> {
+      const eventsByResource = new Map<string | number, RNC.Event[]>();
 
       if (!resources) {
         // Return all events if resources are not provided
