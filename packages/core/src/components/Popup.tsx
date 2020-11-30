@@ -2,9 +2,11 @@ import * as React from 'react';
 import getOffset from 'dom-helpers/offset';
 import getScrollTop from 'dom-helpers/scrollTop';
 import getScrollLeft from 'dom-helpers/scrollLeft';
-import { dates, isSelected } from '@react-next-calendar/utils';
+import { isSelected } from '@react-next-calendar/utils';
 
 import EventCell from './EventCell';
+
+type OffsetObject = { x: number; y: number };
 
 export interface PopupProps {
   events: RNC.Event[];
@@ -26,15 +28,14 @@ export interface PopupProps {
     width: number;
   };
   onDragEnd: (e: React.MouseEvent) => void;
-  popupOffset: { x: number; y: number } | number;
+  popupOffset: OffsetObject | number;
 
   slotStart: Date;
-  slotEnd: Date;
 
   /**
    * Goes from Overlay
    */
-  style: Record<string, number | string>;
+  style: React.CSSProperties;
 }
 
 /**
@@ -57,7 +58,6 @@ const Popup = React.forwardRef(function Popup(
     onKeyPress,
     onDragEnd,
     slotStart,
-    slotEnd,
     style,
   }: PopupProps,
   ref: React.ForwardedRef<HTMLDivElement>,
@@ -65,8 +65,14 @@ const Popup = React.forwardRef(function Popup(
   const [offset, setOffset] = React.useState({ topOffset: 0, leftOffset: 0 });
 
   React.useEffect(() => {
-    const { top, left, width, height } = getOffset(ref.current);
+    const { top, left, width, height } = getOffset(
+      (ref as React.MutableRefObject<HTMLDivElement>).current,
+    );
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const viewBottom = window.innerHeight + getScrollTop(window);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const viewRight = window.innerWidth + getScrollLeft(window);
     const bottom = top + height;
     const right = left + width;
@@ -76,10 +82,16 @@ const Popup = React.forwardRef(function Popup(
       let leftOffset = 0;
 
       if (bottom > viewBottom) {
-        topOffset = bottom - viewBottom + (popupOffset.y || +popupOffset || 0);
+        topOffset =
+          bottom -
+          viewBottom +
+          ((popupOffset as OffsetObject).y || +popupOffset || 0);
       }
       if (right > viewRight) {
-        leftOffset = right - viewRight + (popupOffset.x || +popupOffset || 0);
+        leftOffset =
+          right -
+          viewRight +
+          ((popupOffset as OffsetObject).x || +popupOffset || 0);
       }
 
       setOffset({ topOffset, leftOffset });
@@ -103,21 +115,22 @@ const Popup = React.forwardRef(function Popup(
       </div>
       {events.map((event, idx) => (
         <EventCell
-          // TODO: do we need `draggable` here?
+          // this prop enables element drag
           draggable
           key={idx}
-          type="popup"
           event={event}
           getters={getters}
           onSelect={onSelect}
           accessors={accessors}
           components={components}
+          localizer={localizer}
           onDoubleClick={onDoubleClick}
           onKeyPress={onKeyPress}
-          continuesPrior={dates.lt(accessors.end(event), slotStart, 'day')}
-          continuesAfter={dates.gte(accessors.start(event), slotEnd, 'day')}
+          // since this is a Popup, we don't need to change event's border styles
+          continuesPrior={false}
+          continuesAfter={false}
           slotStart={slotStart}
-          slotEnd={slotEnd}
+          slotEnd={slotStart}
           selected={isSelected(event, selected)}
           onDragEnd={onDragEnd}
         />
