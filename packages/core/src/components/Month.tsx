@@ -64,9 +64,6 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   selectable,
   longPressThreshold,
 
-  // TODO: Take this from getters? and remove from here?
-  className,
-
   accessors,
   components,
   getters,
@@ -341,8 +338,9 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
     );
   }
 
+  // TODO: Pass custom className from getters
   return (
-    <div className={clsx('rbc-month-view', className)} ref={rootRef}>
+    <div className={clsx('rbc-month-view')} ref={rootRef}>
       <div className="rbc-row rbc-month-header">{renderHeaders(weeks[0])}</div>
 
       {weeks.map(renderWeek)}
