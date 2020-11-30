@@ -223,6 +223,19 @@ export const CustomTimeSlotWrapperWeek = (): React.ReactElement => (
 );
 CustomTimeSlotWrapperWeek.storyName = 'Custom timeSlotWrapper (Week)';
 
+export const CustomWeekHeader = (): React.ReactElement => (
+  <Calendar
+    defaultView={Views.WEEK}
+    events={events}
+    components={{
+      week: {
+        header: customComponents.header,
+      },
+    }}
+  />
+);
+CustomWeekHeader.storyName = 'Custom week header';
+
 export const CustomEventWrapper = (): React.ReactElement => (
   <Calendar
     defaultView={Views.DAY}

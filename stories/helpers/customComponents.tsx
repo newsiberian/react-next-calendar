@@ -2,10 +2,13 @@ import * as React from 'react';
 import { action } from '@storybook/addon-actions';
 
 const customComponents = {
-  dateCellWrapper: dateCellWrapperProps => {
+  dateCellWrapper: (props: {
+    range: Date[];
+    children: React.ReactNode;
+  }): React.ReactElement => {
     // Show 'click me' text in arbitrary places by using the range prop
-    const hasAlert = dateCellWrapperProps.range
-      ? dateCellWrapperProps.range.some((date: Date) => {
+    const hasAlert = props.range
+      ? props.range.some((date: Date) => {
           return date.getDate() % 12 === 0;
         })
       : false;
@@ -23,15 +26,16 @@ const customComponents = {
             Click me
           </a>
         )}
-        {dateCellWrapperProps.children}
+        {props.children}
       </div>
     );
   },
-  dayWrapper: dayWrapperProps => {
+  dayWrapper: (props: {
+    value: Date;
+    children: React.ReactNode;
+  }): React.ReactElement => {
     // Show different styles at arbitrary time
-    const hasCustomInfo = dayWrapperProps.value
-      ? dayWrapperProps.value.getHours() === 4
-      : false;
+    const hasCustomInfo = props.value ? props.value.getHours() === 4 : false;
     const style = {
       display: 'flex',
       flex: 1,
@@ -40,34 +44,45 @@ const customComponents = {
     return (
       <div style={style}>
         {hasCustomInfo && 'Custom Day Wrapper'}
-        {dayWrapperProps.children}
+        {props.children}
       </div>
     );
   },
-  eventWrapper: eventWrapperProps => {
+  eventWrapper: (props: {
+    event: RNC.Event;
+    children: React.ReactNode;
+  }): React.ReactElement => {
     const style = {
       border: '4px solid',
-      borderColor:
-        eventWrapperProps.event.start.getHours() % 2 === 0 ? 'green' : 'red',
+      borderColor: props.event.start.getHours() % 2 === 0 ? 'green' : 'red',
       padding: '5px',
     };
-    return <div style={style}>{eventWrapperProps.children}</div>;
+    return <div style={style}>{props.children}</div>;
   },
-  timeSlotWrapper: timeSlotWrapperProps => {
+  timeSlotWrapper: (props: {
+    value: Date;
+    resource: unknown;
+    children: React.ReactNode;
+  }): React.ReactElement => {
     const style =
-      timeSlotWrapperProps.resource === null ||
-      timeSlotWrapperProps.value.getMinutes() !== 0
+      props.resource === null || props.value.getMinutes() !== 0
         ? {}
         : {
             border: '4px solid',
             backgroundColor:
-              timeSlotWrapperProps.value.getHours() >= 8 &&
-              timeSlotWrapperProps.value.getHours() <= 17
+              props.value.getHours() >= 8 && props.value.getHours() <= 17
                 ? 'green'
                 : 'red',
             padding: '5px',
           };
-    return <div style={style}>{timeSlotWrapperProps.children}</div>;
+    return <div style={style}>{props.children}</div>;
+  },
+  header: (props: { label: string }): React.ReactElement => {
+    const style = {
+      border: '4px solid',
+      borderColor: 'red',
+    };
+    return <div style={style}>{props.label}</div>;
   },
 };
 
