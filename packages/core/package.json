@@ -15,7 +15,6 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/react-next-calendar.esm.js",
   "style": "dist/styles.css",
   "types": "dist/index.d.ts",
   "files": [
@@ -38,15 +37,18 @@
   "scripts": {
     "clean": "rimraf dist",
     "sass": "node-sass src/sass/styles.scss ./dist/styles.css",
-    "autoprefixer": "postcss --use autoprefixer -b 'ie >= 11, safari >= 10, last 2 versions' < ./dist/styles.css",
+    "autoprefixer": "postcss --use autoprefixer < ./dist/styles.css",
     "build:css": "npm run sass && npm run autoprefixer",
     "build:umd": "BABEL_ENV=esm yarn rollup -c",
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build": "yarn clean && yarn build:tsc && yarn build:umd && yarn build:css",
+    "build": "yarn clean && yarn build:tsc && yarn build:css",
     "test": "npm run lint && jest",
     "prepublishOnly": "npm run build",
     "precommit": "lint-staged"
   },
+  "browserslist": [
+    "defaults"
+  ],
   "lint-staged": {
     "src/**/*.{ts,tsx}": "eslint",
     "test/**/*.ts": "eslint",
