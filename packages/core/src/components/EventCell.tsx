@@ -10,9 +10,21 @@ interface EventCellProps {
   // TODO: children are not currently being passed to EventCell from anywhere
   children?: (content: React.ReactNode) => React.ReactNode;
 
+  /**
+   * Allowed to be dragged?
+   */
+  draggable?: boolean;
   selected: boolean;
   isAllDay?: boolean;
+  /**
+   * Indicates that event began on the previous week (at "month" view). This
+   * prop will be truthy on the first cell (day) at week
+   */
   continuesPrior: boolean;
+  /**
+   * Indicates that event will continue on the next week (at "month" view). This
+   * prop will be truthy on the last cell (day) at week
+   */
   continuesAfter: boolean;
 
   accessors: Accessors;
@@ -23,6 +35,13 @@ interface EventCellProps {
   onSelect?: (event: RNC.Event, e: React.MouseEvent) => void;
   onDoubleClick?: (event: RNC.Event, e: React.MouseEvent) => void;
   onKeyPress?: (event: RNC.Event, e: React.KeyboardEvent) => void;
+
+  /**
+   * Callback handler which will be passed to EventWrapper. It fires when an
+   * event drag from the popup on a month view will be finished
+   * @param {React.DragEvent} e
+   */
+  onDragEnd?: (e: React.DragEvent) => void;
 }
 
 function EventCell(props: EventCellProps): React.ReactElement {

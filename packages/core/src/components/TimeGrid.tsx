@@ -219,46 +219,47 @@ function TimeGrid({
     const res = memoizedResources(resources, accessors);
     const groupedEvents = res.groupEvents(events);
 
-    return res.map(([id, resource], resourceIndex) =>
-      range.map((date, rangeIndex) /*: React.ReactElement[]*/ => {
-        const daysEvents = (groupedEvents.get(id) || []).filter(event =>
-          dates.inRange(
-            date,
-            accessors.start(event),
-            accessors.end(event),
-            'day',
-          ),
-        );
+    return res.map(
+      ([id, resource]: [string, Resource], resourceIndex: number) =>
+        range.map((date, rangeIndex) /*: React.ReactElement[]*/ => {
+          const daysEvents = (groupedEvents.get(id) || []).filter(event =>
+            dates.inRange(
+              date,
+              accessors.start(event),
+              accessors.end(event),
+              'day',
+            ),
+          );
 
-        return (
-          <DayColumn
-            key={resourceIndex + '-' + rangeIndex}
-            events={daysEvents}
-            step={step}
-            date={date}
-            min={dates.merge(date, min)}
-            max={dates.merge(date, max)}
-            getNow={getNow}
-            isNow={dates.eq(date, now, 'day')}
-            rtl={rtl}
-            accessors={accessors}
-            components={components}
-            getters={getters}
-            localizer={localizer}
-            timeslots={timeslots}
-            selected={selected}
-            selectable={selectable}
-            longPressThreshold={longPressThreshold}
-            onSelecting={onSelecting}
-            onSelectSlot={onSelectSlot}
-            onSelectEvent={onSelectEvent}
-            onDoubleClickEvent={onDoubleClickEvent}
-            onKeyPressEvent={onKeyPressEvent}
-            resourceId={resource && id}
-            dayLayoutAlgorithm={dayLayoutAlgorithm}
-          />
-        );
-      }),
+          return (
+            <DayColumn
+              key={resourceIndex + '-' + rangeIndex}
+              events={daysEvents}
+              step={step}
+              date={date}
+              min={dates.merge(date, min)}
+              max={dates.merge(date, max)}
+              getNow={getNow}
+              isNow={dates.eq(date, now, 'day')}
+              rtl={rtl}
+              accessors={accessors}
+              components={components}
+              getters={getters}
+              localizer={localizer}
+              timeslots={timeslots}
+              selected={selected}
+              selectable={selectable}
+              longPressThreshold={longPressThreshold}
+              onSelecting={onSelecting}
+              onSelectSlot={onSelectSlot}
+              onSelectEvent={onSelectEvent}
+              onDoubleClickEvent={onDoubleClickEvent}
+              onKeyPressEvent={onKeyPressEvent}
+              resourceId={resource && id}
+              dayLayoutAlgorithm={dayLayoutAlgorithm}
+            />
+          );
+        }),
     );
   }
 

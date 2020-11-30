@@ -16,7 +16,6 @@ interface TimeGutterProps {
   max: number;
   timeslots: number;
   step: number;
-  resource: Resource;
 
   components: Components;
   getters: Getters;
@@ -31,7 +30,6 @@ const TimeGutter = React.forwardRef(function TimeGutter(
     max,
     timeslots,
     step,
-    resource,
     components,
     getters,
     localizer,
@@ -78,7 +76,6 @@ const TimeGutter = React.forwardRef(function TimeGutter(
         <TimeSlotGroup
           key={idx}
           group={group}
-          resource={resource}
           components={components}
           renderSlot={renderSlot}
           getters={getters}

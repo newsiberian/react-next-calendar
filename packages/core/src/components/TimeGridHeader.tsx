@@ -150,51 +150,56 @@ function TimeGridHeader({
         {TimeGutterHeader && <TimeGutterHeader />}
       </div>
 
-      {resources.map(([id, resource], idx) => (
-        <div className="rbc-time-header-content" key={id || idx}>
-          {resource && (
-            <div className="rbc-row rbc-row-resource" key={`resource_${idx}`}>
-              <div className="rbc-header">
-                <ResourceHeaderComponent
-                  index={idx}
-                  label={accessors.resourceTitle(resource)}
-                  resource={resource}
-                />
+      {resources.map(
+        ([id, resource]: [string | number, Resource], index: number) => (
+          <div className="rbc-time-header-content" key={id || index}>
+            {resource && (
+              <div
+                className="rbc-row rbc-row-resource"
+                key={`resource_${index}`}
+              >
+                <div className="rbc-header">
+                  <ResourceHeaderComponent
+                    index={index}
+                    label={accessors.resourceTitle(resource)}
+                    resource={resource}
+                  />
+                </div>
               </div>
+            )}
+
+            <div
+              className={`rbc-row rbc-time-header-cell${
+                range.length <= 1 ? ' rbc-time-header-cell-single-day' : ''
+              }`}
+            >
+              {renderHeaderCells()}
             </div>
-          )}
 
-          <div
-            className={`rbc-row rbc-time-header-cell${
-              range.length <= 1 ? ' rbc-time-header-cell-single-day' : ''
-            }`}
-          >
-            {renderHeaderCells()}
+            <DateContentRow
+              isAllDay
+              rtl={rtl}
+              getNow={getNow}
+              minRows={2}
+              range={range}
+              events={groupedEvents.get(id) || []}
+              resourceId={resource && id}
+              className="rbc-allday-cell"
+              selectable={selectable}
+              selected={selected}
+              components={components}
+              accessors={accessors}
+              getters={getters}
+              localizer={localizer}
+              onSelect={onSelectEvent}
+              onDoubleClick={onDoubleClickEvent}
+              onKeyPress={onKeyPressEvent}
+              onSelectSlot={onSelectSlot}
+              longPressThreshold={longPressThreshold}
+            />
           </div>
-
-          <DateContentRow
-            isAllDay
-            rtl={rtl}
-            getNow={getNow}
-            minRows={2}
-            range={range}
-            events={groupedEvents.get(id) || []}
-            resourceId={resource && id}
-            className="rbc-allday-cell"
-            selectable={selectable}
-            selected={selected}
-            components={components}
-            accessors={accessors}
-            getters={getters}
-            localizer={localizer}
-            onSelect={onSelectEvent}
-            onDoubleClick={onDoubleClickEvent}
-            onKeyPress={onKeyPressEvent}
-            onSelectSlot={onSelectSlot}
-            longPressThreshold={longPressThreshold}
-          />
-        </div>
-      ))}
+        ),
+      )}
     </div>
   );
 }

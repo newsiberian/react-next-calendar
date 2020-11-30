@@ -13,6 +13,13 @@ import DateContentRow from './DateContentRow';
 import Header from './Header';
 import DateHeader from './DateHeader';
 
+type Position = {
+  top: number;
+  left: number;
+  height: number;
+  width: number;
+};
+
 export interface MonthViewProps {
   events: RNC.Event[];
   date: Date;
@@ -85,12 +92,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   const [overlay, setOverlay] = React.useState<{
     date?: Date;
     events?: RNC.Event[];
-    position?: {
-      top: number;
-      left: number;
-      height: number;
-      width: number;
-    };
+    position?: Position;
     target?: EventTarget;
   }>({});
   const [prevDate, setPrevDate] = React.useState(date);
@@ -189,7 +191,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   /**
    * This callback fires after event been dragged from popup to month view
    */
-  function handleEventDragEnd() {
+  function handlePopupClose(/* e: React.DragEvent */) {
     setOverlay({});
   }
 
@@ -314,8 +316,8 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
         rootClose
         placement="bottom"
         show={!!overlay.position}
-        onHide={() => setOverlay({})}
-        target={() => overlay.target}
+        onHide={handlePopupClose}
+        target={overlay.target as HTMLElement}
       >
         {({ props }) => (
           <Popup
@@ -326,11 +328,10 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
             selected={selected}
             components={components}
             localizer={localizer}
-            position={overlay.position}
-            onDragEnd={handleEventDragEnd}
-            events={overlay.events}
-            slotStart={overlay.date}
-            slotEnd={overlay.end}
+            position={overlay.position as Position}
+            onDragEnd={handlePopupClose}
+            events={overlay.events as RNC.Event[]}
+            slotStart={overlay.date as Date}
             onSelect={handleSelect}
             onDoubleClick={handleDoubleClick}
             onKeyPress={handleKeyPress}
