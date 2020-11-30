@@ -1,7 +1,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { accessor } from '@react-next-calendar/utils';
-import { CalendarContext } from '@react-next-calendar/core';
+import { PluginsContext } from '@react-next-calendar/core';
 
 import { DraggableContext } from './useDragAndDrop';
 
@@ -34,7 +34,7 @@ export default function EventWrapper({
   continuesPrior,
   continuesAfter,
 }: EventWrapperProps): React.ReactElement {
-  const { draggable } = React.useContext(CalendarContext) as {
+  const { draggable } = React.useContext(PluginsContext) as {
     draggable: DraggableContext;
   };
 

@@ -18,8 +18,21 @@
   "scripts": {
     "clean": "rimraf dist",
     "sass": "node-sass styles.scss dist/styles.css",
+    "autoprefixer": "postcss --use autoprefixer < ./dist/styles.css",
+    "build:css": "npm run sass && npm run autoprefixer",
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build": "yarn build:tsc && yarn sass"
+    "build": "yarn build:tsc && yarn sass && yarn build:css"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": "eslint",
+    "test/**/*.ts": "eslint",
+    "*.{js,ts,tsx,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "dependencies": {
     "@react-next-calendar/core": "^1.0.0",

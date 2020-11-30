@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   CalendarContext,
+  PluginsContext,
   NoopWrapper,
   TimeGridEvent,
 } from '@react-next-calendar/core';
@@ -48,7 +49,8 @@ function EventContainerWrapper({
   getters,
   localizer,
 }: EventContainerWrapperProps): React.ReactElement {
-  const context = React.useContext(CalendarContext) as {
+  const { rtl } = React.useContext(CalendarContext);
+  const context = React.useContext(PluginsContext) as {
     draggable: DraggableContext;
   };
   const actionLatest = useLatest(context.draggable.dragAndDropAction);
@@ -260,6 +262,8 @@ function EventContainerWrapper({
     return children;
   }
 
+  // This part of the component becomes available while the user drags an event
+  // from the TimeGridHeader to DayColumns
   const events = children.props.children;
   const { start, end } = event;
 
@@ -299,6 +303,8 @@ function EventContainerWrapper({
             accessors={{ ...accessors, ...dragAccessors }}
             continuesEarlier={startsBeforeDay}
             continuesLater={startsAfterDay}
+            selected={false}
+            rtl={rtl}
           />
         )}
       </React.Fragment>

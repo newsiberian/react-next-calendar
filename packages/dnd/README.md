@@ -1,4 +1,4 @@
-### Drag and Drop addon for React Next Calendar
+### Drag and Drop plugin for React Next Calendar
 
 ```jsx
 import { Calendar } from '@react-next-calendar/core'
