@@ -1,3 +1,172 @@
+# [1.0.0](https://github.com/newsiberian/react-next-calendar/compare/v0.28.1...v) (2020-12-01)
+
+### Bug Fixes
+
+* avoid useless gutter measure ([0d96595](https://github.com/newsiberian/react-next-calendar/commit/0d9659545bffa1d286104455cd9d0546beb5ccaf))
+
+
+### BREAKING CHANGES
+
+* Don't pass sass files to dist
+* Rename core esm file to `react-next-calendar.esm.js` and core css file to `react-next-calendar.css` ([05983b9](https://github.com/newsiberian/react-next-calendar/commit/05983b91b868c30e4dcab848b0ffacdde1872ae5))
+* remove unused oldGlobalize Localizer  
+  rename @react-next-calendar/core output styles to `styles.css ([6c8384af](https://github.com/newsiberian/react-next-calendar/commit/6c8384af8262732c9946866ceaff1e96c1d86810))
+* drop `className` and `style` props usage. They are related w/ the root DIV element and should be included into `elementProps` props, which is the one that is passed to the root DIV ([d69dd690](https://github.com/newsiberian/react-next-calendar/commit/d69dd6902540e2b714d8c644aba6d8bac24589eb))
+* drop umd build. We can add it again in future if someone will ask ([7de24018](https://github.com/newsiberian/react-next-calendar/commit/7de24018842ace34cc371f117c53ab502f2818b6))
+
+* chore(core): change invariant to tiny-invariant
+  chore: add ts-jest ([05983b91](https://github.com/newsiberian/react-next-calendar/commit/05983b91b868c30e4dcab848b0ffacdde1872ae5))
+* refactor: massive changes: most of the code rewritten to typescript and moved to lerna packages. WIP.
+  chore: examples removed, since it is better to go w/ storybook ([81cf7532](https://github.com/newsiberian/react-next-calendar/commit/81cf7532549e4b4d7a82b6373e715ed133280e3b))
+* refactor(core): Calendar wrapped by CalendarContext.Provider; export CalendarContext ([8f6b7c74](https://github.com/newsiberian/react-next-calendar/commit/8f6b7c74cf54a8b8dd87c958c1949079c0777e50))
+* refactor: move hooks to separate package and improve their typings ([098502b7](https://github.com/newsiberian/react-next-calendar/commit/098502b7be05214258c9c02b91f32de7f9a41c70))
+* refactor: move common utils to new package `utils` ([dbdcc633](https://github.com/newsiberian/react-next-calendar/commit/dbdcc633506a69eedd4f0b358ddc23bc25c4c307))
+* refactor(core): split calendar context into two parts: one for plugins, second for internal usage ([2192df2a](https://github.com/newsiberian/react-next-calendar/commit/2192df2a4ae421d7d080929285acb150df737959))
+
+
+## [0.28.1](https://github.com/newsiberian/react-next-calendar/compare/v0.28.0...v0.28.1) (2020-10-08)
+
+
+### Bug Fixes
+
+* item preview inside cell while dragging from outside not working… ([#1770](https://github.com/newsiberian/react-next-calendar/issues/1770)) ([8fd6329](https://github.com/newsiberian/react-next-calendar/commit/8fd63298322ba506823f3c44eadd8820c2bf684b))
+
+
+
+# [0.28.0](https://github.com/newsiberian/react-next-calendar/compare/v0.27.0...v0.28.0) (2020-09-16)
+
+
+### Features
+
+* add onKeyPressEvent ([#1754](https://github.com/newsiberian/react-next-calendar/issues/1754)) ([ca8d77b](https://github.com/newsiberian/react-next-calendar/commit/ca8d77b89403217047a801711d90cf3f8e8339d5))
+
+
+
+# [0.27.0](https://github.com/newsiberian/react-next-calendar/compare/v0.26.1...v0.27.0) (2020-08-25)
+
+
+### Features
+
+* add resourceId to handleSelectAllDaySlot fns slotInfo ([#1735](https://github.com/newsiberian/react-next-calendar/issues/1735)) ([f00a516](https://github.com/newsiberian/react-next-calendar/commit/f00a516cdd7b1876d654bf863979b4f391bdb0bc))
+
+
+
+## [0.26.1](https://github.com/newsiberian/react-next-calendar/compare/v0.26.0...v0.26.1) (2020-08-20)
+
+
+### Bug Fixes
+
+* Fix top part of 24hour event in week/day view ([#1732](https://github.com/newsiberian/react-next-calendar/issues/1732)) ([e1e06b5](https://github.com/newsiberian/react-next-calendar/commit/e1e06b54fcc71f35010448bfea858aa33b106eb1))
+
+
+
+# [0.26.0](https://github.com/newsiberian/react-next-calendar/compare/v0.25.0...v0.26.0) (2020-06-24)
+
+
+### Features
+
+* starting to hooks to avoid deprecation warnings ([#1687](https://github.com/newsiberian/react-next-calendar/issues/1687)) ([b8368f9](https://github.com/newsiberian/react-next-calendar/commit/b8368f982d2463031a22979796ecd099bb1d7ee6))
+
+
+
+# [0.25.0](https://github.com/newsiberian/react-next-calendar/compare/v0.24.6...v0.25.0) (2020-05-29)
+
+
+### Bug Fixes
+
+* hide indicator when current time is not in the interval ([#1639](https://github.com/newsiberian/react-next-calendar/issues/1639)) ([92974bf](https://github.com/newsiberian/react-next-calendar/commit/92974bf00abe067db981c00c734cd4f756fad4c7))
+
+
+### Features
+
+* add dragging ability from the monthly Popup component ([#1554](https://github.com/newsiberian/react-next-calendar/issues/1554)) ([12233ef](https://github.com/newsiberian/react-next-calendar/commit/12233efc7efdcb222954e9c6b2692e01a8101c42))
+
+
+
+## [0.24.6](https://github.com/newsiberian/react-next-calendar/compare/v0.24.5...v0.24.6) (2020-05-04)
+
+
+### Bug Fixes
+
+* moment format strings -> date-fns format strings ([#1568](https://github.com/newsiberian/react-next-calendar/issues/1568)) ([1603902](https://github.com/newsiberian/react-next-calendar/commit/16039022378c428bc4a04b9f0fc20aa7f9892896))
+
+
+
+## [0.24.5](https://github.com/newsiberian/react-next-calendar/compare/v0.24.4...v0.24.5) (2020-04-20)
+
+
+### Bug Fixes
+
+* prevent endless loop when adding event the DST begin day ([#1635](https://github.com/newsiberian/react-next-calendar/issues/1635)) ([b9abf77](https://github.com/newsiberian/react-next-calendar/commit/b9abf7714e54ef01a212366adffe09fec29039ba))
+
+
+
+## [0.24.4](https://github.com/newsiberian/react-next-calendar/compare/v0.24.3...v0.24.4) (2020-04-17)
+
+
+### Bug Fixes
+
+*  `dayLayoutAlgorithm` prop with custom function ([#1562](https://github.com/newsiberian/react-next-calendar/issues/1562)) ([3fb3c49](https://github.com/newsiberian/react-next-calendar/commit/3fb3c49c05903e703e896f61ef1b9d1d18d7b2b2))
+
+
+
+## [0.24.3](https://github.com/newsiberian/react-next-calendar/compare/v0.24.2...v0.24.3) (2020-04-09)
+
+
+### Bug Fixes
+
+* **date-fns localizer:** display dayFormat correctly ([#1633](https://github.com/newsiberian/react-next-calendar/issues/1633)) ([dd1e1a4](https://github.com/newsiberian/react-next-calendar/commit/dd1e1a4ec6c3183b2d69b58a59301133b2d81ca7))
+
+
+
+## [0.24.2](https://github.com/newsiberian/react-next-calendar/compare/v0.24.1...v0.24.2) (2020-04-09)
+
+
+### Bug Fixes
+
+* dnd freezes an event intermittently ([#1631](https://github.com/newsiberian/react-next-calendar/issues/1631)) ([e8609af](https://github.com/newsiberian/react-next-calendar/commit/e8609af6a76cdc24387fbabb5a0e8c8f1700a617))
+
+
+
+## [0.24.1](https://github.com/newsiberian/react-next-calendar/compare/v0.24.0...v0.24.1) (2020-03-11)
+
+
+### Bug Fixes
+
+* bump memoize-one and migrate new isEqual API ([#1583](https://github.com/newsiberian/react-next-calendar/issues/1583)) ([4c904c2](https://github.com/newsiberian/react-next-calendar/commit/4c904c2f06ad7fe6f6602d04cf14bcdaeab03ad2))
+* for TimeSlots ([#1462](https://github.com/newsiberian/react-next-calendar/issues/1462)) ([c31639a](https://github.com/newsiberian/react-next-calendar/commit/c31639ab46f097ffd1b483aaba87832d14c01d73))
+
+
+
+# [0.24.0](https://github.com/newsiberian/react-next-calendar/compare/v0.23.0...v0.24.0) (2020-02-13)
+
+
+### Bug Fixes
+
+* prefix React lifecycle methods with UNSAFE ([#1578](https://github.com/newsiberian/react-next-calendar/issues/1578)) ([7b5a6a7](https://github.com/newsiberian/react-next-calendar/commit/7b5a6a79c43591014fa7e009b8b3f00b4f74c7c9))
+
+
+### Features
+
+* add Date-fns localizer ([#1542](https://github.com/newsiberian/react-next-calendar/issues/1542)) ([749c91c](https://github.com/newsiberian/react-next-calendar/commit/749c91cc030bb45132da1870176d99156d6b784e))
+* drop warning ([#1455](https://github.com/newsiberian/react-next-calendar/issues/1455)) ([77004e2](https://github.com/newsiberian/react-next-calendar/commit/77004e2a51dfa466341e14d2dab35466822d0efb))
+* Slot group prop getter ([#1471](https://github.com/newsiberian/react-next-calendar/issues/1471)) ([#1510](https://github.com/newsiberian/react-next-calendar/issues/1510)) ([fcb9b9a](https://github.com/newsiberian/react-next-calendar/commit/fcb9b9ac4752bf9a68498672b2f4178dbc5770e5))
+
+
+
+# [0.23.0](https://github.com/newsiberian/react-next-calendar/compare/v0.22.1...v0.23.0) (2019-11-04)
+
+
+### Bug Fixes
+
+* make scrollToTime=00:00 working ([#1501](https://github.com/newsiberian/react-next-calendar/issues/1501)) ([ee5a558](https://github.com/newsiberian/react-next-calendar/commit/ee5a5586814bfc56c4963e21b0d48ac9a22718db))
+
+
+### Features
+
+* add Rearrangement Algorithm Implementation ([#1473](https://github.com/newsiberian/react-next-calendar/issues/1473)) ([e622651](https://github.com/newsiberian/react-next-calendar/commit/e622651aac059ff6040a263e0d73521cd75bb42d))
+* add resourceId to onSelecting callback ([#1416](https://github.com/newsiberian/react-next-calendar/issues/1416)) ([0c9b1f2](https://github.com/newsiberian/react-next-calendar/commit/0c9b1f2d3a6bc742b3b0b84c4bb4aee8cb5abc63))
+
 ## [0.22.1](https://github.com/intljusticemission/react-big-calendar/compare/v0.22.0...v0.22.1) (2019-09-13)
 
 ### Bug Fixes

@@ -14,9 +14,10 @@
     "url": "https://github.com/newsiberian/react-next-calendar/issues"
   },
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "style": "dist/styles.css",
-  "types": "dist/index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "files": [
     "dist/",
     "LICENSE",
@@ -39,11 +40,10 @@
     "sass": "node-sass src/sass/styles.scss ./dist/styles.css",
     "autoprefixer": "postcss --use autoprefixer < ./dist/styles.css",
     "build:css": "npm run sass && npm run autoprefixer",
-    "build:umd": "BABEL_ENV=esm yarn rollup -c",
-    "build:tsc": "tsc -p tsconfig.build.json",
-    "build": "yarn clean && yarn build:tsc && yarn build:css",
-    "test": "npm run lint && jest",
-    "prepublishOnly": "npm run build",
+    "build:cjs": "tsc -p tsconfig.build.json",
+    "build:es": "tsc -p tsconfig.build.json -m esnext --outDir dist/esm",
+    "build": "yarn build:cjs && yarn build:es && yarn build:css",
+    "prepublishOnly": "yarn build",
     "precommit": "lint-staged"
   },
   "browserslist": [
@@ -58,8 +58,8 @@
     ]
   },
   "peerDependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "dependencies": {
     "@react-next-calendar/hooks": "^1.0.0",
