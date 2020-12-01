@@ -1,18 +1,28 @@
 {
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/*"
+  ],
   "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
     "publish": {
-      "ignoreChanges": ["ignored-file", "*.md"],
+      "ignoreChanges": [
+        "ignored-file",
+        "*.md"
+      ],
       "message": "chore(release): publish"
     },
     "version": {
       "allowBranch": "main",
-      "ignoreChanges": ["test/**", "**/__tests__/**", "stories/**", "**/*.md"],
+      "ignoreChanges": [
+        "test/**",
+        "**/__tests__/**",
+        "stories/**",
+        "**/*.md"
+      ],
       "message": "chore(release): publish %s",
       "conventionalCommits": true
     }
   },
-  "version": "0.9.0"
+  "version": "1.0.0"
 }
