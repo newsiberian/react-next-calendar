@@ -365,6 +365,39 @@ export default function useSelection(
   );
 
   React.useEffect(() => {
+    // Listen for mousedown and touchstart events. When one is received, disable
+    // the other and setup future event handling based on the type of event.
+    function addInitialEventListener() {
+      const removeMouseDownListener = addEventListener(
+        'mousedown',
+        (e: MouseEvent) => {
+          removeInitialEventListener.current &&
+            removeInitialEventListener.current();
+          handleInitialEvent(e);
+          removeInitialEventListener.current = addEventListener(
+            'mousedown',
+            handleInitialEvent,
+          );
+        },
+      );
+      const removeTouchStartListener = addEventListener(
+        'touchstart',
+        (e: TouchEvent) => {
+          removeInitialEventListener.current &&
+            removeInitialEventListener.current();
+          removeInitialEventListener.current = addLongPressListener(
+            handleInitialEvent,
+            e,
+          );
+        },
+      );
+
+      removeInitialEventListener.current = () => {
+        removeMouseDownListener();
+        removeTouchStartListener();
+      };
+    }
+
     if (selectable) {
       // `isDetached` must be flushed to default to allow events be handled after
       // several `selectable` switching
@@ -410,48 +443,7 @@ export default function useSelection(
       removeDragOverFromOutsideListener.current &&
         removeDragOverFromOutsideListener.current();
     };
-  }, [
-    selectable,
-    // TODO: drag breaks if we move `addInitialEventListener` up. Why?
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    addInitialEventListener,
-    dragOverFromOutsideListener,
-    dropFromOutsideListener,
-  ]);
-
-  // Listen for mousedown and touchstart events. When one is received, disable
-  // the other and setup future event handling based on the type of event.
-  const addInitialEventListener = React.useCallback(() => {
-    const removeMouseDownListener = addEventListener(
-      'mousedown',
-      (e: MouseEvent) => {
-        removeInitialEventListener.current &&
-          removeInitialEventListener.current();
-        handleInitialEvent(e);
-        removeInitialEventListener.current = addEventListener(
-          'mousedown',
-          handleInitialEvent,
-        );
-      },
-    );
-    const removeTouchStartListener = addEventListener(
-      'touchstart',
-      (e: TouchEvent) => {
-        removeInitialEventListener.current &&
-          removeInitialEventListener.current();
-        removeInitialEventListener.current = addLongPressListener(
-          handleInitialEvent,
-          e,
-        );
-      },
-    );
-
-    removeInitialEventListener.current = () => {
-      removeMouseDownListener();
-      removeTouchStartListener();
-    };
-  }, [addLongPressListener, handleInitialEvent]);
+  }, [selectable, dragOverFromOutsideListener, dropFromOutsideListener]);
 
   const on: On = (type, handler) => {
     const handlers = listeners.current[type] || (listeners.current[type] = []);
