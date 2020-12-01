@@ -2,8 +2,9 @@
   "name": "@react-next-calendar/hooks",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "files": [
     "dist/",
     "LICENSE",
@@ -16,7 +17,15 @@
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf dist",
-    "build:tsc": "tsc",
-    "build": "yarn build:tsc"
+    "build:cjs": "tsc",
+    "build:es": "tsc -m esnext --outDir dist/esm",
+    "build": "yarn build:cjs && yarn build:es"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "dependencies": {
+    "dom-helpers": "^5.1.0"
   }
 }
