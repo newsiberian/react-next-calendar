@@ -10,7 +10,8 @@
     "version": {
       "allowBranch": "main",
       "ignoreChanges": ["test/**", "**/__tests__/**", "stories/**", "**/*.md"],
-      "message": "chore(release): publish %s"
+      "message": "chore(release): publish %s",
+      "conventionalCommits": true
     }
   },
   "version": "1.0.0"
