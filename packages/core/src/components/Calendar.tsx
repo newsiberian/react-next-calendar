@@ -890,7 +890,11 @@ function Calendar({
 
     const availableViews = getViews();
 
-    handleRangeChange(currentDate || getNow(), availableViews[nextView], view);
+    handleRangeChange(
+      currentDate || getNow(),
+      availableViews[nextView],
+      nextView,
+    );
   }
 
   function handleSelectEvent(
