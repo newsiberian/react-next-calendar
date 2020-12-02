@@ -94,15 +94,13 @@ describe('getStyledEvents', () => {
       ],
     ].forEach(([title, events, expectedResults]) => {
       it(title as string, () => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         const styledEvents = getStyledEvents({
           events,
           accessors,
           slotMetrics,
           minimumStartDifference: 10,
           dayLayoutAlgorithm,
-        });
+        } as GetStyledEventsOptions);
 
         const results = styledEvents.map(result => ({
           width: Math.floor(result.style.width as number),
