@@ -106,6 +106,7 @@ ComplexDayViewLayout.args = {
 export const MultiDay = (): React.ReactElement => (
   /* should display all three events */
   <Calendar
+    date={new Date(2016, 11, 4)}
     showMultiDayTimes
     max={moment().endOf('day').add(-1, 'hours').toDate()}
     events={[

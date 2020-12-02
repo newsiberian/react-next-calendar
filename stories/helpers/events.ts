@@ -179,4 +179,22 @@ export default [
     start: set(now, { date: 14, hours: 18, minutes: 30 }),
     end: set(now, { date: 14, hours: 20 }),
   },
+  {
+    id: 24,
+    title: 'IT Conference beginning',
+    start: set(now, { date: 24, hours: 10, minutes: 30 }),
+    end: set(now, { date: 28, hours: 14 }),
+  },
+  {
+    id: 25,
+    title: 'IT Conference middle part',
+    start: set(now, { date: 24, hours: 14, minutes: 10 }),
+    end: set(now, { date: 28, hours: 18 }),
+  },
+  {
+    id: 26,
+    title: 'IT Conference ending',
+    start: set(now, { date: 24, hours: 18, minutes: 10 }),
+    end: set(now, { date: 28, hours: 20 }),
+  },
 ];
