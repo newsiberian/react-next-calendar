@@ -1,5 +1,3 @@
-import findIndex from 'lodash/findIndex';
-
 import * as dates from './dates';
 
 export function endOfRange(
@@ -26,7 +24,7 @@ export function eventSegments(
   const start = dates.max(dates.startOf(accessors.start(event), 'day'), first);
   const end = dates.min(dates.ceil(accessors.end(event), 'day'), last);
 
-  const padding = findIndex(range, (x: Date) => dates.eq(x, start, 'day'));
+  const padding = range.findIndex((x: Date) => dates.eq(x, start, 'day'));
   let span = dates.diff(start, end, 'day');
 
   span = Math.min(span, slots);
