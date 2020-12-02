@@ -1,5 +1,3 @@
-import sortBy from 'lodash/sortBy';
-
 class Event {
   public start: number;
   public end: number;
@@ -131,12 +129,37 @@ function onSameRow(
   );
 }
 
+/**
+ * Performs comparing of two items by specified properties
+ *
+ * @thanks https://stackoverflow.com/a/56194061/7252759
+ *
+ * @param {string[]} props for sorting ['name'], ['value', 'city'], ['-date']
+ * to set descending order on object property just add '-' at the beginning of
+ * property
+ */
+const compareBy = <T extends keyof R | string, R>(...props: T[]) => (
+  a: R,
+  b: R,
+) => {
+  for (let i = 0; i < props.length; i++) {
+    const ascValue = (props[i] as string).startsWith('-') ? -1 : 1;
+    const prop = (props[i] as string).startsWith('-')
+      ? (props[i] as string).substr(1)
+      : props[i];
+    if (a[prop as keyof R] !== b[prop as keyof R]) {
+      return a[prop as keyof R] > b[prop as keyof R] ? ascValue : -ascValue;
+    }
+  }
+  return 0;
+};
+
 function sortByRender(events: Event[]) {
   if (!events.length) {
     return [];
   }
 
-  const sortedByTime = sortBy(events, ['startMs', e => -e.endMs]);
+  const sortedByTime = events.concat().sort(compareBy('startMs', '-endMs'));
   const sorted = [];
 
   while (sortedByTime.length > 0) {

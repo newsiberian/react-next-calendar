@@ -42,3 +42,27 @@ export const arrayMap = <T, U extends React.ReactNode>(arr: T[]) => (
   callbackfn: (value: T, index: number, array: T[]) => U,
 ): React.ReactNode | null =>
   Array.isArray(arr) && arr.length ? arr.map(callbackfn) : null;
+
+/**
+ * Assigns own and inherited enumerable string keyed properties of source objects
+ * to the destination object for all destination properties that resolve to
+ * undefined. Source objects are applied from left to right. Once a property is
+ * set, additional values of the same property are ignored.
+ *
+ * @param args
+ */
+export const defaults = <T>(...args: T[]): Record<string, unknown> =>
+  args.reverse().reduce((acc, obj) => ({ ...acc, ...obj }), {});
+
+/**
+ * This method creates an object composed of the own and inherited enumerable
+ * property paths of object that are not omitted.
+ *
+ * @param obj
+ * @param props
+ */
+export const omit = <T, K extends keyof T>(obj: T, props: K[]): Partial<T> => {
+  const newObj = { ...obj };
+  props.forEach(prop => delete newObj[prop]);
+  return newObj;
+};

@@ -2,7 +2,6 @@ import * as React from 'react';
 import clsx from 'clsx';
 import getPosition from 'dom-helpers/position';
 import * as animationFrame from 'dom-helpers/animationFrame';
-import chunk from 'lodash/chunk';
 import Overlay from 'react-overlays/Overlay';
 import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
@@ -47,6 +46,14 @@ export interface MonthViewProps {
 
   popup: boolean;
   popupOffset: { x: number; y: number } | number;
+}
+
+function chunk<T>(input: T[], size: number): Array<T[]> {
+  return input.reduce((arr: Array<T[]>, item: T, idx: number) => {
+    return idx % size === 0
+      ? [...arr, [item]]
+      : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
+  }, []);
 }
 
 const eventsForWeek = (
