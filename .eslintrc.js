@@ -6,7 +6,7 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
   ],
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'eslint-plugin-tsdoc'],
   env: {
     browser: true,
     es6: true,
@@ -25,5 +25,7 @@ module.exports = {
       version: 'detect',
     },
   },
-  rules: {},
+  rules: {
+    'tsdoc/syntax': 'warn',
+  },
 };
