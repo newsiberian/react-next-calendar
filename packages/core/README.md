@@ -30,7 +30,7 @@ $ yarn storybook
 
 **React Next Calendar** includes three options for handling the date formatting and
 culture localization, depending on your preference of DateTime libraries. You can
-use either the [Moment.js](http://momentjs.com/) or [Globalize.js](https://github.com/jquery/globalize)
+use either the [Moment.js](http://momentjs.com/), [Globalize.js](https://github.com/jquery/globalize)
 or even better [date-fns](https://date-fns.org/) localizers.
 
 Regardless of your choice, you **must** choose a localizer to use this library:
@@ -56,7 +56,7 @@ const MyCalendar = props => (
 )
 ```
 
-#### Globalize.js v0.1.1
+#### Globalize.js
 
 ```jsx
 import { Calendar, globalizeLocalizer } from 'react-next-calendar'
@@ -112,10 +112,10 @@ const MyCalendar = props => (
 ## Custom Styling
 
 Out of the box, you can include the compiled CSS files and be up and running.
-But, sometimes, you may want to style React Next Calendar to match your application
+But, sometimes, you may want to style **React Next Calendar** to match your application
 styling. In this case you can take styles from [here](https://github.com/newsiberian/react-next-calendar/tree/main/packages/core/src/sass)
 
 SASS implementation provides a `variables` file containing color and sizing
 variables that you can update to fit your application. _Note:_ Changing and/or
-overriding styles can cause rendering issues with your Raect Next Calendar.
+overriding styles can cause rendering issues with your **React Next Calendar**.
 Carefully test each change accordingly.

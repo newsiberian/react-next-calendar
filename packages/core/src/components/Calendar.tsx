@@ -20,7 +20,6 @@ export interface CalendarProps {
 
   /**
    * Props passed to main calendar `<div>`.
-   *
    */
   elementProps?: React.HTMLAttributes<HTMLDivElement>;
 
@@ -71,7 +70,7 @@ export interface CalendarProps {
   /**
    * The current view of the calendar.
    *
-   * @default 'month'
+   * @defaultValue 'month'
    * @controllable onView
    */
   view?: View;
@@ -79,13 +78,13 @@ export interface CalendarProps {
   /**
    * The initial view set for the Calendar.
    * @type {View} ('month'|'week'|'work_week'|'day'|'agenda')
-   * @default 'month'
+   * @defaultValue 'month'
    */
   defaultView?: View;
 
   /**
    * An array of built-in view names to allow the calendar to display.
-   * accepts either an array of builtin view names,
+   * accepts either an array of builtin view names.
    *
    * ```jsx
    * views={['month', 'day', 'agenda']}
@@ -104,7 +103,7 @@ export interface CalendarProps {
    * Custom views can be any React component, that implements the following
    * interface:
    *
-   * ```js
+   * ```ts
    * interface View {
    *   static title(date: Date, { formats: DateFormat[], culture: string?, ...props }): string
    *   static navigate(date: Date, action: 'PREV' | 'NEXT' | 'DATE'): Date
@@ -120,7 +119,7 @@ export interface CalendarProps {
    * Accessor for the event title, used to display event information. Should
    * resolve to a `renderable` value.
    *
-   * ```js
+   * ```ts
    * string | (event: Event) => string
    * ```
    *
@@ -265,7 +264,7 @@ export interface CalendarProps {
    * A callback fired when a date selection is made. Only fires when `selectable`
    * is `true`.
    *
-   * ```js
+   * ```ts
    * (
    *   slotInfo: {
    *     start: Date,
@@ -396,11 +395,15 @@ export interface CalendarProps {
 
   /**
    * Determines whether the toolbar is displayed
+   *
+   * @defaultValue true
    */
   toolbar?: boolean;
 
   /**
    * Show truncated events in an overlay when you click the "+_x_ more" link.
+   *
+   * @defaultValue true
    */
   popup?: boolean;
 
@@ -421,6 +424,8 @@ export interface CalendarProps {
    * The 'ignoreEvents' option prevents selection code from running when a
    * drag begins over an event. Useful when you want custom event click or drag
    * logic
+   *
+   * @defaultValue false
    */
   selectable?: Selectable;
 
@@ -430,7 +435,7 @@ export interface CalendarProps {
    * for time slot selection on touch devices.
    *
    * @type {number}
-   * @default 250
+   * @defaultValue 250
    */
   longPressThreshold?: number;
 
@@ -446,7 +451,7 @@ export interface CalendarProps {
   timeslots?: number;
 
   /**
-   *Switch the calendar to a `right-to-left` read direction.
+   * Switch the calendar to a `right-to-left` read direction.
    */
   rtl?: boolean;
 
@@ -613,6 +618,8 @@ export interface CalendarProps {
    * `overlap` allows events to be overlapped.
    * `no-overlap` resizes events to avoid overlap.
    * or custom `Function(events, minimumStartDifference, slotMetrics, accessors)`
+   *
+   * @defaultValue 'overlap'
    */
   dayLayoutAlgorithm: DayLayoutAlgorithm;
 
@@ -638,19 +645,20 @@ function isValidView(
 }
 
 /**
- * react-big-calendar is a full featured Calendar component for managing events
+ * React Next Calendar is a full-featured Calendar component for managing events
  * and dates. It uses modern `flexbox` for layout, making it super responsive and
  * performant. Leaving most of the layout heavy lifting to the browser.
- * __note:__ The default styles use `height: 100%` which means your container
+ * __Note:__ The default styles use `height: 100%` which means your container
  * must set an explicit height (feel free to adjust the styles to suit your
  * specific needs).
  *
- * Big Calendar is unopiniated about editing and moving events, preferring to let
- * you implement it in a way that makes the most sense to your app. It also tries
- * not to be prescriptive about your event data structures, just tell it how to
- * find the start and end datetimes and you can pass it whatever you want.
+ * React Next Calendar is unopiniated about editing and moving events, preferring
+ * to let you implement it in a way that makes the most sense to your app. It
+ * also tries not to be prescriptive about your event data structures, just tell
+ * it how to find the start and end datetimes and you can pass it whatever you
+ * want.
  *
- * One thing to note is that, `react-big-calendar` treats event start/end dates
+ * One thing to note is that, **React Next Calendar** treats event start/end dates
  * as an _exclusive_ range. which means that the event spans up to, but not
  * including, the end date. In the case of displaying events on whole days, end
  * dates are rounded _up_ to the next day. So an event ending on
@@ -659,7 +667,7 @@ function isValidView(
  * a function `endAccessor` that returns the end date + 1 day for those events
  * that end at midnight.
  */
-function Calendar({
+export function Calendar({
   events,
   date: currentDate,
 
@@ -682,6 +690,7 @@ function Calendar({
   messages = {} as Messages,
 
   step = 30,
+  timeslots = 2,
   length = 30,
   longPressThreshold = 250,
   popup = false,
@@ -959,6 +968,7 @@ function Calendar({
             date={current}
             getNow={getNow}
             step={step}
+            timeslots={timeslots}
             length={length}
             selectable={selectable}
             rtl={rtl}
