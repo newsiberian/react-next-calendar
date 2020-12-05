@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
-import omit from 'lodash/omit';
-import defaults from 'lodash/defaults';
 import { wrapAccessor } from '@react-next-calendar/utils';
 
 import { CalendarContext, PluginsContext } from '../CalendarContext';
-import { notify } from '../utils/helpers';
+import { notify, defaults, omit } from '../utils/helpers';
 import { navigate, views } from '../utils/constants';
 import message from '../utils/messages';
 import moveDate from '../utils/move';
@@ -763,7 +761,7 @@ export function Calendar({
         dateCellWrapper: NoopWrapper,
         weekWrapper: NoopWrapper,
         timeSlotWrapper: NoopWrapper,
-      }) as Components,
+      } as Components) as Components,
       names,
     ];
   }, [viewsProp, view, componentsProp]);
