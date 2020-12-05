@@ -1,0 +1,28 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import { Calendar, Views, events } from '../helpers';
+
+<Meta title="Core/NoEventsInRange message" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## Agenda `noEventsInRange` message prop
+
+<Canvas>
+  <Story
+    name="NoEventsInRange message"
+    args={{
+      defaultView: Views.AGENDA,
+      events: events,
+      messages: {
+        noEventsInRange:
+          'There are no special events in this range [test message]',
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

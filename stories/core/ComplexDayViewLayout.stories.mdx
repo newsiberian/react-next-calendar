@@ -1,0 +1,41 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import createEvents from '../helpers/createEvents';
+import { Views, Calendar } from '../helpers';
+
+<Meta title="Core/Complex day view layout" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+<Canvas>
+  <Story
+    name="Complex day view layout"
+    args={{
+      defaultView: Views.DAY,
+      events: createEvents(1),
+      step: 30,
+    }}
+    argTypes={{
+      defaultView: { table: { disable: true } },
+      events: { table: { disable: true } },
+      step: { table: { disable: true } },
+      dayLayoutAlgorithm: {
+        name: 'dayLayoutAlgorithm',
+        description: 'A day event layout(arrangement) algorithm',
+        type: { name: 'enum' },
+        defaultValue: 'overlap',
+        table: {
+          defaultValue: {
+            summary: 'overlap',
+          },
+        },
+        control: {
+          type: 'select',
+          options: { Overlap: 'overlap', 'Without overlap': 'no-overlap' },
+        },
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

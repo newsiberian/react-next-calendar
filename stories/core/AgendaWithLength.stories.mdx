@@ -1,0 +1,40 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import demoEvents from '../helpers/events';
+import { Calendar, Views } from '../helpers';
+
+<Meta title="Core/Length prop" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## `length` prop
+
+Should display as title toolbar (from now to now + 14 days)
+
+<Canvas>
+  <Story
+    name="Length prop"
+    args={{
+      defaultView: Views.AGENDA,
+      events: demoEvents,
+      length: 14,
+    }}
+    argTypes={{
+      defaultView: { table: { disable: true } },
+      events: { table: { disable: true } },
+      length: {
+        description:
+          'Determines the end date from date prop in the agenda view date prop + length (in number of days) = end date',
+        defaultValue: 30,
+        table: {
+          defaultValue: {
+            summary: 30,
+          },
+        },
+        control: { type: 'number', min: 1 },
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

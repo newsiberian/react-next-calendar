@@ -1,0 +1,40 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import moment from 'moment';
+
+import { events, Views, Calendar } from '../helpers';
+
+<Meta title="Core/Min and Max time" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## `min`/`max` props
+
+Constrains the minimum/maximum _time_ of the Day and Week views
+
+<Canvas>
+  <Story
+    name="Min and Max time"
+    args={{
+      defaultView: Views.WEEK,
+      views: [Views.WEEK, Views.DAY],
+      events,
+      min: moment('8:00am', 'h:mma').toDate(),
+      max: moment('6:00pm', 'h:mma').toDate(),
+    }}
+    argTypes={{
+      events: { table: { disable: true } },
+      views: { table: { disable: true } },
+      defaultView: { table: { disable: true } },
+      min: {
+        description: 'Constrains the minimum _time_ of the Day and Week views',
+        control: { type: 'date' },
+      },
+      max: {
+        description: 'Constrains the maximum _time_ of the Day and Week views',
+        control: { type: 'date' },
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

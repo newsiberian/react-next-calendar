@@ -1,0 +1,28 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import moment from 'moment';
+
+import { Calendar, Views, events } from '../helpers';
+
+<Meta title="Core/Scroll to time" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## `scrollToTime` prop example
+
+Should stroll to 5:00am on calendar render
+
+<Canvas>
+  <Story
+    name="Scroll to time"
+    args={{
+      defaultView: Views.DAY,
+      scrollToTime: moment('5:00am', 'h:mma').toDate(),
+      events,
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

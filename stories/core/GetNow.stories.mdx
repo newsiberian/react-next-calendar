@@ -1,0 +1,50 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import { Calendar, events } from '../helpers';
+
+<Meta title="Core/GetNow prop" component={Calendar} />
+
+export const Template = props => {
+  const [day, setDay] = React.useState(1);
+  const customNow = () => {
+    const now = new Date();
+    now.setDate(day);
+    return now;
+  };
+  function handleChange() {
+    setDay(prevState => {
+      if (prevState >= 29) {
+        return 1;
+      }
+      return prevState + 1;
+    });
+  }
+  return (
+    <>
+      <button onClick={handleChange} style={{ marginBottom: 16 }}>
+        Change Now
+      </button>
+      <Calendar getNow={customNow} {...props} />
+    </>
+  );
+};
+
+## `getNow` prop
+
+Should display 'today' at the first day of current month
+
+Press "Change Now" button to change today date
+
+<Canvas>
+  <Story
+    name="GetNow prop"
+    args={{
+      events,
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

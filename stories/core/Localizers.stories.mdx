@@ -1,0 +1,42 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import { events, Calendar, CalendarDateFns } from '../helpers';
+
+<Meta title="Core/Localizers" />
+
+export const Template = props => <Calendar {...props} />;
+export const DateFnsTemplate = props => <CalendarDateFns {...props} />;
+
+## Moment localizer
+
+<Canvas>
+  <Story
+    name="Moment localizer"
+    args={{
+      events,
+      culture: 'ru',
+    }}
+    argTypes={{
+      events: { table: { disable: true } },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## date-fns localizer
+
+<Canvas>
+  <Story
+    name="date-fns localizer"
+    args={{
+      events,
+      culture: 'ru',
+    }}
+    argTypes={{
+      events: { table: { disable: true } },
+    }}
+  >
+    {DateFnsTemplate.bind({})}
+  </Story>
+</Canvas>

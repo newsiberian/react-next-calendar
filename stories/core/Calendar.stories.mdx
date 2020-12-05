@@ -1,0 +1,147 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import { action } from '@storybook/addon-actions';
+
+import demoEvents from '../helpers/events';
+import { Calendar } from '../helpers';
+
+<Meta title="Core/Basic usage" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+# Calendar
+
+React Next Calendar is a full-featured Calendar component for managing events
+and dates. It uses modern `flexbox` for layout, making it super responsive and
+performant. Leaving most of the layout heavy lifting to the browser.
+**Note:** The default styles use `height: 100%` which means your container
+must set an explicit height (feel free to adjust the styles to suit your
+specific needs).
+
+Big Calendar is unopiniated about editing and moving events, preferring to let
+you implement it in a way that makes the most sense to your app. It also tries
+not to be prescriptive about your event data structures, just tell it how to
+find the start and end datetimes and you can pass it whatever you want.
+
+One thing to note is that, **React Next Calendar** treats event start/end dates
+as an _exclusive_ range. which means that the event spans up to, but not
+including, the end date. In the case of displaying events on whole days, end
+dates are rounded _up_ to the next day. So an event ending on
+`Apr 8th 12:00:00 am` will not appear on the 8th, whereas one ending on
+`Apr 8th 12:01:00 am` will. If you want _inclusive_ ranges consider providing
+a function `endAccessor` that returns the end date + 1 day for those events
+that end at midnight.
+
+## Basic Usage
+
+<Canvas>
+  <Story
+    // id="core-basic-usage--page"
+    name="Basic usage"
+    argTypes={{
+      events: { table: { disable: true } },
+      onSelectEvent: { table: { disable: true } },
+      selectable: {
+        description: 'Allows mouse selection of ranges of dates/times',
+        defaultValue: false,
+        table: {
+          defaultValue: {
+            summary: 'false',
+          },
+        },
+        control: { type: 'boolean' },
+      },
+      popup: {
+        description:
+          'Show truncated events in an overlay when you click the "+_x_ more" link',
+        defaultValue: true,
+        table: {
+          defaultValue: {
+            summary: 'true',
+          },
+        },
+        control: { type: 'boolean' },
+      },
+      toolbar: {
+        description: 'Determines whether the toolbar is displayed',
+        defaultValue: true,
+        table: {
+          defaultValue: {
+            summary: 'true',
+          },
+        },
+        control: { type: 'boolean' },
+      },
+      showMultiDayTimes: {
+        description:
+          'Support to show multi-day events with specific start and end times in the main time grid (rather than in the all day header)',
+        defaultValue: false,
+        table: {
+          defaultValue: {
+            summary: 'false',
+          },
+        },
+        control: { type: 'boolean' },
+      },
+      rtl: {
+        description:
+          'Support to show multi-day events with specific start and end times in the main time grid (rather than in the all day header)',
+        defaultValue: false,
+        table: {
+          defaultValue: {
+            summary: 'false',
+          },
+        },
+        control: { type: 'boolean' },
+      },
+      step: {
+        description:
+          'Determines the selectable time increments in week and day views, in minutes',
+        defaultValue: 30,
+        table: {
+          defaultValue: {
+            summary: 30,
+          },
+        },
+        control: { type: 'number', min: 1, max: 720 },
+      },
+      timeslots: {
+        description:
+          'The number of slots per "section" in the time grid views. Adjust with `step` to change the default of 1 hour long groups, with 30 minute slots',
+        defaultValue: 2,
+        table: {
+          defaultValue: {
+            summary: 2,
+          },
+        },
+        control: { type: 'number', min: 1, max: 720 },
+      },
+      dayLayoutAlgorithm: {
+        name: 'dayLayoutAlgorithm',
+        description: 'A day event layout(arrangement) algorithm',
+        type: { name: 'enum' },
+        defaultValue: 'overlap',
+        table: {
+          defaultValue: {
+            summary: 'overlap',
+          },
+        },
+        control: {
+          type: 'select',
+          options: { Overlap: 'overlap', 'Without overlap': 'no-overlap' },
+        },
+      },
+      culture: {
+        description: 'Specify a specific culture code for the Calendar',
+        defaultValue: 'en',
+        control: { type: 'text' },
+      },
+    }}
+    args={{
+      popup: true,
+      events: demoEvents,
+      onSelectEvent: action('event selected'),
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

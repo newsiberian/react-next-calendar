@@ -1,0 +1,183 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import customComponents from '../helpers/customComponents';
+import { events, Views, Calendar } from '../helpers';
+
+<Meta title="Core/Custom components" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+export const CustomTimeGutter = () => (
+  <p style={{ color: 'brown' }}>Custom gutter text</p>
+);
+
+## Custom month date header component
+
+```jsx dark
+components={{
+  month: {
+    dateHeader: ({ label }) => <span>{label} - Custom date header</span>
+  }
+}}
+```
+
+<Canvas>
+  <Story
+    name="Custom month date header"
+    args={{
+      defaultView: Views.MONTH,
+      views: [Views.MONTH],
+      events,
+      components: {
+        month: {
+          dateHeader: ({ label }) => <span>{label} - Custom date header</span>,
+        },
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom week header component
+
+```jsx dark
+components={{
+  week: {
+    header: CustomWeekHeader
+  }
+}}
+```
+
+<Canvas>
+  <Story
+    name="Custom week header"
+    args={{
+      defaultView: Views.WEEK,
+      views: [Views.WEEK],
+      events,
+      components: {
+        week: {
+          header: customComponents.header,
+        },
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom eventWrapper component
+
+```jsx dark
+components={{
+  week: {
+    eventWrapper: CustomEventWrapper
+  }
+}}
+```
+
+<Canvas>
+  <Story
+    name="Custom eventWrapper"
+    args={{
+      defaultView: Views.DAY,
+      events,
+      components: {
+        eventWrapper: customComponents.eventWrapper,
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom timeGutterHeader component
+
+```jsx dark
+components={{
+  timeGutterHeader: CustomTimeGutter
+}}
+```
+
+<Canvas>
+  <Story
+    name="Custom timeGutterHeader"
+    args={{
+      defaultView: Views.WEEK,
+      views: [Views.WEEK, Views.DAY],
+      events,
+      components: {
+        timeGutterHeader: CustomTimeGutter,
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom timeGutterHeader component
+
+```jsx dark
+components={{
+  dateCellWrapper: CustomDateCellWrapper
+}}
+```
+
+<Canvas>
+  <Story
+    name="Custom dateCellWrapper"
+    args={{
+      defaultView: Views.MONTH,
+      views: [Views.MONTH],
+      events,
+      components: {
+        dateCellWrapper: customComponents.dateCellWrapper,
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom timeSlotWrapper component
+
+```jsx dark
+components={{
+  timeSlotWrapper: CustomTimeSlotWrapper
+}}
+```
+
+<Canvas>
+  <Story
+    name="Custom timeSlotWrapper"
+    args={{
+      defaultView: Views.WEEK,
+      views: [Views.WEEK, Views.DAY],
+      events,
+      components: {
+        timeSlotWrapper: customComponents.timeSlotWrapper,
+      },
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

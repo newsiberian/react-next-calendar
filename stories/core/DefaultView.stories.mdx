@@ -1,0 +1,26 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+
+import { events, Views, Calendar } from '../helpers';
+
+<Meta title="Core/Default view" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## `defaultView` prop
+
+The initial view set for the Calendar
+
+<Canvas>
+  <Story
+    name="Default view"
+    args={{
+      defaultView: Views.WEEK,
+      events,
+    }}
+    parameters={{
+      controls: { disabled: true },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

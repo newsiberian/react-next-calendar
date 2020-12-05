@@ -1,0 +1,37 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import moment from 'moment';
+
+import { Calendar, Views, events } from '../helpers';
+
+<Meta title="Core/Views prop as object" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## `views` prop as object example
+
+In this example `views` looks like this:
+
+```jsx dark
+views={{
+  month: true,
+  week: true,
+}}
+```
+
+<Canvas>
+  <Story
+    name="Views prop as object"
+    args={{
+      views: {
+        month: true,
+        week: true,
+      },
+      events,
+    }}
+    argTypes={{
+      events: { table: { disable: true } },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

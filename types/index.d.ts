@@ -531,7 +531,7 @@ declare global {
    * using the `startAccessor` and `endAccessor` properties.
    *
    * @type {func}
-   * @default () => new Date()
+   * @defaultValue () => new Date()
    */
   type GetNow = () => Date;
 
@@ -549,4 +549,9 @@ declare global {
     end: Date;
     resourceId: resourceId;
   }) => boolean;
+
+  declare module '*.mdx' {
+    const MDXComponent: () => JSX.Element;
+    export default MDXComponent;
+  }
 }

@@ -1,0 +1,63 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import moment from 'moment';
+
+import { Calendar } from '../helpers';
+
+<Meta title="Core/Multi-day" component={Calendar} />
+
+export const Template = props => <Calendar {...props} />;
+
+## Multi-day events example
+
+Should display all three events
+
+<Canvas>
+  <Story
+    name="Multi-day"
+    args={{
+      showMultiDayTimes: true,
+      defaultDate: new Date(2016, 11, 4),
+      max: moment().endOf('day').add(-1, 'hours').toDate(),
+      events: [
+        {
+          title: 'start of the week',
+          start: new Date(2016, 11, 4, 15),
+          end: new Date(2016, 11, 5, 3),
+        },
+        {
+          title: 'single day longer than max',
+          start: new Date(2016, 11, 4, 15),
+          end: new Date(2016, 11, 4, 23, 30),
+        },
+        {
+          title: 'end of the week',
+          start: new Date(2016, 11, 3),
+          end: new Date(2016, 11, 3),
+        },
+        {
+          title: 'middle',
+          start: new Date(2016, 11, 6),
+          end: new Date(2016, 11, 6),
+        },
+      ],
+    }}
+    argTypes={{
+      defaultDate: { table: { disable: true } },
+      events: { table: { disable: true } },
+      max: { table: { disable: true } },
+      showMultiDayTimes: {
+        description:
+          'Support to show multi-day events with specific start and end times in the main time grid (rather than in the all day header)',
+        defaultValue: false,
+        table: {
+          defaultValue: {
+            summary: 'false',
+          },
+        },
+        control: { type: 'boolean' },
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

@@ -2,12 +2,8 @@ const path = require('path');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  stories: ['../stories/*.stories.@(ts|tsx|js|mdx)'],
-  addons: [
-    '@storybook/addon-actions',
-    '@storybook/addon-docs',
-    '@storybook/addon-controls',
-  ],
+  stories: ['../stories/**/*.stories.@(ts|tsx|js|mdx)'],
+  addons: ['@storybook/addon-essentials'],
   // https://storybook.js.org/docs/react/configure/typescript#mainjs-configuration
   typescript: {
     check: false, // type-check stories during Storybook build
