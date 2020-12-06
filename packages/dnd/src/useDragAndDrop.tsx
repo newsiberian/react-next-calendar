@@ -27,7 +27,12 @@ export interface DragAndDropCalendarProps {
     action: DragAction;
     direction?: DragDirection;
   }) => void;
-  onDragOver: (event: RNC.Event) => void;
+
+  onDragOver?: (e: React.DragEvent) => void;
+
+  /**
+   * Fires when external element been dropped on the calendar
+   */
   onDropFromOutside?: ({
     start,
     end,
@@ -44,14 +49,33 @@ export interface DragAndDropCalendarProps {
 
   dragFromOutsideItem?: () => RNC.Event;
 
+  /**
+   * Determines whether the event is draggable
+   *
+   * @param event
+   */
   draggableAccessor?: (event: RNC.Event) => boolean;
+
+  /**
+   * Determines whether the event is resizable
+   *
+   * @param event
+   */
   resizableAccessor?: (event: RNC.Event) => boolean;
 
+  /**
+   * Allows mouse selection of ranges of dates/times
+   */
   selectable: Selectable;
-  resizable: boolean;
 
+  /**
+   * Customized calendar components
+   */
   components: Components;
 
+  /**
+   * Props passed to main calendar `<div>`
+   */
   elementProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
@@ -89,21 +113,19 @@ export interface DraggableContext {
  * Creates a hook supporting drag & drop and optionally resizing of events:
  *
  * ```js
- *    import Calendar from '@react-next-calendar/core'
- *    import { useDragAndDrop } from '@react-next-calendar/dnd'
+ *   import Calendar from '@react-next-calendar/core'
+ *   import { useDragAndDrop } from '@react-next-calendar/dnd'
  * ```
- *
- * Set `resizable` to true in your calendar if you want events to be resizable.
  *
  * The hook adds `onEventDrop`, `onEventResize`, and `onDragStart` callback
  * properties if the events are moved or resized. These callbacks are called
  * with these signatures:
  *
  * ```js
- *    function onEventDrop({ event, start, end, allDay }) {...}
- *    // type is always 'drop'
- *    function onEventResize(type, { event, start, end, allDay }) {...}
- *    function onDragStart({ event, action, direction }) {...}
+ *   function onEventDrop({ event, start, end, allDay }) {...}
+ *   // type is always 'drop'
+ *   function onEventResize(type, { event, start, end, allDay }) {...}
+ *   function onDragStart({ event, action, direction }) {...}
  * ```
  *
  * Moving and resizing of events has some subtlety which one should be aware of.
@@ -136,12 +158,12 @@ export interface DraggableContext {
  * `event.preventDefault` is not called in the `onDragOver` callback, then the
  * draggable item will not be droppable on the calendar.
  *
- * * ```js
- *    function onDropFromOutside({ start, end, allDay }) {...}
- *    function onDragOver(DragEvent: event) {...}
+ * ```js
+ *   function onDropFromOutside({ start, end, allDay }) {...}
+ *   function onDragOver(e: React.DragEvent) {...}
  * ```
  */
-export default function useDragAndDrop({
+export function useDragAndDrop({
   components,
 
   selectable,
@@ -157,7 +179,12 @@ export default function useDragAndDrop({
 
   draggableAccessor,
   resizableAccessor,
-}: DragAndDropCalendarProps) {
+}: DragAndDropCalendarProps): readonly [
+  { draggable: DraggableContext },
+  Components,
+  Selectable,
+  React.HTMLAttributes<HTMLDivElement>,
+] {
   const [interacting, setInteracting] = React.useState<boolean>(false);
   const [action, setAction] = React.useState<DragAction | null>(null);
   const [direction, setDirection] = React.useState<DragDirection | null>(null);

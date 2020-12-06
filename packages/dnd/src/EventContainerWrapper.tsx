@@ -231,6 +231,7 @@ function EventContainerWrapper({
 
       const bounds = getBoundsForNode(rootRef.current as HTMLDivElement);
 
+      // TODO: probably we should fire dragFromOutsideItem here?
       handleDropFromOutside(point, bounds);
     });
 
