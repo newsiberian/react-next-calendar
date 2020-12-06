@@ -1,0 +1,29 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import { action } from '@storybook/addon-actions';
+
+import customComponents from '../helpers/customComponents';
+import { DragAndDropCalendar, events, Views } from '../helpers';
+
+<Meta
+  title="dnd/With non-default steps and timeslots"
+  component={DragAndDropCalendar}
+/>
+
+export const Template = props => <DragAndDropCalendar {...props} />;
+
+<Canvas>
+  <Story
+    name="With non-default steps and timeslots"
+    args={{
+      defaultView: Views.WEEK,
+      events,
+      step: 15,
+      timeslots: 4,
+      onEventDrop: action('event dropped'),
+      onEventResize: action('event resized'),
+    }}
+    argTypes={{}}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

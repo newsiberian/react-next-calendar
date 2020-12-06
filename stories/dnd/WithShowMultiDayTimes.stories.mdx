@@ -1,0 +1,27 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import { action } from '@storybook/addon-actions';
+
+import customComponents from '../helpers/customComponents';
+import { DragAndDropCalendar, events, Views } from '../helpers';
+
+<Meta title="dnd/With showMultiDayTimes" component={DragAndDropCalendar} />
+
+export const Template = props => <DragAndDropCalendar {...props} />;
+
+## With `showMultiDayTimes` prop
+
+<Canvas>
+  <Story
+    name="With showMultiDayTimes"
+    args={{
+      defaultView: Views.WEEK,
+      showMultiDayTimes: true,
+      events,
+      onEventDrop: action('event dropped'),
+      onEventResize: action('event resized'),
+    }}
+    argTypes={{}}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

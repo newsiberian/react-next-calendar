@@ -1,0 +1,71 @@
+import { Canvas, Meta, Story } from '@storybook/addon-docs/blocks';
+import { action } from '@storybook/addon-actions';
+
+import customComponents from '../helpers/customComponents';
+import { DragAndDropCalendar, events, Views } from '../helpers';
+
+<Meta title="dnd/Custom components" component={DragAndDropCalendar} />
+
+export const Template = props => <DragAndDropCalendar {...props} />;
+
+## Custom dateCellWrapper component
+
+<Canvas>
+  <Story
+    name="dateCellWrapper"
+    args={{
+      events,
+      showMultiDayTimes: true,
+      onEventDrop: action('event dropped'),
+      onEventResize: action('event resized'),
+      components: {
+        dateCellWrapper: customComponents.dateCellWrapper,
+      },
+    }}
+    argTypes={{}}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom timeSlotWrapper component
+
+<Canvas>
+  <Story
+    name="timeSlotWrapper"
+    args={{
+      defaultView: Views.WEEK,
+      events,
+      showMultiDayTimes: true,
+      onEventDrop: action('event dropped'),
+      onEventResize: action('event resized'),
+      components: {
+        timeSlotWrapper: customComponents.timeSlotWrapper,
+      },
+    }}
+    argTypes={{}}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom eventWrapper component
+
+<Canvas>
+  <Story
+    name="eventWrapper"
+    args={{
+      defaultView: Views.WEEK,
+      events,
+      showMultiDayTimes: true,
+      onEventDrop: action('event dropped'),
+      onEventResize: action('event resized'),
+      components: {
+        eventWrapper: customComponents.eventWrapper,
+      },
+    }}
+    argTypes={{}}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
