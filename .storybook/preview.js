@@ -1,5 +1,8 @@
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
+import '../packages/core/src/sass/styles.scss';
+import '../packages/dnd/styles.scss';
+
 export const parameters = {
   docs: {
     container: DocsContainer,

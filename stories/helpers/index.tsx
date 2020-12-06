@@ -13,10 +13,6 @@ const dateFnsLocales = {
   ru: ruLocale,
 };
 
-// For Testing SASS styling
-import '../../packages/core/src/sass/styles.scss';
-import '../../packages/dnd/styles.scss';
-
 import {
   Calendar as BaseCalendar,
   dateFnsLocalizer,
