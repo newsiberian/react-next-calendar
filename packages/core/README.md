@@ -5,7 +5,8 @@ uses flexbox over the classic tables-ception approach.
 
 [**DEMO and Docs**](http://jquense.github.io/react-big-calendar/examples/index.html)
 
-Inspired by [Full Calendar](http://fullcalendar.io/).
+This is a fork of [React Big Calendar](https://intljusticemission.github.io/react-big-calendar/examples/index.html)
+refactored to the modern React.
 
 ## Use and Setup
 
