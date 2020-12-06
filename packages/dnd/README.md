@@ -1,6 +1,6 @@
 ### Drag and Drop plugin for React Next Calendar
 
-[Docs](https://newsiberian.github.io/react-next-calendar/?path=/story/dnd-basic-usage--basic-usage)
+[Docs](https://newsiberian.github.io/react-next-calendar/?path=/docs/dnd-basic-usage--basic-usage)
 
 ```jsx
 import { Calendar } from '@react-next-calendar/core'
