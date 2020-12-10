@@ -56,6 +56,7 @@ const customComponents = {
       border: '4px solid',
       borderColor: props.event.start.getHours() % 2 === 0 ? 'green' : 'red',
       padding: '5px',
+      height: '100%',
     };
     return <div style={style}>{props.children}</div>;
   },

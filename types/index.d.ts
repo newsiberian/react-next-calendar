@@ -325,6 +325,12 @@ declare global {
    * ```
    */
   type Components = {
+    /**
+     * Wrap event by something else.
+     *
+     * If you are going to wrap the event with any element, we recommend adding
+     * `height: 100%` style to it
+     */
     eventWrapper: Component;
     eventContainerWrapper: Component;
     dateCellWrapper: Component;
