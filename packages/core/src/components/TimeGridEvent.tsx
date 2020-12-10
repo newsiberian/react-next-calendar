@@ -59,42 +59,40 @@ function TimeGridEvent(props: TimeGridEventProps): React.ReactElement {
 
   const { height, top, width, xOffset } = style;
 
-  const inner = [
-    <div key="1" className="rbc-event-label">
-      {label}
-    </div>,
-    <div key="2" className="rbc-event-content">
-      {Event ? <Event event={event} title={title} /> : title}
-    </div>,
-  ];
-
   return (
-    <EventWrapper type="time" {...props}>
-      <div
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-        onKeyPress={onKeyPress}
-        style={{
-          ...eventProps.style,
-          top: stringifyPercent(top),
-          [rtl ? 'right' : 'left']: stringifyPercent(xOffset as number),
-          width: stringifyPercent(width),
-          height: stringifyPercent(height),
-        }}
-        title={
-          tooltip
-            ? (typeof label === 'string' ? label + ': ' : '') + tooltip
-            : undefined
-        }
-        className={clsx('rbc-event', className, eventProps.className, {
-          'rbc-selected': selected,
-          'rbc-event-continues-earlier': continuesEarlier,
-          'rbc-event-continues-later': continuesLater,
-        })}
-      >
-        {inner}
-      </div>
-    </EventWrapper>
+    <div
+      style={{
+        ...eventProps.style,
+        top: stringifyPercent(top),
+        [rtl ? 'right' : 'left']: stringifyPercent(xOffset as number),
+        width: stringifyPercent(width),
+        height: stringifyPercent(height),
+        position: 'absolute',
+      }}
+    >
+      <EventWrapper type="time" {...props}>
+        <div
+          onClick={onClick}
+          onDoubleClick={onDoubleClick}
+          onKeyPress={onKeyPress}
+          title={
+            tooltip
+              ? (typeof label === 'string' ? label + ': ' : '') + tooltip
+              : undefined
+          }
+          className={clsx('rbc-event', className, eventProps.className, {
+            'rbc-selected': selected,
+            'rbc-event-continues-earlier': continuesEarlier,
+            'rbc-event-continues-later': continuesLater,
+          })}
+        >
+          <div className="rbc-event-label">{label}</div>
+          <div className="rbc-event-content">
+            {Event ? <Event event={event} title={title} /> : title}
+          </div>
+        </div>
+      </EventWrapper>
+    </div>
   );
 }
 
