@@ -1,5 +1,4 @@
 import * as React from 'react';
-import getOffset from 'dom-helpers/offset';
 import getScrollTop from 'dom-helpers/scrollTop';
 import getScrollLeft from 'dom-helpers/scrollLeft';
 import { isSelected } from '@react-next-calendar/utils';
@@ -39,8 +38,8 @@ export interface PopupProps {
 }
 
 /**
- * The Overlay component, of react-overlays, creates a ref that is passed to the Popup, and
- * requires proper ref forwarding to be used without error
+ * The Overlay component, of react-overlays, creates a ref that is passed to the
+ * Popup, and requires proper ref forwarding to be used without error
  */
 const Popup = React.forwardRef(function Popup(
   {
@@ -60,14 +59,18 @@ const Popup = React.forwardRef(function Popup(
     slotStart,
     style,
   }: PopupProps,
-  ref: React.ForwardedRef<HTMLDivElement>,
+  ref: React.ForwardedRef<React.RefCallback<HTMLElement>>,
 ): React.ReactElement {
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
   const [offset, setOffset] = React.useState({ topOffset: 0, leftOffset: 0 });
 
   React.useEffect(() => {
-    const { top, left, width, height } = getOffset(
-      (ref as React.MutableRefObject<HTMLDivElement>).current,
-    );
+    const {
+      top,
+      left,
+      width,
+      height,
+    } = (rootRef.current as HTMLDivElement).getBoundingClientRect();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const viewBottom = window.innerHeight + getScrollTop(window);
@@ -108,7 +111,10 @@ const Popup = React.forwardRef(function Popup(
     <div
       style={{ ...style, ...computedStyle }}
       className="rbc-overlay"
-      ref={ref}
+      ref={(element: HTMLDivElement) => {
+        (ref as React.RefCallback<HTMLElement>)(element);
+        rootRef.current = element;
+      }}
     >
       <div className="rbc-overlay-header">
         {localizer.format(slotStart, 'dayHeaderFormat')}
