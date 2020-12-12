@@ -1,6 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import getHeight from 'dom-helpers/height';
 import qsa from 'dom-helpers/querySelectorAll';
 import { useEnhancedEffect } from '@react-next-calendar/hooks';
 import { dates } from '@react-next-calendar/utils';
@@ -100,12 +99,14 @@ function DateContentRow({
   const dateSlotMetrics = React.useRef(DateSlotMetrics.getSlotMetrics());
 
   const getRowLimit = React.useCallback(function getRowLimit() {
-    const eventHeight = getHeight(eventRowRef.current as HTMLDivElement);
+    const eventHeight = (eventRowRef.current as HTMLDivElement).getBoundingClientRect()
+      .height;
     const headingHeight = headingRowRef.current
-      ? getHeight(headingRowRef.current)
+      ? headingRowRef.current.getBoundingClientRect().height
       : 0;
     const eventSpace =
-      getHeight(rootRef.current as HTMLDivElement) - headingHeight;
+      (rootRef.current as HTMLDivElement).getBoundingClientRect().height -
+      headingHeight;
 
     return Math.max(Math.floor(eventSpace / eventHeight), 1);
   }, []);
@@ -131,6 +132,10 @@ function DateContentRow({
       accessors,
     });
     const row = qsa(rootRef.current as HTMLDivElement, '.rbc-row-bg')[0];
+
+    // const row = (rootRef.current as HTMLDivElement)
+    //   .querySelectorAll('.rbc-row-bg')
+    //   .item(0);
 
     if (row) {
       const cell = row.children[slot - 1] as HTMLElement;

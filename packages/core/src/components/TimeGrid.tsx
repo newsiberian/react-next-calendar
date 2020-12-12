@@ -2,7 +2,6 @@ import * as React from 'react';
 import clsx from 'clsx';
 import memoize from 'memoize-one';
 import * as animationFrame from 'dom-helpers/animationFrame';
-import getWidth from 'dom-helpers/width';
 import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
 import { notify } from '../utils/helpers';
@@ -104,7 +103,7 @@ function TimeGrid({
       measureGutterAnimationFrameRequest.current = window.requestAnimationFrame(
         () => {
           if (gutterRef.current) {
-            const width = getWidth(gutterRef.current);
+            const { width } = gutterRef.current.getBoundingClientRect();
 
             if (width && gutterWidth !== width) {
               setGutterWidth(width);

@@ -1,8 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import addClass from 'dom-helpers/addClass';
-import removeClass from 'dom-helpers/removeClass';
-import getWidth from 'dom-helpers/width';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates, inRange, isSelected } from '@react-next-calendar/utils';
 
@@ -150,8 +147,8 @@ const Agenda: ExtendedFC<AgendaProps> = function Agenda({
     const localWidths = [...widths.current];
 
     widths.current = [
-      getWidth(firstRow.children[0] as HTMLElement),
-      getWidth(firstRow.children[1] as HTMLElement),
+      firstRow.children[0].getBoundingClientRect().width,
+      firstRow.children[1].getBoundingClientRect().width,
     ];
 
     if (
@@ -163,10 +160,11 @@ const Agenda: ExtendedFC<AgendaProps> = function Agenda({
     }
 
     if (isOverflowing) {
-      addClass(header, 'rbc-header-overflowing');
+      header.classList.add('rbc-header-overflowing');
       header.style.marginRight = scrollbarSize() + 'px';
     } else {
-      removeClass(header, 'rbc-header-overflowing');
+      header.classList.contains('rbc-header-overflowing') &&
+        header.classList.remove('rbc-header-overflowing');
     }
   };
 

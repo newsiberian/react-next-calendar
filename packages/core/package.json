@@ -64,10 +64,10 @@
   "dependencies": {
     "@react-next-calendar/hooks": "^1.0.0",
     "@react-next-calendar/utils": "^1.0.0",
-    "clsx": "1.1.1",
+    "clsx": "^1.1.1",
     "dom-helpers": "^5.1.0",
     "memoize-one": "^5.1.1",
-    "react-overlays": "4.1.1",
+    "react-overlays": "^4.1.1",
     "tiny-invariant": "^1.1.0",
     "uncontrollable": "^7.0.0"
   },
