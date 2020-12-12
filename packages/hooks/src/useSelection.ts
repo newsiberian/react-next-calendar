@@ -1,5 +1,4 @@
 import * as React from 'react';
-import contains from 'dom-helpers/contains';
 import closest from 'dom-helpers/closest';
 import listen from 'dom-helpers/listen';
 import { EventHandler } from 'dom-helpers/addEventListener';
@@ -121,7 +120,7 @@ export default function useSelection(
       }
 
       const inRoot =
-        !node.current || contains(node.current, e.target as Element);
+        !node.current || node.current.contains(e.target as Element);
       const click = isClick(pageX, pageY);
 
       initialEventData.current = null;
@@ -208,7 +207,7 @@ export default function useSelection(
       if (
         !globalMouse &&
         node.current &&
-        !contains(node.current, e.target as HTMLElement)
+        !node.current.contains(e.target as HTMLElement)
       ) {
         const { top, left, bottom, right } = normalizeDistance(0);
 
@@ -509,7 +508,7 @@ function isOverContainer(
 ): boolean {
   return Boolean(
     !container ||
-      contains(container, document.elementFromPoint(x, y) as Element),
+      container.contains(document.elementFromPoint(x, y) as Element),
   );
 }
 
