@@ -5287,7 +5287,7 @@ clone@^1.0.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
 
-clsx@1.1.1:
+clsx@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
   integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
@@ -12091,7 +12091,7 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-overlays@4.1.1:
+react-overlays@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-overlays/-/react-overlays-4.1.1.tgz#0060107cbe1c5171a744ccda3fbf0556d064bc5f"
   integrity sha512-WtJifh081e6M24KnvTQoNjQEpz7HoLxqt8TwZM7LOYIkYJ8i/Ly1Xi7RVte87ZVnmqQ4PFaFiNHZhSINPSpdBQ==
