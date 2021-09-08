@@ -58,8 +58,8 @@
     ]
   },
   "peerDependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react": "^16.13.1 || ^17.0.2",
+    "react-dom": "^16.13.1 || ^17.0.2"
   },
   "dependencies": {
     "@react-next-calendar/hooks": "^1.0.0",
