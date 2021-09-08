@@ -102,7 +102,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   const [prevDate, setPrevDate] = React.useState(date);
   const pendingSelection = React.useRef<Date[]>([]);
   const rootRef = React.useRef<HTMLDivElement>(null);
-  const selectTimer = React.useRef<number>();
+  const selectTimer = React.useRef<ReturnType<typeof setTimeout>>();
 
   const month = dates.visibleDays(date, localizer);
   const weeks = chunk(month, 7);
@@ -217,7 +217,9 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   }
 
   function clearSelection() {
-    clearTimeout(selectTimer.current);
+    if (selectTimer.current) {
+      clearTimeout(selectTimer.current);
+    }
     pendingSelection.current = [];
   }
 
