@@ -1,6 +1,6 @@
 {
   "name": "@react-next-calendar/dnd",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -39,7 +39,7 @@
     ]
   },
   "dependencies": {
-    "@react-next-calendar/core": "^1.0.1",
+    "@react-next-calendar/core": "^1.0.2",
     "@react-next-calendar/hooks": "^1.0.1",
     "@react-next-calendar/utils": "^1.0.1"
   }
