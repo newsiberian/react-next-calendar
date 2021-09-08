@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/newsiberian/react-next-calendar/compare/v1.0.0...v1.0.1) (2021-09-08)
+
+
+### Bug Fixes
+
+* **core:** place outer div outside EventWrapper to keep positioning on top of the second. This fixes custom eventWrapper positioning at time grid ([d3215be](https://github.com/newsiberian/react-next-calendar/commit/d3215be1132dcc8e8aa41b91badb35d4570cab66))
+* **core:** use internal rootRef instead of external `callback ref` to get popup sizes ([d237cd7](https://github.com/newsiberian/react-next-calendar/commit/d237cd7fa7ef6df1eaf3e42b5c02d793680dd2c7))
+
+
+
+
+
 # [1.0.0](https://github.com/newsiberian/react-next-calendar/compare/v0.28.1...v1.0.0) (2020-12-01)
 
 

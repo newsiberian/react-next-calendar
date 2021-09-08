@@ -1,6 +1,6 @@
 {
   "name": "@react-next-calendar/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Calendar! with events",
   "author": {
     "name": "Jason Quense",
@@ -62,8 +62,8 @@
     "react-dom": "^16.13.1 || ^17.0.2"
   },
   "dependencies": {
-    "@react-next-calendar/hooks": "^1.0.0",
-    "@react-next-calendar/utils": "^1.0.0",
+    "@react-next-calendar/hooks": "^1.0.1",
+    "@react-next-calendar/utils": "^1.0.1",
     "clsx": "^1.1.1",
     "dom-helpers": "^5.1.0",
     "memoize-one": "^5.1.1",
