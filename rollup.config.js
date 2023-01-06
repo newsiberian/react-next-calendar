@@ -1,8 +1,7 @@
-import nodeResolve from '@rollup/plugin-node-resolve';
-// import babel from 'rollup-plugin-babel';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
-import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
 import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 
@@ -34,10 +33,9 @@ export default [
     plugins: [
       typescript(),
       nodeResolve(),
-      // babel(babelOptions),
+      babel(babelOptions),
       commonjs(commonjsOptions),
       replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
-      sizeSnapshot(),
     ],
   },
   {
@@ -52,10 +50,9 @@ export default [
     plugins: [
       typescript(),
       nodeResolve(),
-      // babel(babelOptions),
+      babel(babelOptions),
       commonjs(commonjsOptions),
       replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
-      sizeSnapshot(),
       terser(),
     ],
   },
@@ -64,10 +61,6 @@ export default [
     output: { file: pkg.module, format: 'esm' },
     // prevent bundling all dependencies
     external: id => !id.startsWith('.') && !id.startsWith('/'),
-    plugins: [
-      // babel(babelOptions),
-      typescript(),
-      sizeSnapshot(),
-    ],
+    plugins: [babel(babelOptions), typescript()],
   },
 ];

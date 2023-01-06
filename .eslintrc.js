@@ -1,25 +1,35 @@
 module.exports = {
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier', 'prettier/react', 'prettier/@typescript-eslint', 'plugin:prettier/recommended', 'plugin:storybook/recommended'],
-  plugins: ['react', '@typescript-eslint', 'eslint-plugin-tsdoc'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:storybook/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+    'prettier',
+  ],
+  plugins: ['eslint-plugin-tsdoc', 'jsx-a11y'],
   env: {
     browser: true,
-    es6: true
+    es6: true,
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 2020,
     sourceType: 'module',
-    project: ['./tsconfig.json', './packages/**/tsconfig.json']
+    project: ['./tsconfig.json', './packages/**/tsconfig.json'],
   },
   settings: {
     react: {
-      version: 'detect'
-    }
+      version: 'detect',
+    },
   },
   rules: {
-    'tsdoc/syntax': 'warn'
-  }
+    'tsdoc/syntax': 'warn',
+    'react/prop-types': 'off',
+  },
 };
