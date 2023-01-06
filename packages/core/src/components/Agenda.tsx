@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates, inRange, isSelected } from '@react-next-calendar/utils';
 
-import { navigate } from '../utils/constants';
+import { NavigateAction } from '../utils/constants';
 
 export interface AgendaProps {
   events: RNC.Event[];
@@ -219,10 +219,10 @@ Agenda.range = (start, { length = defaultLength }: { length?: number }) => {
 
 Agenda.navigate = (date: Date, action: Action, { length = defaultLength }) => {
   switch (action) {
-    case navigate.PREVIOUS:
+    case NavigateAction.PREVIOUS:
       return dates.add(date, -length, 'day');
 
-    case navigate.NEXT:
+    case NavigateAction.NEXT:
       return dates.add(date, length, 'day');
 
     default:

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { navigate } from './utils/constants';
+import { NavigateAction } from '../packages/core/src/utils/constants';
 
 declare global {
   namespace RNC {
@@ -32,7 +32,7 @@ declare global {
 
     navigate: (
       date: Date,
-      action: Action,
+      action: NavigateAction,
       options: { length?: number },
     ) => Date;
     title: (
@@ -44,10 +44,10 @@ declare global {
   type Unit = 'week' | 'day' | 'hours' | 'minutes' | 'seconds' | 'milliseconds';
 
   type Action =
-    | navigate.NEXT
-    | navigate.PREVIOUS
-    | navigate.TODAY
-    | navigate.DATE;
+    | NavigateAction.NEXT
+    | NavigateAction.PREVIOUS
+    | NavigateAction.TODAY
+    | NavigateAction.DATE;
 
   type ActionType =
     | 'selecting'
@@ -162,7 +162,7 @@ declare global {
   }
 
   interface DateSlotMetrics<
-    DateSlotMetricsOptions = Record<string, undefined>
+    DateSlotMetricsOptions = Record<string, undefined>,
   > {
     clone: (
       options: DateSlotMetricsOptions,
@@ -188,7 +188,7 @@ declare global {
   }
 
   interface TimeSlotMetrics<
-    TimeSlotMetricsOptions = Record<string, undefined>
+    TimeSlotMetricsOptions = Record<string, undefined>,
   > {
     groups: Date[][];
     update: (

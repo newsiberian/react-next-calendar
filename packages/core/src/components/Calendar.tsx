@@ -5,7 +5,7 @@ import { wrapAccessor } from '@react-next-calendar/utils';
 
 import { CalendarContext, PluginsContext } from '../CalendarContext';
 import { notify, defaults, omit } from '../utils/helpers';
-import { navigate, views } from '../utils/constants';
+import { NavigateAction, views } from '../utils/constants';
 import message from '../utils/messages';
 import moveDate from '../utils/move';
 import { mergeWithDefaults } from '../localizer';
@@ -928,7 +928,7 @@ export function Calendar({
       handleViewChange(view);
     }
 
-    handleNavigate(navigate.DATE, date);
+    handleNavigate(NavigateAction.DATE, date);
   }
 
   return (

@@ -1,4 +1,4 @@
-export enum navigate {
+export enum NavigateAction {
   PREVIOUS = 'PREV',
   NEXT = 'NEXT',
   TODAY = 'TODAY',

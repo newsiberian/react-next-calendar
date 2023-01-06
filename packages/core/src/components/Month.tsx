@@ -12,7 +12,7 @@ import * as animationFrame from 'dom-helpers/animationFrame';
 import Overlay from 'react-overlays/Overlay';
 import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
-import { navigate, views } from '../utils/constants';
+import { NavigateAction, views } from '../utils/constants';
 import { notify } from '../utils/helpers';
 import Popup from './Popup';
 import DateContentRow from './DateContentRow';
@@ -372,10 +372,10 @@ MonthView.range = (date, { localizer }: { localizer: Localizer }) => {
 
 MonthView.navigate = (date, action) => {
   switch (action) {
-    case navigate.PREVIOUS:
+    case NavigateAction.PREVIOUS:
       return dates.add(date, -1, 'month');
 
-    case navigate.NEXT:
+    case NavigateAction.NEXT:
       return dates.add(date, 1, 'month');
 
     default:

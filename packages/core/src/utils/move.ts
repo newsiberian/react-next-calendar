@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 
-import { navigate } from './constants';
+import { NavigateAction } from './constants';
 import VIEWS from '../components/Views';
 
 interface Params {
@@ -16,15 +16,15 @@ export default function moveDate(
   const ViewComponent = typeof View === 'string' ? VIEWS[View] : View;
 
   switch (action) {
-    case navigate.TODAY:
+    case NavigateAction.TODAY:
       date = today || new Date();
       break;
-    case navigate.DATE:
+    case NavigateAction.DATE:
       break;
     default:
       invariant(
         View && typeof ViewComponent.navigate === 'function',
-        'Calendar View components must implement a static `.navigate(date, action)` method.s',
+        'Calendar View components must implement a static `.navigate(date, action)` method.',
       );
       date = ViewComponent.navigate(date, action, props);
   }

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { dates } from '@react-next-calendar/utils';
 
-import { navigate } from '../utils/constants';
+import { NavigateAction } from '../utils/constants';
 import TimeGrid, { TimeGridProps } from './TimeGrid';
 
 export interface DayProps extends TimeGridProps {
@@ -20,10 +20,10 @@ Day.range = date => {
 
 Day.navigate = (date, action) => {
   switch (action) {
-    case navigate.PREVIOUS:
+    case NavigateAction.PREVIOUS:
       return dates.add(date, -1, 'day');
 
-    case navigate.NEXT:
+    case NavigateAction.NEXT:
       return dates.add(date, 1, 'day');
 
     default:

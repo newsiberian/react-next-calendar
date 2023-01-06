@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import { navigate } from '../utils/constants';
+import { NavigateAction } from '../utils/constants';
 import { arrayMap } from '../utils/helpers';
 
 export interface ToolbarProps {
@@ -14,8 +14,8 @@ export interface ToolbarProps {
   label: string;
   view: View;
   views: View[];
-  onNavigate: (view: View) => void;
-  onView: (action: Action, newDate?: Date) => void;
+  onNavigate: (action: NavigateAction) => void;
+  onView: (view: View, newDate?: Date) => void;
   localizer: Localizer;
 }
 
@@ -27,7 +27,7 @@ export default function Toolbar({
   onNavigate,
   onView,
 }: ToolbarProps) {
-  function handleNavigate(action: Action): void {
+  function handleNavigate(action: NavigateAction): void {
     onNavigate(action);
   }
 
@@ -38,13 +38,22 @@ export default function Toolbar({
   return (
     <div className="rbc-toolbar">
       <span className="rbc-btn-group">
-        <button type="button" onClick={() => handleNavigate(navigate.TODAY)}>
+        <button
+          type="button"
+          onClick={() => handleNavigate(NavigateAction.TODAY)}
+        >
           {localizer.messages.today}
         </button>
-        <button type="button" onClick={() => handleNavigate(navigate.PREVIOUS)}>
+        <button
+          type="button"
+          onClick={() => handleNavigate(NavigateAction.PREVIOUS)}
+        >
           {localizer.messages.previous}
         </button>
-        <button type="button" onClick={() => handleNavigate(navigate.NEXT)}>
+        <button
+          type="button"
+          onClick={() => handleNavigate(NavigateAction.NEXT)}
+        >
           {localizer.messages.next}
         </button>
       </span>
