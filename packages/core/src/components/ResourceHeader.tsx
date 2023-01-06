@@ -6,8 +6,6 @@ export interface ResourceHeaderProps {
   resource: Resource;
 }
 
-export default function ResourceHeader({
-  label,
-}: ResourceHeaderProps): React.ReactElement {
-  return <React.Fragment>{label}</React.Fragment>;
+export default function ResourceHeader({ label }: ResourceHeaderProps) {
+  return <>{label}</>;
 }

@@ -60,7 +60,7 @@ const Popup = React.forwardRef(function Popup(
     style,
   }: PopupProps,
   ref: React.ForwardedRef<HTMLElement>,
-): React.ReactElement {
+) {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
   const [offset, setOffset] = React.useState({ topOffset: 0, leftOffset: 0 });
 

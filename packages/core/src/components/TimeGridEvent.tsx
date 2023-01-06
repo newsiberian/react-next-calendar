@@ -32,7 +32,7 @@ export interface TimeGridEventProps {
   onKeyPress?: (e: React.KeyboardEvent) => void;
 }
 
-function TimeGridEvent(props: TimeGridEventProps): React.ReactElement {
+function TimeGridEvent(props: TimeGridEventProps) {
   const {
     style,
     className,

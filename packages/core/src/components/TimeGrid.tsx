@@ -86,7 +86,7 @@ function TimeGrid({
   onDrillDown,
 
   dayLayoutAlgorithm,
-}: TimeGridProps): JSX.Element {
+}: TimeGridProps) {
   const [gutterWidth, setGutterWidth] = React.useState<number>();
   const [isOverflowing, setIsOverflowing] = React.useState<boolean>(false);
   const scrollRef = React.useRef<HTMLDivElement>(null);

@@ -51,7 +51,9 @@ export const arrayMap = <T, U extends React.ReactNode>(arr: T[]) => (
  *
  * @param args
  */
-export const defaults = <T>(...args: T[]): Record<string, unknown> =>
+export const defaults = <T extends Record<string, unknown>>(
+  ...args: T[]
+): Record<string, unknown> =>
   args.reverse().reduce((acc, obj) => ({ ...acc, ...obj }), {});
 
 /**

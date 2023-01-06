@@ -11,11 +11,7 @@ export interface EventRowProps extends EventProps {
   className?: string;
 }
 
-function EventRow({
-  segments = [],
-  className,
-  ...props
-}: EventRowProps): React.ReactElement {
+function EventRow({ segments = [], className, ...props }: EventRowProps) {
   let lastEnd = 1;
 
   return (

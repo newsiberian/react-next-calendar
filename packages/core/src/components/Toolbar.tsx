@@ -27,7 +27,7 @@ export default function Toolbar({
   views,
   onNavigate,
   onView,
-}: ToolbarProps): React.ReactElement {
+}: ToolbarProps) {
   function handleNavigate(action: Action): void {
     onNavigate(action);
   }

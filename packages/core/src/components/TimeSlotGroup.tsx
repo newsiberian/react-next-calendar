@@ -21,7 +21,7 @@ export default function TimeSlotGroup({
   components: {
     timeSlotWrapper: Wrapper = BackgroundWrapper as Component,
   } = {},
-}: TimeSlotGroupProps): React.ReactElement {
+}: TimeSlotGroupProps) {
   const groupProps = getters ? getters.slotGroupProp() : {};
   return (
     <div className="rbc-timeslot-group" {...groupProps}>

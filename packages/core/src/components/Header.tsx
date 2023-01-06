@@ -6,6 +6,6 @@ export interface HeaderProps {
   localizer: Localizer;
 }
 
-export default function Header({ label }: HeaderProps): React.ReactElement {
+export default function Header({ label }: HeaderProps) {
   return <span>{label}</span>;
 }

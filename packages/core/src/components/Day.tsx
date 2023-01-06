@@ -8,10 +8,7 @@ export interface DayProps extends TimeGridProps {
   date: Date;
 }
 
-const Day: ExtendedFC<DayProps> = ({
-  date,
-  ...props
-}: DayProps): React.ReactElement => {
+const Day: ExtendedFC<DayProps> = ({ date, ...props }: DayProps) => {
   const range = React.useMemo(() => Day.range(date), [date]) as Date[];
 
   return <TimeGrid {...props} range={range} />;

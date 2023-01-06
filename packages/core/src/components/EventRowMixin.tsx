@@ -59,7 +59,7 @@ export function renderSpan(
   len: number,
   key: string,
   content: React.ReactNode | string = ' ',
-): React.ReactElement {
+) {
   const per = (Math.abs(len) / slots) * 100 + '%';
 
   return (

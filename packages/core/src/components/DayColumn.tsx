@@ -79,7 +79,7 @@ export default function DayColumn({
   resourceId,
 
   dayLayoutAlgorithm,
-}: DayColumnProps): React.ReactElement {
+}: DayColumnProps) {
   // we need most of these as refs because Selection doesn't see state changes
   // internally
 

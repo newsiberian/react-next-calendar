@@ -63,7 +63,7 @@ const eventsForWeek = (
   accessors: Accessors,
 ): RNC.Event[] => events.filter(e => inRange(e, start, end, accessors));
 
-const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
+const MonthView: ExtendedFC<MonthViewProps> = ({
   events,
   date,
 
@@ -90,7 +90,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
 
   popup,
   popupOffset,
-}) {
+}) => {
   const [rowLimit, setRowLimit] = React.useState<number>(5);
   const [needLimitMeasure, setNeedLimitMeasure] = React.useState<boolean>(true);
   const [overlay, setOverlay] = React.useState<{
@@ -319,6 +319,7 @@ const MonthView: ExtendedFC<MonthViewProps> = function MonthView({
   function renderOverlay(): React.ReactNode {
     return (
       <Overlay
+        flip
         rootClose
         placement="bottom"
         show={!!overlay.position}

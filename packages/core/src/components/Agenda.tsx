@@ -20,7 +20,7 @@ export interface AgendaProps {
 
 const defaultLength = 30;
 
-const Agenda: ExtendedFC<AgendaProps> = function Agenda({
+const Agenda: ExtendedFC<AgendaProps> = ({
   selected,
   getters,
   accessors,
@@ -29,7 +29,7 @@ const Agenda: ExtendedFC<AgendaProps> = function Agenda({
   length = defaultLength,
   date,
   events,
-}) {
+}) => {
   const headerRef = React.useRef<HTMLTableElement>(null);
   const dateColRef = React.useRef<HTMLTableCellElement>(null);
   const timeColRef = React.useRef<HTMLTableCellElement>(null);
@@ -183,7 +183,7 @@ const Agenda: ExtendedFC<AgendaProps> = function Agenda({
   return (
     <div className="rbc-agenda-view">
       {filteredEvents.length !== 0 ? (
-        <React.Fragment>
+        <>
           <table ref={headerRef} className="rbc-agenda-table">
             <thead>
               <tr>
@@ -204,7 +204,7 @@ const Agenda: ExtendedFC<AgendaProps> = function Agenda({
               </tbody>
             </table>
           </div>
-        </React.Fragment>
+        </>
       ) : (
         <span className="rbc-agenda-empty">{messages.noEventsInRange}</span>
       )}

@@ -28,7 +28,7 @@ function EventEndingRow({
   segments = [],
   onShowMore,
   ...props
-}: EventEndingRowProps): React.ReactElement {
+}: EventEndingRowProps) {
   function canRenderSlotEvent(slot: number, span: number): boolean {
     return range(slot, slot + span).every((s: number) => {
       const count = eventsInSlot(segments, s);

@@ -44,7 +44,7 @@ interface EventCellProps {
   onDragEnd?: (e: React.DragEvent) => void;
 }
 
-function EventCell(props: EventCellProps): React.ReactElement {
+function EventCell(props: EventCellProps) {
   const {
     event,
     selected,

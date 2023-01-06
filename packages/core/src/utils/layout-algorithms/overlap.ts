@@ -10,9 +10,10 @@ class Event {
   public row?: Event;
   public rows?: Event[];
   public leaves?: Event[];
+  public data: RNC.Event;
 
   public constructor(
-    public data: RNC.Event,
+    data: RNC.Event,
     {
       accessors,
       slotMetrics,
@@ -209,7 +210,7 @@ export default function getStyledEvents({
   // Group overlapping events, while keeping order.
   // Every event is always one of: container, row or leaf.
   // Containers can contain rows, and rows can contain leaves.
-  const containerEvents = [];
+  const containerEvents: Event[] = [];
 
   for (let i = 0; i < eventsInRenderOrder.length; i++) {
     const event = eventsInRenderOrder[i];
@@ -236,20 +237,16 @@ export default function getStyledEvents({
     let row = null;
 
     if (Array.isArray(container.rows) && container.rows.length) {
-      for (
-        let j = (container.rows as Event[]).length - 1;
-        !row && j >= 0;
-        j--
-      ) {
+      for (let j = container.rows.length - 1; !row && j >= 0; j--) {
         if (onSameRow(container.rows[j], event, minimumStartDifference)) {
           row = container.rows[j];
         }
       }
     }
 
-    if (row) {
+    if (row?.leaves) {
       // Found a row, so add it.
-      (row.leaves as Event[]).push(event);
+      row.leaves.push(event);
       event.row = row;
     } else {
       // Couldn't find a row – that means this event is a row.

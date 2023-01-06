@@ -13,10 +13,7 @@ function workWeekRange(date: Date, options: { localizer: Localizer }): Date[] {
   );
 }
 
-const WorkWeek: ExtendedFC<WorkWeekProps> = ({
-  date,
-  ...props
-}): React.ReactElement => {
+const WorkWeek: ExtendedFC<WorkWeekProps> = ({ date, ...props }) => {
   const range = workWeekRange(date, props);
 
   return <TimeGrid {...props} range={range} />;

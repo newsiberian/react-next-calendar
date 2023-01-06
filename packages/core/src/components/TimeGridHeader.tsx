@@ -74,7 +74,7 @@ function TimeGridHeader({
   onDrillDown,
 
   scrollRef,
-}: TimeGridHeaderProps): React.ReactElement {
+}: TimeGridHeaderProps) {
   function handleHeaderClick(
     date: Date,
     view: View,
