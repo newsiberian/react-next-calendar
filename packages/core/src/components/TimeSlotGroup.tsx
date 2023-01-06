@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import clsx from 'clsx';
 
-import BackgroundWrapper from './BackgroundWrapper';
+import { NoopWrapper } from './NoopWrapper';
 
 type SlotGetters = Pick<Getters, 'slotGroupProp' | 'slotProp'>;
 
@@ -18,9 +18,7 @@ export default function TimeSlotGroup({
   resourceId,
   renderSlot,
   getters,
-  components: {
-    timeSlotWrapper: Wrapper = BackgroundWrapper as Component,
-  } = {},
+  components: { timeSlotWrapper: Wrapper = NoopWrapper as Component } = {},
 }: TimeSlotGroupProps) {
   const groupProps = getters ? getters.slotGroupProp() : {};
   return (

@@ -6,7 +6,7 @@ import { dates } from '@react-next-calendar/utils';
 
 import * as DateSlotMetrics from '../utils/DateSlotMetrics';
 import BackgroundCells from './BackgroundCells';
-import EventRow, { EventRowProps } from './EventRow';
+import { EventRow, EventRowProps } from './EventRow';
 import EventEndingRow from './EventEndingRow';
 
 type DateContentRowProps = Omit<EventRowProps, 'slotMetrics'> & {

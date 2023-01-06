@@ -10,7 +10,11 @@ export type EventRowProps = EventProps & {
   className?: string;
 };
 
-function EventRow({ segments = [], className, ...props }: EventRowProps) {
+export function EventRow({
+  segments = [],
+  className,
+  ...props
+}: EventRowProps) {
   let lastEnd = 1;
 
   return (
@@ -35,5 +39,3 @@ function EventRow({ segments = [], className, ...props }: EventRowProps) {
     </div>
   );
 }
-
-export default EventRow;

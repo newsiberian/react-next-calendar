@@ -45,7 +45,7 @@ export const formats = {
   agendaTimeRangeFormat: timeRangeFormat,
 };
 
-export default function (globalize: Globalize.Static): DateLocalizer {
+export function globalizeLocalizer(globalize: Globalize.Static): DateLocalizer {
   const locale = (culture?: string) =>
     culture ? globalize(culture) : globalize;
 

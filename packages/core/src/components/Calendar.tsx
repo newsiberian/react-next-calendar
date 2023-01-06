@@ -11,7 +11,7 @@ import moveDate from '../utils/move';
 import { mergeWithDefaults } from '../localizer';
 import VIEWS from './Views';
 import Toolbar from './Toolbar';
-import NoopWrapper from './NoopWrapper';
+import { NoopWrapper } from './NoopWrapper';
 
 export interface CalendarProps {
   localizer: Localizer;
