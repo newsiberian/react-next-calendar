@@ -3,10 +3,10 @@ import { eventLevels } from '@react-next-calendar/utils';
 
 import { renderEvent, renderSpan, EventProps } from './EventRowMixin';
 
-interface EventEndingRowProps extends EventProps {
+export type EventEndingRowProps = EventProps & {
   segments?: Segment[];
   onShowMore: (slot: number, target: EventTarget) => void;
-}
+};
 
 const isSegmentInSlot = (seg: Segment, slot: number): boolean =>
   seg.left <= slot && seg.right >= slot;
@@ -16,9 +16,6 @@ const eventsInSlot = (segments: Segment[], slot: number): number =>
 
 /**
  * @thanks https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_range
- *
- * @param {number} start
- * @param {number} end
  */
 function range(start: number, end: number): ReadonlyArray<number> {
   return [...Array(end - start).keys()].map(i => i + start);

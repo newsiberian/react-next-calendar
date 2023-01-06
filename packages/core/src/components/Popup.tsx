@@ -4,7 +4,6 @@ import {
   useState,
   useRef,
   CSSProperties,
-  KeyboardEvent,
   MouseEvent,
   RefCallback,
 } from 'react';
@@ -12,22 +11,22 @@ import getScrollTop from 'dom-helpers/scrollTop';
 import getScrollLeft from 'dom-helpers/scrollLeft';
 import { isSelected } from '@react-next-calendar/utils';
 
-import EventCell from './EventCell';
+import { EventCell, EventCellProps } from './EventCell';
 
 type OffsetObject = { x: number; y: number };
 
-export interface PopupProps {
+export type PopupProps = Pick<
+  EventCellProps,
+  | 'accessors'
+  | 'components'
+  | 'getters'
+  | 'localizer'
+  | 'onSelect'
+  | 'onDoubleClick'
+  | 'onKeyPress'
+> & {
   events: RNC.Event[];
   selected?: RNC.Event;
-
-  accessors: Accessors;
-  components: Components;
-  getters: Getters;
-  localizer: Localizer;
-
-  onSelect: (event: RNC.Event, e: MouseEvent) => void;
-  onDoubleClick: (event: RNC.Event, e: MouseEvent) => void;
-  onKeyPress: (event: RNC.Event, e: KeyboardEvent) => void;
 
   position: {
     top: number;
@@ -44,7 +43,7 @@ export interface PopupProps {
    * Goes from Overlay
    */
   style: CSSProperties;
-}
+};
 
 /**
  * The Overlay component, of react-overlays, creates a ref that is passed to the
@@ -75,12 +74,9 @@ const Popup = forwardRef<HTMLElement, PopupProps>(
     const [offset, setOffset] = useState({ topOffset: 0, leftOffset: 0 });
 
     useEffect(() => {
-      const {
-        top,
-        left,
-        width,
-        height,
-      } = (rootRef.current as HTMLDivElement).getBoundingClientRect();
+      const { top, left, width, height } = (
+        rootRef.current as HTMLDivElement
+      ).getBoundingClientRect();
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const viewBottom = window.innerHeight + getScrollTop(window);

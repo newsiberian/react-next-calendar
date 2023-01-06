@@ -1,22 +1,20 @@
-import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { isSelected } from '@react-next-calendar/utils';
 
-import EventCell from './EventCell';
+import { EventCell, EventCellProps } from './EventCell';
 
-export interface EventProps {
+export type EventProps = Omit<
+  EventCellProps,
+  | 'event'
+  | 'selected'
+  | 'slotStart'
+  | 'slotEnd'
+  | 'continuesPrior'
+  | 'continuesAfter'
+> & {
   selected?: RNC.Event;
-
-  accessors: Accessors;
-  components: Components;
-  getters: Getters;
-  localizer: Localizer;
-
-  onSelect?: (event: RNC.Event, e: MouseEvent) => void;
-  onDoubleClick?: (event: RNC.Event, e: MouseEvent) => void;
-  onKeyPress?: (event: RNC.Event, e: KeyboardEvent) => void;
-
   slotMetrics: DateSlotMetrics;
-}
+};
 
 export function renderEvent(
   {

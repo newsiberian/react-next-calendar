@@ -8,7 +8,7 @@ import {
 import clsx from 'clsx';
 import { dates } from '@react-next-calendar/utils';
 
-interface EventCellProps {
+export type EventCellProps = {
   event: RNC.Event;
   slotStart: Date;
   slotEnd: Date;
@@ -45,12 +45,11 @@ interface EventCellProps {
   /**
    * Callback handler which will be passed to EventWrapper. It fires when an
    * event drag from the popup on a month view will be finished
-   * @param {DragEvent} e
    */
   onDragEnd?: (e: DragEvent) => void;
-}
+};
 
-function EventCell(props: EventCellProps) {
+export function EventCell(props: EventCellProps) {
   const {
     event,
     selected,
@@ -126,5 +125,3 @@ function EventCell(props: EventCellProps) {
     </EventWrapper>
   );
 }
-
-export default EventCell;

@@ -2,13 +2,13 @@ import clsx from 'clsx';
 
 import { renderEvent, renderSpan, EventProps } from './EventRowMixin';
 
-export interface EventRowProps extends EventProps {
+export type EventRowProps = EventProps & {
   segments?: Segment[];
   /**
    * Currently used by `dnd` addon
    */
   className?: string;
-}
+};
 
 function EventRow({ segments = [], className, ...props }: EventRowProps) {
   let lastEnd = 1;

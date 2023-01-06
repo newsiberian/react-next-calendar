@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useRef,
-  KeyboardEvent,
-  MouseEvent,
-  ReactElement,
-  RefObject,
-} from 'react';
+import { useCallback, useRef, ReactElement, RefObject } from 'react';
 import clsx from 'clsx';
 import qsa from 'dom-helpers/querySelectorAll';
 import { useEnhancedEffect } from '@react-next-calendar/hooks';
@@ -13,10 +6,10 @@ import { dates } from '@react-next-calendar/utils';
 
 import * as DateSlotMetrics from '../utils/DateSlotMetrics';
 import BackgroundCells from './BackgroundCells';
-import EventRow from './EventRow';
+import EventRow, { EventRowProps } from './EventRow';
 import EventEndingRow from './EventEndingRow';
 
-interface DateContentRowProps {
+type DateContentRowProps = Omit<EventRowProps, 'slotMetrics'> & {
   date?: Date;
   events: RNC.Event[];
   range: Date[];
@@ -30,7 +23,6 @@ interface DateContentRowProps {
   ) => ReactElement<P>;
 
   containerRef?: RefObject<HTMLDivElement>;
-  selected?: RNC.Event;
   selectable: Selectable;
   longPressThreshold: number;
 
@@ -42,9 +34,6 @@ interface DateContentRowProps {
     target: EventTarget,
   ) => void;
   onSelectSlot: (slots: Date[], slot: Slot) => void;
-  onSelect: (event: RNC.Event, e: MouseEvent) => void;
-  onDoubleClick: (event: RNC.Event, e: MouseEvent) => void;
-  onKeyPress: (event: RNC.Event, e: KeyboardEvent) => void;
 
   getNow: () => Date;
   isAllDay?: boolean;
@@ -53,16 +42,11 @@ interface DateContentRowProps {
    */
   isFirstRow?: boolean;
 
-  accessors: Accessors;
-  components: Components;
-  getters: Getters;
-  localizer: Localizer;
-
   className?: string;
 
   minRows?: number;
   maxRows?: number;
-}
+};
 
 function DateContentRow({
   date,
@@ -106,8 +90,9 @@ function DateContentRow({
   const dateSlotMetrics = useRef(DateSlotMetrics.getSlotMetrics());
 
   const getRowLimit = useCallback(() => {
-    const eventHeight = (eventRowRef.current as HTMLDivElement).getBoundingClientRect()
-      .height;
+    const eventHeight = (
+      eventRowRef.current as HTMLDivElement
+    ).getBoundingClientRect().height;
     const headingHeight = headingRowRef.current
       ? headingRowRef.current.getBoundingClientRect().height
       : 0;
@@ -155,9 +140,11 @@ function DateContentRow({
   }
 
   function renderHeadingCell(date: Date, index: number) {
-    return (renderHeader as <P extends { date: Date; className: string }>(
-      props: P,
-    ) => ReactElement<P>)({
+    return (
+      renderHeader as <P extends { date: Date; className: string }>(
+        props: P,
+      ) => ReactElement<P>
+    )({
       date,
       key: `header_${index}`,
       className: clsx(
