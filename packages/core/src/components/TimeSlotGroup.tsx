@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { ReactElement } from 'react';
 import clsx from 'clsx';
 
 import BackgroundWrapper from './BackgroundWrapper';
@@ -8,7 +8,7 @@ type SlotGetters = Pick<Getters, 'slotGroupProp' | 'slotProp'>;
 export interface TimeSlotGroupProps {
   group: Date[];
   resourceId?: string | number;
-  renderSlot?: (date: Date, idx: number) => React.ReactElement | null;
+  renderSlot?: (date: Date, idx: number) => ReactElement | null;
   getters: SlotGetters;
   components?: Partial<Pick<Components, 'timeSlotWrapper'>>;
 }

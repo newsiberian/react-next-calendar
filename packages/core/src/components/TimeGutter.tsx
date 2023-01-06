@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useRerender } from '@react-next-calendar/hooks';
 
@@ -24,65 +24,60 @@ interface TimeGutterProps {
   getNow: GetNow;
 }
 
-const TimeGutter = React.forwardRef(function TimeGutter(
-  {
-    min,
-    max,
-    timeslots,
-    step,
-    components,
-    getters,
-    localizer,
-    getNow,
-  }: TimeGutterProps,
-  ref: React.ForwardedRef<HTMLDivElement | null>,
-) {
-  const rerender = useRerender();
-  const slotMetrics = React.useRef(
-    TimeSlotUtils.getSlotMetrics({
-      min: new Date(min),
-      max: new Date(max),
-      timeslots,
-      step,
-    }),
-  );
+const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
+  (
+    { min, max, timeslots, step, components, getters, localizer, getNow },
+    ref,
+  ) => {
+    const rerender = useRerender();
+    const slotMetrics = useRef(
+      TimeSlotUtils.getSlotMetrics({
+        min: new Date(min),
+        max: new Date(max),
+        timeslots,
+        step,
+      }),
+    );
 
-  React.useEffect(() => {
-    slotMetrics.current = slotMetrics.current.update({
-      min: new Date(min),
-      max: new Date(max),
-      timeslots,
-      step,
-    });
-    rerender();
-  }, [min, max, timeslots, step, rerender]);
+    useEffect(() => {
+      slotMetrics.current = slotMetrics.current.update({
+        min: new Date(min),
+        max: new Date(max),
+        timeslots,
+        step,
+      });
+      rerender();
+    }, [min, max, timeslots, step, rerender]);
 
-  function renderSlot(date: Date, idx: number): React.ReactElement | null {
-    if (idx !== 0) {
-      return null;
+    function renderSlot(date: Date, idx: number) {
+      if (idx !== 0) {
+        return null;
+      }
+
+      const isNow = slotMetrics.current.dateIsInGroup(getNow(), idx);
+      return (
+        <span className={clsx('rbc-label', isNow && 'rbc-now')}>
+          {localizer.format(date, 'timeGutterFormat')}
+        </span>
+      );
     }
 
-    const isNow = slotMetrics.current.dateIsInGroup(getNow(), idx);
     return (
-      <span className={clsx('rbc-label', isNow && 'rbc-now')}>
-        {localizer.format(date, 'timeGutterFormat')}
-      </span>
+      <div className="rbc-time-gutter rbc-time-column" ref={ref}>
+        {slotMetrics.current.groups.map((group, idx) => (
+          <TimeSlotGroup
+            key={idx}
+            group={group}
+            components={components}
+            renderSlot={renderSlot}
+            getters={getters}
+          />
+        ))}
+      </div>
     );
-  }
+  },
+);
 
-  return (
-    <div className="rbc-time-gutter rbc-time-column" ref={ref}>
-      {slotMetrics.current.groups.map((group, idx) => (
-        <TimeSlotGroup
-          key={idx}
-          group={group}
-          components={components}
-          renderSlot={renderSlot}
-          getters={getters}
-        />
-      ))}
-    </div>
-  );
-});
+TimeGutter.displayName = 'TimeGutter';
 
 export default TimeGutter;

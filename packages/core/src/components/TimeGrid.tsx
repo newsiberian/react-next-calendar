@@ -1,4 +1,10 @@
-import * as React from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  SyntheticEvent,
+} from 'react';
 import clsx from 'clsx';
 import memoize from 'memoize-one';
 import * as animationFrame from 'dom-helpers/animationFrame';
@@ -87,15 +93,15 @@ function TimeGrid({
 
   dayLayoutAlgorithm,
 }: TimeGridProps) {
-  const [gutterWidth, setGutterWidth] = React.useState<number>();
-  const [isOverflowing, setIsOverflowing] = React.useState<boolean>(false);
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const gutterRef = React.useRef<HTMLDivElement>(null);
-  const scrollRatio = React.useRef<number | null>(null);
-  const measureGutterAnimationFrameRequest = React.useRef<number>();
+  const [gutterWidth, setGutterWidth] = useState<number>();
+  const [isOverflowing, setIsOverflowing] = useState<boolean>(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const gutterRef = useRef<HTMLDivElement>(null);
+  const scrollRatio = useRef<number | null>(null);
+  const measureGutterAnimationFrameRequest = useRef<number>();
 
-  const measureGutter = React.useCallback(
+  const measureGutter = useCallback(
     function measureGutter() {
       if (measureGutterAnimationFrameRequest.current) {
         window.cancelAnimationFrame(measureGutterAnimationFrameRequest.current);
@@ -115,7 +121,7 @@ function TimeGrid({
     [gutterWidth],
   );
 
-  const applyScroll = React.useCallback(function applyScroll() {
+  const applyScroll = useCallback(function applyScroll() {
     if (contentRef.current && typeof scrollRatio.current === 'number') {
       contentRef.current.scrollTop =
         contentRef.current.scrollHeight * scrollRatio.current;
@@ -124,7 +130,7 @@ function TimeGrid({
     }
   }, []);
 
-  const calculateScroll = React.useCallback(
+  const calculateScroll = useCallback(
     function calculateScroll() {
       const diffMillis =
         scrollToTime.getTime() - dates.startOf(scrollToTime, 'day').getTime();
@@ -139,7 +145,7 @@ function TimeGrid({
     [scrollToTime, max, min],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     let rafHandle: number | void;
 
     function handleResize() {
@@ -178,7 +184,7 @@ function TimeGrid({
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof width !== 'number') {
       measureGutter();
     }
@@ -186,11 +192,11 @@ function TimeGrid({
     applyScroll();
   }, [width, measureGutter, applyScroll]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     calculateScroll();
   }, [range, scrollToTime, calculateScroll]);
 
-  function handleScroll(e: React.SyntheticEvent<HTMLDivElement, Event>) {
+  function handleScroll(e: SyntheticEvent<HTMLDivElement, Event>) {
     if (scrollRef.current) {
       scrollRef.current.scrollLeft = (e.target as HTMLDivElement).scrollLeft;
     }
@@ -220,7 +226,7 @@ function TimeGrid({
 
     return res.map(
       ([id, resource]: [string, Resource], resourceIndex: number) =>
-        range.map((date, rangeIndex) /*: React.ReactElement[]*/ => {
+        range.map((date, rangeIndex) /*: ReactElement[]*/ => {
           const daysEvents = (groupedEvents.get(id) || []).filter(event =>
             dates.inRange(
               date,

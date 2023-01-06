@@ -1,8 +1,8 @@
-import * as React from 'react';
+import type { ReactNode } from 'react';
 
 export interface HeaderProps {
   date: Date;
-  label: React.ReactNode;
+  label: ReactNode;
   localizer: Localizer;
 }
 

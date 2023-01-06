@@ -1,18 +1,14 @@
-import * as React from 'react';
+import type { MouseEvent } from 'react';
 
 interface DateHeaderProps {
   date: Date;
   label: string;
   drillDownView: View | null;
   isOffRange: boolean;
-  onDrillDown: (e: React.MouseEvent) => void;
+  onDrillDown: (e: MouseEvent) => void;
 }
 
-function DateHeader({
-  label,
-  drillDownView,
-  onDrillDown,
-}: DateHeaderProps): React.ReactElement {
+function DateHeader({ label, drillDownView, onDrillDown }: DateHeaderProps) {
   if (!drillDownView) {
     // TODO: cursor mustn't be 'pointer' here
     return <span>{label}</span>;

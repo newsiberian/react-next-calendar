@@ -1,4 +1,11 @@
-import * as React from 'react';
+import {
+  useEffect,
+  useCallback,
+  useRef,
+  useState,
+  MouseEvent,
+  KeyboardEvent,
+} from 'react';
 import clsx from 'clsx';
 import getPosition from 'dom-helpers/position';
 import * as animationFrame from 'dom-helpers/animationFrame';
@@ -91,23 +98,23 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
   popup,
   popupOffset,
 }) => {
-  const [rowLimit, setRowLimit] = React.useState<number>(5);
-  const [needLimitMeasure, setNeedLimitMeasure] = React.useState<boolean>(true);
-  const [overlay, setOverlay] = React.useState<{
+  const [rowLimit, setRowLimit] = useState<number>(5);
+  const [needLimitMeasure, setNeedLimitMeasure] = useState<boolean>(true);
+  const [overlay, setOverlay] = useState<{
     date?: Date;
     events?: RNC.Event[];
     position?: Position;
     target?: EventTarget;
   }>({});
-  const [prevDate, setPrevDate] = React.useState(date);
-  const pendingSelection = React.useRef<Date[]>([]);
-  const rootRef = React.useRef<HTMLDivElement>(null);
-  const selectTimer = React.useRef<ReturnType<typeof setTimeout>>();
+  const [prevDate, setPrevDate] = useState(date);
+  const pendingSelection = useRef<Date[]>([]);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const selectTimer = useRef<ReturnType<typeof setTimeout> | undefined>();
 
   const month = dates.visibleDays(date, localizer);
   const weeks = chunk(month, 7);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function handleResize() {
       animationFrame.request(() => {
         setNeedLimitMeasure(true);
@@ -121,7 +128,7 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const changed = !dates.eq(prevDate, date, 'month');
     if (changed) {
       setNeedLimitMeasure(true);
@@ -129,18 +136,15 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
     }
   }, [date, prevDate]);
 
-  const measureRowLimit = React.useCallback(function measureRowLimit(
-    getRowLimit,
-  ) {
+  const measureRowLimit = useCallback(getRowLimit => {
     setRowLimit(getRowLimit());
     setNeedLimitMeasure(false);
-  },
-  []);
+  }, []);
 
   function handleSelectSlot(range: Date[], slot: Slot): void {
     pendingSelection.current = pendingSelection.current.concat(range);
 
-    if (typeof selectTimer.current === 'number') {
+    if (selectTimer.current) {
       clearTimeout(selectTimer.current);
     }
     selectTimer.current = setTimeout(() => selectDates(slot));
@@ -149,24 +153,24 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
   function handleHeadingClick(
     date: Date,
     view: View | null,
-    e: React.MouseEvent,
+    e: MouseEvent,
   ): void {
     e.preventDefault();
     clearSelection();
     notify(onDrillDown, date, view);
   }
 
-  function handleSelect(event: RNC.Event, e: React.MouseEvent): void {
+  function handleSelect(event: RNC.Event, e: MouseEvent): void {
     clearSelection();
     notify(onSelectEvent, event, e);
   }
 
-  function handleDoubleClick(event: RNC.Event, e: React.MouseEvent): void {
+  function handleDoubleClick(event: RNC.Event, e: MouseEvent): void {
     clearSelection();
     notify(onDoubleClickEvent, event, e);
   }
 
-  function handleKeyPress(event: RNC.Event, e: React.KeyboardEvent): void {
+  function handleKeyPress(event: RNC.Event, e: KeyboardEvent): void {
     clearSelection();
     notify(onKeyPressEvent, event, e);
   }
@@ -195,7 +199,7 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
   /**
    * This callback fires after event been dragged from popup to month view
    */
-  function handlePopupClose(/* e: React.DragEvent */) {
+  function handlePopupClose(/* e: DragEvent */) {
     setOverlay({});
   }
 
@@ -230,7 +234,7 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
   }: {
     date: Date;
     className: string;
-  }): React.ReactElement {
+  }) {
     const isOffRange = dates.month(headerDate) !== dates.month(date);
     const isCurrent = dates.eq(headerDate, date, 'day');
     const drillDownView = getDrilldownView(headerDate);
@@ -257,7 +261,7 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
     );
   }
 
-  function renderWeek(week: Date[], weekIdx: number): React.ReactNode {
+  function renderWeek(week: Date[], weekIdx: number) {
     const weekEvents = eventsForWeek(
       events,
       week[0],
@@ -300,7 +304,7 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
     );
   }
 
-  function renderHeaders(row: Date[]): React.ReactNode {
+  function renderHeaders(row: Date[]) {
     const first = row[0];
     const last = row[row.length - 1];
     const HeaderComponent = components.header || Header;
@@ -316,7 +320,7 @@ const MonthView: ExtendedFC<MonthViewProps> = ({
     ));
   }
 
-  function renderOverlay(): React.ReactNode {
+  function renderOverlay() {
     return (
       <Overlay
         flip

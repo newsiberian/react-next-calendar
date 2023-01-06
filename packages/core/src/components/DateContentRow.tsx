@@ -1,4 +1,11 @@
-import * as React from 'react';
+import {
+  useCallback,
+  useRef,
+  KeyboardEvent,
+  MouseEvent,
+  ReactElement,
+  RefObject,
+} from 'react';
 import clsx from 'clsx';
 import qsa from 'dom-helpers/querySelectorAll';
 import { useEnhancedEffect } from '@react-next-calendar/hooks';
@@ -20,9 +27,9 @@ interface DateContentRowProps {
   measureRowLimit?: (getRowLimit: () => number) => void;
   renderHeader?: <P extends { date: Date; className: string }>(
     props: P,
-  ) => React.ReactElement<P>;
+  ) => ReactElement<P>;
 
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: RefObject<HTMLDivElement>;
   selected?: RNC.Event;
   selectable: Selectable;
   longPressThreshold: number;
@@ -35,9 +42,9 @@ interface DateContentRowProps {
     target: EventTarget,
   ) => void;
   onSelectSlot: (slots: Date[], slot: Slot) => void;
-  onSelect: (event: RNC.Event, e: React.MouseEvent) => void;
-  onDoubleClick: (event: RNC.Event, e: React.MouseEvent) => void;
-  onKeyPress: (event: RNC.Event, e: React.KeyboardEvent) => void;
+  onSelect: (event: RNC.Event, e: MouseEvent) => void;
+  onDoubleClick: (event: RNC.Event, e: MouseEvent) => void;
+  onKeyPress: (event: RNC.Event, e: KeyboardEvent) => void;
 
   getNow: () => Date;
   isAllDay?: boolean;
@@ -92,13 +99,13 @@ function DateContentRow({
 
   minRows = 0,
   maxRows = Infinity,
-}: DateContentRowProps): React.ReactElement {
-  const rootRef = React.useRef<HTMLDivElement>(null);
-  const headingRowRef = React.useRef<HTMLDivElement>(null);
-  const eventRowRef = React.useRef<HTMLDivElement>(null);
-  const dateSlotMetrics = React.useRef(DateSlotMetrics.getSlotMetrics());
+}: DateContentRowProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const headingRowRef = useRef<HTMLDivElement>(null);
+  const eventRowRef = useRef<HTMLDivElement>(null);
+  const dateSlotMetrics = useRef(DateSlotMetrics.getSlotMetrics());
 
-  const getRowLimit = React.useCallback(function getRowLimit() {
+  const getRowLimit = useCallback(() => {
     const eventHeight = (eventRowRef.current as HTMLDivElement).getBoundingClientRect()
       .height;
     const headingHeight = headingRowRef.current
@@ -147,10 +154,10 @@ function DateContentRow({
     }
   }
 
-  function renderHeadingCell(date: Date, index: number): React.ReactElement {
+  function renderHeadingCell(date: Date, index: number) {
     return (renderHeader as <P extends { date: Date; className: string }>(
       props: P,
-    ) => React.ReactElement<P>)({
+    ) => ReactElement<P>)({
       date,
       key: `header_${index}`,
       className: clsx(
@@ -160,7 +167,7 @@ function DateContentRow({
     });
   }
 
-  function renderDummy(): React.ReactElement {
+  function renderDummy() {
     return (
       <div className={className} ref={rootRef}>
         <div className="rbc-row-content">

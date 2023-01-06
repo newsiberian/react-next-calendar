@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo } from 'react';
 import { dates } from '@react-next-calendar/utils';
 
 import { navigate } from '../utils/constants';
@@ -9,7 +9,7 @@ export interface DayProps extends TimeGridProps {
 }
 
 const Day: ExtendedFC<DayProps> = ({ date, ...props }: DayProps) => {
-  const range = React.useMemo(() => Day.range(date), [date]) as Date[];
+  const range = useMemo(() => Day.range(date), [date]) as Date[];
 
   return <TimeGrid {...props} range={range} />;
 };

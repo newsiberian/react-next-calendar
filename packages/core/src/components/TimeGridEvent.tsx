@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import clsx from 'clsx';
 
 function stringifyPercent(value: string | number): string {
@@ -27,9 +27,9 @@ export interface TimeGridEventProps {
 
   // The handlers will not be passed while event drags from one place to another
 
-  onClick?: (e: React.MouseEvent) => void;
-  onDoubleClick?: (e: React.MouseEvent) => void;
-  onKeyPress?: (e: React.KeyboardEvent) => void;
+  onClick?: (e: MouseEvent) => void;
+  onDoubleClick?: (e: MouseEvent) => void;
+  onKeyPress?: (e: KeyboardEvent) => void;
 }
 
 function TimeGridEvent(props: TimeGridEventProps) {

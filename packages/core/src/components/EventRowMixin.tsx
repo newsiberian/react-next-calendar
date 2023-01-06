@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import { isSelected } from '@react-next-calendar/utils';
 
 import EventCell from './EventCell';
@@ -11,9 +11,9 @@ export interface EventProps {
   getters: Getters;
   localizer: Localizer;
 
-  onSelect?: (event: RNC.Event, e: React.MouseEvent) => void;
-  onDoubleClick?: (event: RNC.Event, e: React.MouseEvent) => void;
-  onKeyPress?: (event: RNC.Event, e: React.KeyboardEvent) => void;
+  onSelect?: (event: RNC.Event, e: MouseEvent) => void;
+  onDoubleClick?: (event: RNC.Event, e: MouseEvent) => void;
+  onKeyPress?: (event: RNC.Event, e: KeyboardEvent) => void;
 
   slotMetrics: DateSlotMetrics;
 }
@@ -31,7 +31,7 @@ export function renderEvent(
     slotMetrics,
   }: EventProps,
   event: RNC.Event,
-): React.ReactElement {
+) {
   const continuesPrior = slotMetrics.continuesPrior(event);
   const continuesAfter = slotMetrics.continuesAfter(event);
 
@@ -58,7 +58,7 @@ export function renderSpan(
   slots: number,
   len: number,
   key: string,
-  content: React.ReactNode | string = ' ',
+  content: ReactNode | string = ' ',
 ) {
   const per = (Math.abs(len) / slots) * 100 + '%';
 

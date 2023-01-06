@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { MouseEvent, RefObject } from 'react';
 import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates } from '@react-next-calendar/utils';
@@ -41,7 +41,7 @@ export interface TimeGridHeaderProps {
   onKeyPressEvent: <P>(args: P) => void;
   onDrillDown: (date: Date, view: View) => void;
 
-  scrollRef: React.RefObject<HTMLDivElement>;
+  scrollRef: RefObject<HTMLDivElement>;
 }
 
 function TimeGridHeader({
@@ -75,11 +75,7 @@ function TimeGridHeader({
 
   scrollRef,
 }: TimeGridHeaderProps) {
-  function handleHeaderClick(
-    date: Date,
-    view: View,
-    e: React.MouseEvent,
-  ): void {
+  function handleHeaderClick(date: Date, view: View, e: MouseEvent): void {
     e.preventDefault();
     notify(onDrillDown, date, view);
   }

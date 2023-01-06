@@ -1,4 +1,10 @@
-import * as React from 'react';
+import {
+  useMemo,
+  DragEvent,
+  KeyboardEvent,
+  MouseEvent,
+  ReactNode,
+} from 'react';
 import clsx from 'clsx';
 import { dates } from '@react-next-calendar/utils';
 
@@ -8,7 +14,7 @@ interface EventCellProps {
   slotEnd: Date;
 
   // TODO: children are not currently being passed to EventCell from anywhere
-  children?: (content: React.ReactNode) => React.ReactNode;
+  children?: (content: ReactNode) => ReactNode;
 
   /**
    * Allowed to be dragged?
@@ -32,16 +38,16 @@ interface EventCellProps {
   getters: Getters;
   localizer: Localizer;
 
-  onSelect?: (event: RNC.Event, e: React.MouseEvent) => void;
-  onDoubleClick?: (event: RNC.Event, e: React.MouseEvent) => void;
-  onKeyPress?: (event: RNC.Event, e: React.KeyboardEvent) => void;
+  onSelect?: (event: RNC.Event, e: MouseEvent) => void;
+  onDoubleClick?: (event: RNC.Event, e: MouseEvent) => void;
+  onKeyPress?: (event: RNC.Event, e: KeyboardEvent) => void;
 
   /**
    * Callback handler which will be passed to EventWrapper. It fires when an
    * event drag from the popup on a month view will be finished
-   * @param {React.DragEvent} e
+   * @param {DragEvent} e
    */
-  onDragEnd?: (e: React.DragEvent) => void;
+  onDragEnd?: (e: DragEvent) => void;
 }
 
 function EventCell(props: EventCellProps) {
@@ -70,7 +76,7 @@ function EventCell(props: EventCellProps) {
   const start = accessors.start(event);
   const allDay = accessors.allDay(event);
 
-  const showAsAllDay = React.useMemo(
+  const showAsAllDay = useMemo(
     () =>
       isAllDay ||
       allDay ||

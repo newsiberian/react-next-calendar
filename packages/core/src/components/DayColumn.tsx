@@ -1,4 +1,11 @@
-import * as React from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react';
 import clsx from 'clsx';
 import {
   useLatest,
@@ -83,19 +90,17 @@ export default function DayColumn({
   // we need most of these as refs because Selection doesn't see state changes
   // internally
 
-  const [selecting, setSelecting] = React.useState<boolean>(false);
+  const [selecting, setSelecting] = useState<boolean>(false);
   const selectingLatest = useLatest(selecting);
-  const [selection, setSelection] = React.useState<RNC.Selection>(
+  const [selection, setSelection] = useState<RNC.Selection>(
     {} as RNC.Selection,
   );
   // TODO: let initial be undefined or null
   const selectionLatest = useLatest(selection);
   // default state must be non-equal to selectable, so it is not a boolean
-  const [prevSelectable, setPrevSelectable] = React.useState<Selectable | null>(
-    null,
-  );
+  const [prevSelectable, setPrevSelectable] = useState<Selectable | null>(null);
   // This is a current time position, a line at the day slot
-  const [timeIndicatorPosition, setTimeIndicatorPosition] = React.useState<
+  const [timeIndicatorPosition, setTimeIndicatorPosition] = useState<
     number | null
   >(null);
   const prevGetNow = usePrevious(getNow);
@@ -104,9 +109,9 @@ export default function DayColumn({
   const prevMin = usePrevious(min);
   const prevMax = usePrevious(max);
   const prevTimeIndicatorPosition = usePrevious(timeIndicatorPosition);
-  const dayRef = React.useRef<HTMLDivElement>(null);
-  const intervalTriggered = React.useRef<boolean>(false);
-  const [timeSlotMetrics, setTimeSlotMetrics] = React.useState(
+  const dayRef = useRef<HTMLDivElement>(null);
+  const intervalTriggered = useRef<boolean>(false);
+  const [timeSlotMetrics, setTimeSlotMetrics] = useState(
     TimeSlotUtils.getSlotMetrics({
       min: new Date(min),
       max: new Date(max),
@@ -115,7 +120,7 @@ export default function DayColumn({
     }),
   );
   const timeSlotMetricsLatest = useLatest(timeSlotMetrics);
-  // const timeSlotMetrics = React.useRef(
+  // const timeSlotMetrics = useRef(
   //   TimeSlotUtils.getSlotMetrics({
   //     min: new Date(min),
   //     max: new Date(max),
@@ -123,8 +128,8 @@ export default function DayColumn({
   //     step,
   //   }),
   // );
-  const timeIndicatorTimeout = React.useRef<number | null>(null);
-  const initialSlot = React.useRef<Date>();
+  const timeIndicatorTimeout = useRef<number | null>(null);
+  const initialSlot = useRef<Date>();
 
   const { dayProp, ...restGetters } = getters;
   const {
@@ -137,7 +142,7 @@ export default function DayColumn({
     longPressThreshold,
   });
 
-  const positionTimeIndicator = React.useCallback(() => {
+  const positionTimeIndicator = useCallback(() => {
     const current = getNow();
 
     if (current >= min && current <= max) {
@@ -153,7 +158,7 @@ export default function DayColumn({
    * @param tail {Boolean} - whether `positionTimeIndicator` call should be
    *   deferred or called upon setting interval (`true` - if deferred);
    */
-  const setTimeIndicatorPositionUpdateInterval = React.useCallback(
+  const setTimeIndicatorPositionUpdateInterval = useCallback(
     (tail = false) => {
       if (!intervalTriggered.current && !tail) {
         positionTimeIndicator();
@@ -168,7 +173,7 @@ export default function DayColumn({
     [positionTimeIndicator],
   );
 
-  const selectSlot = React.useCallback(
+  const selectSlot = useCallback(
     ({
       startDate,
       endDate,
@@ -205,7 +210,7 @@ export default function DayColumn({
     [onSelectSlot, resourceId, step],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isNow) {
       setTimeIndicatorPositionUpdateInterval();
     }
@@ -215,7 +220,7 @@ export default function DayColumn({
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeSlotMetrics(prevState =>
       prevState.update({
         min: new Date(min),
@@ -226,7 +231,7 @@ export default function DayColumn({
     );
   }, [min, max, timeslots, step]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function initSelectable() {
       const maybeSelect = (box: InitialSelection | SelectedRect) => {
         const state = getSelectionState(box);
@@ -348,7 +353,7 @@ export default function DayColumn({
     }
   }, [selectable, prevSelectable, on, onSelecting, resourceId, selectSlot]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const getNowChanged = !dates.eq(prevGetNow(), getNow(), 'minutes');
 
     if (prevIsNow !== isNow || getNowChanged) {
@@ -386,15 +391,15 @@ export default function DayColumn({
     }
   }
 
-  function handleSelect(...args: [event: RNC.Event, e: React.MouseEvent]) {
+  function handleSelect(...args: [event: RNC.Event, e: MouseEvent]) {
     notify(onSelectEvent, ...args);
   }
 
-  function handleDoubleClick(...args: [event: RNC.Event, e: React.MouseEvent]) {
+  function handleDoubleClick(...args: [event: RNC.Event, e: MouseEvent]) {
     notify(onDoubleClickEvent, ...args);
   }
 
-  function handleKeyPress(...args: [event: RNC.Event, e: React.KeyboardEvent]) {
+  function handleKeyPress(...args: [event: RNC.Event, e: KeyboardEvent]) {
     notify(onKeyPressEvent, ...args);
   }
 
@@ -447,9 +452,9 @@ export default function DayColumn({
           continuesLater={continuesLater}
           accessors={accessors}
           selected={isSelected(event, selected)}
-          onClick={(e: React.MouseEvent) => handleSelect(event, e)}
-          onDoubleClick={(e: React.MouseEvent) => handleDoubleClick(event, e)}
-          onKeyPress={(e: React.KeyboardEvent) => handleKeyPress(event, e)}
+          onClick={(e: MouseEvent) => handleSelect(event, e)}
+          onDoubleClick={(e: MouseEvent) => handleDoubleClick(event, e)}
+          onKeyPress={(e: KeyboardEvent) => handleKeyPress(event, e)}
         />
       );
     });

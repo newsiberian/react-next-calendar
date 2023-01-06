@@ -9,9 +9,6 @@ import pkg from './package.json';
 
 const input = './src/index.ts';
 const name = 'ReactNextCalendar';
-const globals = {
-  react: 'React',
-};
 const babelOptions = {
   exclude: /node_modules/,
   runtimeHelpers: true,
@@ -27,9 +24,7 @@ export default [
       file: './dist/react-next-calendar.js',
       format: 'umd',
       name,
-      globals,
     },
-    external: Object.keys(globals),
     plugins: [
       typescript(),
       nodeResolve(),
@@ -44,9 +39,7 @@ export default [
       file: './dist/react-next-calendar.min.js',
       format: 'umd',
       name,
-      globals,
     },
-    external: Object.keys(globals),
     plugins: [
       typescript(),
       nodeResolve(),

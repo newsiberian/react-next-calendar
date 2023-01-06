@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useMemo, HTMLAttributes, MouseEvent, KeyboardEvent } from 'react';
 import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
 import { wrapAccessor } from '@react-next-calendar/utils';
@@ -19,7 +19,7 @@ export interface CalendarProps {
   /**
    * Props passed to main calendar `<div>`.
    */
-  elementProps?: React.HTMLAttributes<HTMLDivElement>;
+  elementProps?: HTMLAttributes<HTMLDivElement>;
 
   /**
    * The current date value of the calendar. Determines the visible view range.
@@ -296,30 +296,30 @@ export interface CalendarProps {
    * Callback fired when a calendar event is selected.
    *
    * ```js
-   * (event: Event, e: React.MouseEvent) => void
+   * (event: Event, e: MouseEvent) => void
    * ```
    *
    * @controllable selected
    */
-  onSelectEvent?: (event: RNC.Event, e: React.MouseEvent) => void;
+  onSelectEvent?: (event: RNC.Event, e: MouseEvent) => void;
 
   /**
    * Callback fired when a calendar event is clicked twice.
    *
    * ```js
-   * (event: Event, e: React.MouseEvent) => void
+   * (event: Event, e: MouseEvent) => void
    * ```
    */
-  onDoubleClickEvent?: (event: RNC.Event, e: React.MouseEvent) => void;
+  onDoubleClickEvent?: (event: RNC.Event, e: MouseEvent) => void;
 
   /**
    * Callback fired when a focused calendar event receives a key press.
    *
    * ```js
-   * (event: Event, e: React.KeyboardEvent) => void
+   * (event: Event, e: KeyboardEvent) => void
    * ```
    */
-  onKeyPressEvent?: (event: RNC.Event, e: React.KeyboardEvent) => void;
+  onKeyPressEvent?: (event: RNC.Event, e: KeyboardEvent) => void;
 
   /**
    * Callback fired when dragging a selection in the Time views.
@@ -698,7 +698,7 @@ export function Calendar({
   rtl = false,
   dayLayoutAlgorithm = 'overlap',
 
-  elementProps = {} as React.HTMLAttributes<HTMLDivElement>,
+  elementProps = {} as HTMLAttributes<HTMLDivElement>,
 
   getDrilldownView: getDrilldownViewProp,
   getNow = () => new Date(),
@@ -723,13 +723,13 @@ export function Calendar({
   context = {},
 
   ...props
-}: CalendarProps): React.ReactElement {
-  const localizer = React.useMemo(() => {
+}: CalendarProps) {
+  const localizer = useMemo(() => {
     const msgs = message(messages);
     return mergeWithDefaults(localizerProp, formats, msgs, culture);
   }, [messages, localizerProp, culture, formats]);
 
-  const getters = React.useMemo(
+  const getters = useMemo(
     () => ({
       eventProp: (
         event: RNC.Event,
@@ -743,15 +743,10 @@ export function Calendar({
       slotGroupProp: () => (slotGroupPropGetter && slotGroupPropGetter()) || {},
       dayProp: (date: Date) => (dayPropGetter && dayPropGetter(date)) || {},
     }),
-    [
-      eventPropGetter,
-      slotPropGetter,
-      slotGroupPropGetter,
-      dayPropGetter,
-    ] as const,
+    [eventPropGetter, slotPropGetter, slotGroupPropGetter, dayPropGetter],
   );
 
-  const [components, viewNames] = React.useMemo<[Components, View[]]>(() => {
+  const [components, viewNames] = useMemo<[Components, View[]]>(() => {
     const names = getViewNames(viewsProp);
 
     return [
@@ -766,7 +761,7 @@ export function Calendar({
     ];
   }, [viewsProp, view, componentsProp]);
 
-  const accessors = React.useMemo(
+  const accessors = useMemo(
     () => ({
       start: wrapAccessor(startAccessor),
       end: wrapAccessor(endAccessor),
@@ -786,10 +781,10 @@ export function Calendar({
       resourceAccessor,
       resourceIdAccessor,
       resourceTitleAccessor,
-    ] as const,
+    ],
   );
 
-  const calendarContext = React.useMemo(
+  const calendarContext = useMemo(
     () => ({
       rtl,
     }),
@@ -904,20 +899,18 @@ export function Calendar({
     );
   }
 
-  function handleSelectEvent(
-    ...args: [event: RNC.Event, e: React.MouseEvent]
-  ): void {
+  function handleSelectEvent(...args: [event: RNC.Event, e: MouseEvent]): void {
     notify(onSelectEvent, ...args);
   }
 
   function handleDoubleClickEvent(
-    ...args: [event: RNC.Event, e: React.MouseEvent]
+    ...args: [event: RNC.Event, e: MouseEvent]
   ): void {
     notify(onDoubleClickEvent, ...args);
   }
 
   function handleKeyPressEvent(
-    ...args: [event: RNC.Event, e: React.KeyboardEvent]
+    ...args: [event: RNC.Event, e: KeyboardEvent]
   ): void {
     notify(onKeyPressEvent, ...args);
   }

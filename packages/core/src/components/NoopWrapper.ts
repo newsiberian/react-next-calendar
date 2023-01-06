@@ -1,6 +1,6 @@
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
-function NoopWrapper<P extends { children: React.ReactElement }>(props: P) {
+function NoopWrapper<P extends { children: ReactElement }>(props: P) {
   return props.children;
 }
 

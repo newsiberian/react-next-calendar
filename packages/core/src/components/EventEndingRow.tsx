@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { MouseEvent } from 'react';
 import { eventLevels } from '@react-next-calendar/utils';
 
 import { renderEvent, renderSpan, EventProps } from './EventRowMixin';
@@ -36,7 +36,7 @@ function EventEndingRow({
     });
   }
 
-  function renderShowMore(segments: Segment[], slot: number): React.ReactNode {
+  function renderShowMore(segments: Segment[], slot: number) {
     const count = eventsInSlot(segments, slot);
     return count ? (
       <a
@@ -50,7 +50,7 @@ function EventEndingRow({
     ) : null;
   }
 
-  function showMore(slot: number, e: React.MouseEvent): void {
+  function showMore(slot: number, e: MouseEvent): void {
     e.preventDefault();
     onShowMore(slot, e.target);
   }

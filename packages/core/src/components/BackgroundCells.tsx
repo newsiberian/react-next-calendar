@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useRef, useState, RefObject } from 'react';
 import clsx from 'clsx';
 import {
   useSelection,
@@ -14,7 +14,7 @@ import {
 
 interface BackgroundCellsProps {
   components: Components;
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement>;
   date?: Date;
   getNow: () => Date;
   getters: Getters;
@@ -40,31 +40,31 @@ function BackgroundCells({
   range,
   rtl,
   resourceId,
-}: BackgroundCellsProps): React.ReactElement {
+}: BackgroundCellsProps) {
   // we need most of these as refs because Selection doesn't see state changes
   // internally
-  const selecting = React.useRef(false);
+  const selecting = useRef(false);
   // we need this as `state` because otherwise render function doesn't see
   // startIdx/endIdx changes
-  const [{ startVisual, endVisual }, setStartEnd] = React.useState<{
+  const [{ startVisual, endVisual }, setStartEnd] = useState<{
     startVisual: number;
     endVisual: number;
   }>({
     startVisual: -1,
     endVisual: -1,
   });
-  const startEnd = React.useRef<{ startIdx: number; endIdx: number }>({
+  const startEnd = useRef<{ startIdx: number; endIdx: number }>({
     startIdx: -1,
     endIdx: -1,
   });
-  const initial = React.useRef<{ x: number; y: number }>(initialSelection);
-  const rowRef = React.useRef<HTMLDivElement>(null);
+  const initial = useRef<{ x: number; y: number }>(initialSelection);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   const [on, isSelected] = useSelection(containerRef, selectable, {
     longPressThreshold,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     function initSelectable() {
       on('selecting', handleSelecting);
 

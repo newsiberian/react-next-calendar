@@ -1,8 +1,8 @@
-import * as React from 'react';
+import type { ReactNode } from 'react';
 
 export interface ResourceHeaderProps {
   index: number;
-  label: React.ReactNode;
+  label: ReactNode;
   resource: Resource;
 }
 
