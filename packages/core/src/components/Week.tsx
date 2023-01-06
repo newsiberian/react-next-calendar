@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { dates } from '@react-next-calendar/utils';
 
 import { navigate } from '../utils/constants';

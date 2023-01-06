@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates, inRange, isSelected } from '@react-next-calendar/utils';
@@ -30,14 +30,14 @@ const Agenda: ExtendedFC<AgendaProps> = ({
   date,
   events,
 }) => {
-  const headerRef = React.useRef<HTMLTableElement>(null);
-  const dateColRef = React.useRef<HTMLTableCellElement>(null);
-  const timeColRef = React.useRef<HTMLTableCellElement>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const tbodyRef = React.useRef<HTMLTableSectionElement>(null);
-  const widths = React.useRef<number[]>([]);
+  const headerRef = useRef<HTMLTableElement>(null);
+  const dateColRef = useRef<HTMLTableCellElement>(null);
+  const timeColRef = useRef<HTMLTableCellElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const tbodyRef = useRef<HTMLTableSectionElement>(null);
+  const widths = useRef<number[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     _adjustHeader();
   });
 
@@ -172,7 +172,7 @@ const Agenda: ExtendedFC<AgendaProps> = ({
   const end = dates.add(date, length, 'day');
   const range = dates.range(date, end, 'day');
 
-  const filteredEvents = React.useMemo(
+  const filteredEvents = useMemo(
     () =>
       events
         .filter(event => inRange(event, date, end, accessors))

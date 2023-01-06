@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
@@ -19,9 +18,14 @@ import {
   dateFnsLocalizer,
   momentLocalizer,
 } from '@react-next-calendar/core';
-import { useDragAndDrop } from '@react-next-calendar/dnd';
+import {
+  useDragAndDrop,
+  DragAndDropCalendarProps,
+} from '@react-next-calendar/dnd';
 
 export { Views } from '@react-next-calendar/core';
+
+export type { CalendarProps };
 
 addDecorator(function WithHeight(fn) {
   return <div style={{ height: 600 }}>{fn()}</div>;
@@ -37,27 +41,18 @@ const localizerDateFns = dateFnsLocalizer({
 
 export { default as resourcesEvents } from './resourceEvents';
 
-export const Calendar = (
-  props: CalendarProps,
-): React.ReactElement => (
+export const Calendar = (props: CalendarProps) => (
   <BaseCalendar localizer={localizerMoment} {...props} />
 );
 
-export const CalendarDateFns = (
-  props: CalendarProps,
-): React.ReactElement => (
+export const CalendarDateFns = (props: CalendarProps) => (
   <BaseCalendar localizer={localizerDateFns} {...props} />
 );
 
-export function DragAndDropCalendar(props: CalendarProps): React.ReactElement {
-  const [
-    context,
-    components,
-    selectable,
-    elementProps,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-  ] = useDragAndDrop(props);
+export function DragAndDropCalendar(
+  props: CalendarProps & DragAndDropCalendarProps,
+) {
+  const [context, components, selectable, elementProps] = useDragAndDrop(props);
 
   return (
     <Calendar
@@ -70,7 +65,9 @@ export function DragAndDropCalendar(props: CalendarProps): React.ReactElement {
   );
 }
 
-export const DraggableCalendar = (props: CalendarProps): React.ReactElement => {
+export const DraggableCalendar = (
+  props: CalendarProps & DragAndDropCalendarProps,
+) => {
   return (
     <DragAndDropCalendar
       popup
@@ -86,12 +83,14 @@ export const DraggableCalendar = (props: CalendarProps): React.ReactElement => {
 
 export const events = [
   {
+    id: 1,
     title: 'test',
     start: moment().add(1, 'days').subtract(5, 'hours').toDate(),
     end: moment().add(1, 'days').subtract(4, 'hours').toDate(),
     allDay: false,
   },
   {
+    id: 2,
     title: 'test larger',
     start: moment().startOf('day').add(5, 'hours').toDate(),
     end: moment().startOf('day').add(10, 'hours').toDate(),
@@ -99,24 +98,28 @@ export const events = [
   },
 
   {
+    id: 3,
     title: 'test larger',
     start: moment().startOf('day').add(15, 'hours').toDate(),
     end: moment().startOf('day').add(23, 'hours').toDate(),
     allDay: false,
   },
   {
+    id: 4,
     title: 'test all day',
     start: moment().startOf('day').toDate(),
     end: moment().startOf('day').add(1, 'day').toDate(),
     allDay: true,
   },
   {
+    id: 5,
     title: 'test 2 days',
     start: moment().startOf('day').toDate(),
     end: moment().startOf('day').add(2, 'days').toDate(),
     allDay: true,
   },
   {
+    id: 6,
     title: 'test multi-day',
     start: moment().toDate(),
     end: moment().add(3, 'days').toDate(),

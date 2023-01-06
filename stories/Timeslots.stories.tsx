@@ -1,10 +1,9 @@
-import * as React from 'react';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
-import { events, Calendar, Views } from './helpers';
+import { events, Calendar, CalendarProps, Views } from './helpers';
 
-const Template = props => (
+const Template = (props: CalendarProps) => (
   <Calendar
     {...props}
     defaultView={Views.WEEK}
@@ -24,7 +23,7 @@ FirstCase.args = {
   step: 15,
 };
 
-export const SecondCase = (): React.ReactElement => (
+export const SecondCase = () => (
   <Calendar
     selectable
     defaultView={Views.WEEK}
@@ -39,7 +38,7 @@ export const SecondCase = (): React.ReactElement => (
 );
 SecondCase.storyName = 'selectable, step 10, 6 timeslots';
 
-export const ThirdCase = (): React.ReactElement => (
+export const ThirdCase = () => (
   <Calendar
     selectable
     defaultView={Views.WEEK}
@@ -54,7 +53,7 @@ export const ThirdCase = (): React.ReactElement => (
 );
 ThirdCase.storyName = 'selectable, step 5, 6 timeslots';
 
-export const FourthCase = (): React.ReactElement => (
+export const FourthCase = () => (
   <Calendar
     defaultView={Views.WEEK}
     selectable

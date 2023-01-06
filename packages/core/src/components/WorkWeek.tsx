@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import Week from './Week';
 import TimeGrid, { TimeGridProps } from './TimeGrid';
 
