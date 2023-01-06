@@ -1,4 +1,4 @@
-import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
+import { DocsPage, DocsContainer } from '@storybook/addon-docs';
 
 import '../packages/core/src/sass/styles.scss';
 import '../packages/dnd/styles.scss';

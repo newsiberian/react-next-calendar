@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { events, Calendar, Views } from './helpers';
 
-const Template = (props): React.ReactElement => (
+const Template = props => (
   <Calendar
     {...props}
     defaultView={Views.WEEK}

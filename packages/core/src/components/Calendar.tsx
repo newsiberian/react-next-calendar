@@ -38,7 +38,7 @@ export interface CalendarProps {
    *  - start time
    *  - end time
    *  - title
-   *  - whether its an "all day" event or not
+   *  - whether it's an "all day" event or not
    *  - any resource the event may be related to
    *
    * Each of these properties can be customized or generated dynamically by
@@ -196,7 +196,7 @@ export interface CalendarProps {
   resourceIdAccessor?: ((resource: Resource) => string | number) | string;
 
   /**
-   * Provides a human readable name for the resource object, used in headers.
+   * Provides a human-readable name for the resource object, used in headers.
    *
    * ```js
    * string | (resource: Resource) => string

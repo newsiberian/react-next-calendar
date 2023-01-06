@@ -6,7 +6,7 @@ export const components = {
   timeSlotWrapper: BackgroundWrapper,
   dateCellWrapper: BackgroundWrapper,
 };
-export { default as Calendar } from './components/Calendar';
+export { default as Calendar, CalendarProps } from './components/Calendar';
 
 export { CalendarContext, PluginsContext } from './CalendarContext';
 

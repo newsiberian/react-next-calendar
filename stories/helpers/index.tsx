@@ -15,6 +15,7 @@ const dateFnsLocales = {
 
 import {
   Calendar as BaseCalendar,
+  CalendarProps,
   dateFnsLocalizer,
   momentLocalizer,
 } from '@react-next-calendar/core';
@@ -37,18 +38,18 @@ const localizerDateFns = dateFnsLocalizer({
 export { default as resourcesEvents } from './resourceEvents';
 
 export const Calendar = (
-  props: Record<string, unknown>,
+  props: CalendarProps,
 ): React.ReactElement => (
   <BaseCalendar localizer={localizerMoment} {...props} />
 );
 
 export const CalendarDateFns = (
-  props: Record<string, unknown>,
+  props: CalendarProps,
 ): React.ReactElement => (
   <BaseCalendar localizer={localizerDateFns} {...props} />
 );
 
-export function DragAndDropCalendar<P>(props: P): React.ReactElement {
+export function DragAndDropCalendar(props: CalendarProps): React.ReactElement {
   const [
     context,
     components,
@@ -69,9 +70,7 @@ export function DragAndDropCalendar<P>(props: P): React.ReactElement {
   );
 }
 
-export const DraggableCalendar = (
-  props: Record<string, unknown>,
-): React.ReactElement => {
+export const DraggableCalendar = (props: CalendarProps): React.ReactElement => {
   return (
     <DragAndDropCalendar
       popup
