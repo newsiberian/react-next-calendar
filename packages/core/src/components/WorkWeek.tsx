@@ -1,9 +1,9 @@
 import Week from './Week';
-import TimeGrid, { TimeGridProps } from './TimeGrid';
+import { TimeGrid, TimeGridProps } from './TimeGrid';
 
-export interface WorkWeekProps extends TimeGridProps {
+export type WorkWeekProps = TimeGridProps & {
   date: Date;
-}
+};
 
 function workWeekRange(date: Date, options: { localizer: Localizer }): Date[] {
   return (Week.range(date, options) as Date[]).filter(

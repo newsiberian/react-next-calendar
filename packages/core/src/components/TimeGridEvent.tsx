@@ -5,7 +5,7 @@ function stringifyPercent(value: string | number): string {
   return typeof value === 'string' ? value : value + '%';
 }
 
-export interface TimeGridEventProps {
+export type TimeGridEventProps = {
   event: RNC.Event;
 
   style: StyledEventStyle;
@@ -30,9 +30,9 @@ export interface TimeGridEventProps {
   onClick?: (e: MouseEvent) => void;
   onDoubleClick?: (e: MouseEvent) => void;
   onKeyPress?: (e: KeyboardEvent) => void;
-}
+};
 
-function TimeGridEvent(props: TimeGridEventProps) {
+export function TimeGridEvent(props: TimeGridEventProps) {
   const {
     style,
     className,
@@ -74,7 +74,7 @@ function TimeGridEvent(props: TimeGridEventProps) {
         <div
           onClick={onClick}
           onDoubleClick={onDoubleClick}
-          onKeyPress={onKeyPress}
+          onKeyDown={onKeyPress}
           title={
             tooltip
               ? (typeof label === 'string' ? label + ': ' : '') + tooltip
@@ -95,5 +95,3 @@ function TimeGridEvent(props: TimeGridEventProps) {
     </div>
   );
 }
-
-export default TimeGridEvent;

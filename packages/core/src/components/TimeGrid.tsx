@@ -12,11 +12,11 @@ import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
 import { notify } from '../utils/helpers';
 import Resources from '../utils/Resources';
-import DayColumn from './DayColumn';
-import TimeGutter from './TimeGutter';
-import TimeGridHeader from './TimeGridHeader';
+import { DayColumn } from './DayColumn';
+import { TimeGutter } from './TimeGutter';
+import { TimeGridHeader } from './TimeGridHeader';
 
-export interface TimeGridProps {
+export type TimeGridProps = {
   events: RNC.Event[];
   resources?: Resource[];
 
@@ -53,9 +53,9 @@ export interface TimeGridProps {
   onDoubleClickEvent: <P>(args: P) => void;
   onKeyPressEvent: <P>(args: P) => void;
   onDrillDown: (date: Date, view: View) => void;
-}
+};
 
-function TimeGrid({
+export function TimeGrid({
   events,
   resources,
 
@@ -226,7 +226,7 @@ function TimeGrid({
 
     return res.map(
       ([id, resource]: [string, Resource], resourceIndex: number) =>
-        range.map((date, rangeIndex) /*: ReactElement[]*/ => {
+        range.map((date, rangeIndex) => {
           const daysEvents = (groupedEvents.get(id) || []).filter(event =>
             dates.inRange(
               date,
@@ -260,7 +260,7 @@ function TimeGrid({
               onSelectEvent={onSelectEvent}
               onDoubleClickEvent={onDoubleClickEvent}
               onKeyPressEvent={onKeyPressEvent}
-              resourceId={resource && id}
+              resourceId={(resource && id) || undefined}
               dayLayoutAlgorithm={dayLayoutAlgorithm}
             />
           );
@@ -343,5 +343,3 @@ function TimeGrid({
     </div>
   );
 }
-
-export default TimeGrid;

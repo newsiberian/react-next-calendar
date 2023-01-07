@@ -8,7 +8,7 @@ import DateContentRow from './DateContentRow';
 import Header from './Header';
 import ResourceHeader from './ResourceHeader';
 
-export interface TimeGridHeaderProps {
+export type TimeGridHeaderProps = {
   events: RNC.Event[];
   /**
    * Structured resources
@@ -42,9 +42,9 @@ export interface TimeGridHeaderProps {
   onDrillDown: (date: Date, view: View) => void;
 
   scrollRef: RefObject<HTMLDivElement>;
-}
+};
 
-function TimeGridHeader({
+export function TimeGridHeader({
   events,
   resources,
   range,
@@ -199,5 +199,3 @@ function TimeGridHeader({
     </div>
   );
 }
-
-export default TimeGridHeader;

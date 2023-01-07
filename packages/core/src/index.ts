@@ -4,7 +4,7 @@ export { CalendarContext, PluginsContext } from './CalendarContext';
 
 export * from './components/EventRow';
 export * from './components/NoopWrapper';
-export { default as TimeGridEvent } from './components/TimeGridEvent';
+export * from './components/TimeGridEvent';
 
 export { DateLocalizer } from './localizer';
 export { default as dateFnsLocalizer } from './localizers/date-fns';

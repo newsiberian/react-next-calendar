@@ -3,9 +3,9 @@ import clsx from 'clsx';
 import { useRerender } from '@react-next-calendar/hooks';
 
 import * as TimeSlotUtils from '../utils/TimeSlots';
-import TimeSlotGroup from './TimeSlotGroup';
+import { TimeSlotGroup, TimeSlotGroupProps } from './TimeSlotGroup';
 
-interface TimeGutterProps {
+type TimeGutterProps = Pick<TimeSlotGroupProps, 'components' | 'getters'> & {
   /**
    * in seconds to allow use this as dep for useEffect
    */
@@ -17,14 +17,12 @@ interface TimeGutterProps {
   timeslots: number;
   step: number;
 
-  components: Components;
-  getters: Getters;
   localizer: Localizer;
 
   getNow: GetNow;
-}
+};
 
-const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
+export const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
   (
     { min, max, timeslots, step, components, getters, localizer, getNow },
     ref,
@@ -79,5 +77,3 @@ const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
 );
 
 TimeGutter.displayName = 'TimeGutter';
-
-export default TimeGutter;

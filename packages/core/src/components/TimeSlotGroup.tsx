@@ -3,17 +3,15 @@ import clsx from 'clsx';
 
 import { NoopWrapper } from './NoopWrapper';
 
-type SlotGetters = Pick<Getters, 'slotGroupProp' | 'slotProp'>;
-
-export interface TimeSlotGroupProps {
+export type TimeSlotGroupProps = {
   group: Date[];
   resourceId?: string | number;
   renderSlot?: (date: Date, idx: number) => ReactElement | null;
-  getters: SlotGetters;
+  getters: Pick<Getters, 'slotGroupProp' | 'slotProp'>;
   components?: Partial<Pick<Components, 'timeSlotWrapper'>>;
-}
+};
 
-export default function TimeSlotGroup({
+export function TimeSlotGroup({
   group,
   resourceId,
   renderSlot,

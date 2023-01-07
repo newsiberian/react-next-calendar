@@ -1,11 +1,11 @@
-import * as React from 'react';
+import type { ReactNode } from 'react';
 
 export const NONE = 'nothing-here';
 
 type MapFn = (
   [id, resource]: [id: string | number, resource: Resource | null],
   index: number,
-) => React.ReactNode[];
+) => ReactNode[];
 
 export default function Resources(
   resources: Resource[],

@@ -1,12 +1,12 @@
 import { dates } from '@react-next-calendar/utils';
 
 import { NavigateAction } from '../utils/constants';
-import TimeGrid, { TimeGridProps } from './TimeGrid';
+import { TimeGrid, TimeGridProps } from './TimeGrid';
 
-export interface WeekProps extends TimeGridProps {
+export type WeekProps = TimeGridProps & {
   date: Date;
   localizer: Localizer;
-}
+};
 
 const Week: ExtendedFC<WeekProps> = ({ date, ...props }) => {
   const range = Week.range(date, { localizer: props.localizer }) as Date[];

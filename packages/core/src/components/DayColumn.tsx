@@ -19,10 +19,10 @@ import { dates, isSelected } from '@react-next-calendar/utils';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import { notify } from '../utils/helpers';
 import * as DayEventLayout from '../utils/DayEventLayout';
-import TimeSlotGroup from './TimeSlotGroup';
-import TimeGridEvent from './TimeGridEvent';
+import { TimeSlotGroup } from './TimeSlotGroup';
+import { TimeGridEvent } from './TimeGridEvent';
 
-interface DayColumnProps {
+export type DayColumnProps = {
   events: RNC.Event[];
   step: number;
   date: Date;
@@ -53,9 +53,9 @@ interface DayColumnProps {
   resourceId?: string | number;
 
   dayLayoutAlgorithm: DayLayoutAlgorithm;
-}
+};
 
-export default function DayColumn({
+export function DayColumn({
   events,
   step,
   date,
@@ -132,10 +132,8 @@ export default function DayColumn({
   const initialSlot = useRef<Date>();
 
   const { dayProp, ...restGetters } = getters;
-  const {
-    eventContainerWrapper: EventContainer,
-    ...restComponents
-  } = components;
+  const { eventContainerWrapper: EventContainer, ...restComponents } =
+    components;
   const { className, style } = dayProp(max);
 
   const [on] = useSelection(dayRef, selectable, {

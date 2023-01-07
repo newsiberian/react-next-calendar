@@ -103,8 +103,8 @@ describe('getStyledEvents', () => {
         } as GetStyledEventsOptions);
 
         const results = styledEvents.map(result => ({
-          width: Math.floor(result.style.width as number),
-          xOffset: Math.floor(result.style.xOffset as number),
+          width: Math.floor(Number(result.style.width)),
+          xOffset: Math.floor(Number(result.style.xOffset)),
         }));
         expect(results).toEqual(expectedResults);
       });
