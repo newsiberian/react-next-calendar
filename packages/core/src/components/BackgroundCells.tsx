@@ -12,7 +12,7 @@ import {
   pointInBox,
 } from '@react-next-calendar/utils';
 
-interface BackgroundCellsProps {
+export type BackgroundCellsProps = {
   components: Components;
   containerRef: RefObject<HTMLDivElement>;
   date?: Date;
@@ -24,11 +24,11 @@ interface BackgroundCellsProps {
   range: Date[];
   rtl: boolean;
   resourceId?: string | number;
-}
+};
 
 const initialSelection = { x: 0, y: 0 };
 
-function BackgroundCells({
+export function BackgroundCells({
   components: { dateCellWrapper: Wrapper },
   containerRef,
   date: currentDate,
@@ -208,5 +208,3 @@ function BackgroundCells({
     </div>
   );
 }
-
-export default BackgroundCells;

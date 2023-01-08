@@ -1,4 +1,4 @@
-import Week from './Week';
+import { WeekView } from './WeekView';
 import { TimeGrid, TimeGridProps } from './TimeGrid';
 
 export type WorkWeekProps = TimeGridProps & {
@@ -6,22 +6,22 @@ export type WorkWeekProps = TimeGridProps & {
 };
 
 function workWeekRange(date: Date, options: { localizer: Localizer }): Date[] {
-  return (Week.range(date, options) as Date[]).filter(
+  return (WeekView.range(date, options) as Date[]).filter(
     d => [6, 0].indexOf(d.getDay()) === -1,
   );
 }
 
-const WorkWeek: ExtendedFC<WorkWeekProps> = ({ date, ...props }) => {
+export const WorkWeekView: ExtendedFC<WorkWeekProps> = ({ date, ...props }) => {
   const range = workWeekRange(date, props);
 
   return <TimeGrid {...props} range={range} />;
 };
 
-WorkWeek.range = workWeekRange;
+WorkWeekView.range = workWeekRange;
 
-WorkWeek.navigate = Week.navigate;
+WorkWeekView.navigate = WeekView.navigate;
 
-WorkWeek.title = (date, { localizer }) => {
+WorkWeekView.title = (date, { localizer }) => {
   const [start, ...rest] = workWeekRange(date, { localizer });
 
   return localizer.format(
@@ -29,5 +29,3 @@ WorkWeek.title = (date, { localizer }) => {
     'dayRangeHeaderFormat',
   );
 };
-
-export default WorkWeek;

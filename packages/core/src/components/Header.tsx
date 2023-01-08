@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-export interface HeaderProps {
+export type HeaderProps = {
   date: Date;
   label: ReactNode;
   localizer: Localizer;
-}
+};
 
-export default function Header({ label }: HeaderProps) {
+export function Header({ label }: HeaderProps) {
   return <span>{label}</span>;
 }

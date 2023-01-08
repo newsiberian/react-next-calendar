@@ -1,14 +1,14 @@
 import { views } from '../utils/constants';
-import Month from './Month';
-import Day from './Day';
-import Week from './Week';
-import WorkWeek from './WorkWeek';
-import Agenda from './Agenda';
+import { MonthView } from './MonthView';
+import { DayView } from './DayView';
+import { WeekView } from './WeekView';
+import { WorkWeekView } from './WorkWeekView';
+import { AgendaView } from './AgendaView';
 
 export default {
-  [views.MONTH]: Month,
-  [views.WEEK]: Week,
-  [views.WORK_WEEK]: WorkWeek,
-  [views.DAY]: Day,
-  [views.AGENDA]: Agenda,
+  [views.MONTH]: MonthView,
+  [views.WEEK]: WeekView,
+  [views.WORK_WEEK]: WorkWeekView,
+  [views.DAY]: DayView,
+  [views.AGENDA]: AgendaView,
 } as Record<View, ExtendedFC<unknown>>;

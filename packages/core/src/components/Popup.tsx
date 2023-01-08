@@ -49,7 +49,7 @@ export type PopupProps = Pick<
  * The Overlay component, of react-overlays, creates a ref that is passed to the
  * Popup, and requires proper ref forwarding to be used without error
  */
-const Popup = forwardRef<HTMLElement, PopupProps>(
+export const Popup = forwardRef<HTMLElement, PopupProps>(
   (
     {
       position,
@@ -153,5 +153,3 @@ const Popup = forwardRef<HTMLElement, PopupProps>(
 );
 
 Popup.displayName = 'Popup';
-
-export default Popup;

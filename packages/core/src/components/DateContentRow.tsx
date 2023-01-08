@@ -5,48 +5,51 @@ import { useEnhancedEffect } from '@react-next-calendar/hooks';
 import { dates } from '@react-next-calendar/utils';
 
 import * as DateSlotMetrics from '../utils/DateSlotMetrics';
-import BackgroundCells from './BackgroundCells';
+import { BackgroundCells, BackgroundCellsProps } from './BackgroundCells';
 import { EventRow, EventRowProps } from './EventRow';
-import EventEndingRow from './EventEndingRow';
+import { EventEndingRow } from './EventEndingRow';
 
-type DateContentRowProps = Omit<EventRowProps, 'slotMetrics'> & {
-  date?: Date;
-  events: RNC.Event[];
-  range: Date[];
+type DateContentRowProps = Omit<EventRowProps, 'slotMetrics'> &
+  Pick<
+    BackgroundCellsProps,
+    | 'date'
+    | 'longPressThreshold'
+    | 'rtl'
+    | 'range'
+    | 'resourceId'
+    | 'selectable'
+  > & {
+    events: RNC.Event[];
 
-  rtl: boolean;
-  resourceId?: string | number;
-  renderForMeasure?: boolean;
-  measureRowLimit?: (getRowLimit: () => number) => void;
-  renderHeader?: <P extends { date: Date; className: string }>(
-    props: P,
-  ) => ReactElement<P>;
+    renderForMeasure?: boolean;
+    measureRowLimit?: (getRowLimit: () => number) => void;
+    renderHeader?: <P extends { date: Date; className: string }>(
+      props: P,
+    ) => ReactElement<P>;
 
-  containerRef?: RefObject<HTMLDivElement>;
-  selectable: Selectable;
-  longPressThreshold: number;
+    containerRef?: RefObject<HTMLDivElement>;
 
-  onShowMore?: (
-    events: RNC.Event[],
-    date: Date,
-    cell: HTMLElement,
-    slot: number,
-    target: EventTarget,
-  ) => void;
-  onSelectSlot: (slots: Date[], slot: Slot) => void;
+    onShowMore?: (
+      events: RNC.Event[],
+      date: Date,
+      cell: HTMLElement,
+      slot: number,
+      target: EventTarget,
+    ) => void;
+    onSelectSlot: (slots: Date[], slot: Slot) => void;
 
-  getNow: () => Date;
-  isAllDay?: boolean;
-  /**
-   * Is this the first week row at month view
-   */
-  isFirstRow?: boolean;
+    getNow: () => Date;
+    isAllDay?: boolean;
+    /**
+     * Is this the first week row at month view
+     */
+    isFirstRow?: boolean;
 
-  className?: string;
+    className?: string;
 
-  minRows?: number;
-  maxRows?: number;
-};
+    minRows?: number;
+    maxRows?: number;
+  };
 
 function DateContentRow({
   date,

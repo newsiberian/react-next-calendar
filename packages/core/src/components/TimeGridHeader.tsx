@@ -5,8 +5,8 @@ import { dates } from '@react-next-calendar/utils';
 
 import { notify } from '../utils/helpers';
 import DateContentRow from './DateContentRow';
-import Header from './Header';
-import ResourceHeader from './ResourceHeader';
+import { Header } from './Header';
+import { ResourceHeader } from './ResourceHeader';
 
 export type TimeGridHeaderProps = {
   events: RNC.Event[];

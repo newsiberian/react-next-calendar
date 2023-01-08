@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { NavigateAction } from '../utils/constants';
 import { arrayMap } from '../utils/helpers';
 
-export interface ToolbarProps {
+export type ToolbarProps = {
   /**
    * The current date value of the calendar.
    */
@@ -17,9 +17,9 @@ export interface ToolbarProps {
   onNavigate: (action: NavigateAction) => void;
   onView: (view: View, newDate?: Date) => void;
   localizer: Localizer;
-}
+};
 
-export default function Toolbar({
+export function Toolbar({
   label,
   localizer,
   view,

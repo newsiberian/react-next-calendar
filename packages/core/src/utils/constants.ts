@@ -11,4 +11,4 @@ export const views = {
   WORK_WEEK: 'work_week',
   DAY: 'day',
   AGENDA: 'agenda',
-} as Readonly<Record<string, View>>;
+} as const;

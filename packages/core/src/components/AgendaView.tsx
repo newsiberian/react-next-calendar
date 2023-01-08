@@ -5,7 +5,7 @@ import { dates, inRange, isSelected } from '@react-next-calendar/utils';
 
 import { NavigateAction } from '../utils/constants';
 
-export interface AgendaProps {
+export type AgendaProps = {
   events: RNC.Event[];
   date: Date;
   length: number;
@@ -16,11 +16,11 @@ export interface AgendaProps {
   components: Components & AgendaComponents;
   getters: Getters;
   localizer: Localizer;
-}
+};
 
 const defaultLength = 30;
 
-const Agenda: ExtendedFC<AgendaProps> = ({
+export const AgendaView: ExtendedFC<AgendaProps> = ({
   selected,
   getters,
   accessors,
@@ -212,12 +212,16 @@ const Agenda: ExtendedFC<AgendaProps> = ({
   );
 };
 
-Agenda.range = (start, { length = defaultLength }: { length?: number }) => {
+AgendaView.range = (start, { length = defaultLength }: { length?: number }) => {
   const end = dates.add(start, length, 'day');
   return { start, end };
 };
 
-Agenda.navigate = (date: Date, action: Action, { length = defaultLength }) => {
+AgendaView.navigate = (
+  date: Date,
+  action: Action,
+  { length = defaultLength },
+) => {
   switch (action) {
     case NavigateAction.PREVIOUS:
       return dates.add(date, -length, 'day');
@@ -230,9 +234,7 @@ Agenda.navigate = (date: Date, action: Action, { length = defaultLength }) => {
   }
 };
 
-Agenda.title = (start: Date, { length = defaultLength, localizer }) => {
+AgendaView.title = (start: Date, { length = defaultLength, localizer }) => {
   const end = dates.add(start, length, 'day');
   return localizer.format({ start, end }, 'agendaHeaderFormat');
 };
-
-export default Agenda;

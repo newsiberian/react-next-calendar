@@ -14,10 +14,10 @@ import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
 import { NavigateAction, views } from '../utils/constants';
 import { notify } from '../utils/helpers';
-import Popup from './Popup';
+import { Popup } from './Popup';
 import DateContentRow from './DateContentRow';
-import Header from './Header';
-import DateHeader from './DateHeader';
+import { Header } from './Header';
+import { DateHeader } from './DateHeader';
 
 type Position = {
   top: number;
@@ -26,7 +26,7 @@ type Position = {
   width: number;
 };
 
-export interface MonthViewProps {
+export type MonthViewProps = {
   events: RNC.Event[];
   date: Date;
 
@@ -53,7 +53,7 @@ export interface MonthViewProps {
 
   popup: boolean;
   popupOffset: { x: number; y: number } | number;
-}
+};
 
 function chunk<T>(input: T[], size: number): Array<T[]> {
   return input.reduce((arr: Array<T[]>, item: T, idx: number) => {
@@ -70,7 +70,7 @@ const eventsForWeek = (
   accessors: Accessors,
 ): RNC.Event[] => events.filter(e => inRange(e, start, end, accessors));
 
-const MonthView: ExtendedFC<MonthViewProps> = ({
+export const MonthView: ExtendedFC<MonthViewProps> = ({
   events,
   date,
 
@@ -385,5 +385,3 @@ MonthView.navigate = (date, action) => {
 
 MonthView.title = (date, { localizer }) =>
   localizer.format(date, 'monthHeaderFormat');
-
-export default MonthView;

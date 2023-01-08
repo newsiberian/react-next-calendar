@@ -8,17 +8,17 @@ export type DayProps = TimeGridProps & {
   date: Date;
 };
 
-const Day: ExtendedFC<DayProps> = ({ date, ...props }: DayProps) => {
-  const range = useMemo(() => Day.range(date), [date]) as Date[];
+export const DayView: ExtendedFC<DayProps> = ({ date, ...props }: DayProps) => {
+  const range = useMemo(() => DayView.range(date), [date]) as Date[];
 
   return <TimeGrid {...props} range={range} />;
 };
 
-Day.range = date => {
+DayView.range = date => {
   return [dates.startOf(date, 'day')];
 };
 
-Day.navigate = (date, action) => {
+DayView.navigate = (date, action) => {
   switch (action) {
     case NavigateAction.PREVIOUS:
       return dates.add(date, -1, 'day');
@@ -31,7 +31,5 @@ Day.navigate = (date, action) => {
   }
 };
 
-Day.title = (date: Date, { localizer }) =>
+DayView.title = (date: Date, { localizer }) =>
   localizer.format(date, 'dayHeaderFormat');
-
-export default Day;

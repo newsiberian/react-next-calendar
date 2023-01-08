@@ -21,7 +21,7 @@ function range(start: number, end: number): ReadonlyArray<number> {
   return [...Array(end - start).keys()].map(i => i + start);
 }
 
-function EventEndingRow({
+export function EventEndingRow({
   segments = [],
   onShowMore,
   ...props
@@ -100,5 +100,3 @@ function EventEndingRow({
 
   return <div className="rbc-row">{row}</div>;
 }
-
-export default EventEndingRow;

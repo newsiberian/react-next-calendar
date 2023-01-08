@@ -8,13 +8,13 @@ export type WeekProps = TimeGridProps & {
   localizer: Localizer;
 };
 
-const Week: ExtendedFC<WeekProps> = ({ date, ...props }) => {
-  const range = Week.range(date, { localizer: props.localizer }) as Date[];
+export const WeekView: ExtendedFC<WeekProps> = ({ date, ...props }) => {
+  const range = WeekView.range(date, { localizer: props.localizer }) as Date[];
 
   return <TimeGrid {...props} range={range} />;
 };
 
-Week.navigate = (date, action) => {
+WeekView.navigate = (date, action) => {
   switch (action) {
     case NavigateAction.PREVIOUS:
       return dates.add(date, -1, 'week');
@@ -27,7 +27,7 @@ Week.navigate = (date, action) => {
   }
 };
 
-Week.range = (date, { localizer }: { localizer: Localizer }) => {
+WeekView.range = (date, { localizer }: { localizer: Localizer }) => {
   const firstOfWeek = localizer.startOfWeek();
   const start = dates.startOf(date, 'week', firstOfWeek);
   const end = dates.endOf(date, 'week', firstOfWeek);
@@ -35,12 +35,10 @@ Week.range = (date, { localizer }: { localizer: Localizer }) => {
   return dates.range(start, end);
 };
 
-Week.title = (date, { localizer }) => {
-  const [start, ...rest] = Week.range(date, { localizer }) as Date[];
+WeekView.title = (date, { localizer }) => {
+  const [start, ...rest] = WeekView.range(date, { localizer }) as Date[];
   return localizer.format(
     { start, end: rest.pop() as Date },
     'dayRangeHeaderFormat',
   );
 };
-
-export default Week;
