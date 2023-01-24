@@ -1,7 +1,7 @@
 import { Canvas, Meta, Story } from '@storybook/addon-docs';
 
 import demoEvents from '../helpers/events';
-import { Calendar, Views } from '../helpers';
+import { Calendar } from '../helpers';
 
 <Meta title="Core/Length prop" component={Calendar} />
 
@@ -15,7 +15,7 @@ Should display as title toolbar (from now to now + 14 days)
   <Story
     name="Length prop"
     args={{
-      defaultView: Views.AGENDA,
+      defaultView: 'agenda',
       events: demoEvents,
       length: 14,
     }}

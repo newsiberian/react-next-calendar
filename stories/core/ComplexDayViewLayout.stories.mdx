@@ -1,7 +1,7 @@
 import { Canvas, Meta, Story } from '@storybook/addon-docs';
 
 import createEvents from '../helpers/createEvents';
-import { Views, Calendar } from '../helpers';
+import { Calendar } from '../helpers';
 
 <Meta title="Core/Complex day view layout" component={Calendar} />
 
@@ -11,7 +11,7 @@ export const Template = props => <Calendar {...props} />;
   <Story
     name="Complex day view layout"
     args={{
-      defaultView: Views.DAY,
+      defaultView: 'day',
       events: createEvents(1),
       step: 30,
     }}

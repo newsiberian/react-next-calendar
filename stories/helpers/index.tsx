@@ -23,8 +23,6 @@ import {
   DragAndDropCalendarProps,
 } from '@react-next-calendar/dnd';
 
-export { Views } from '@react-next-calendar/core';
-
 export type { CalendarProps };
 
 addDecorator(function WithHeight(fn) {

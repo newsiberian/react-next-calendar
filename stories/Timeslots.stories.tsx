@@ -1,12 +1,12 @@
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 
-import { events, Calendar, CalendarProps, Views } from './helpers';
+import { events, Calendar, CalendarProps } from './helpers';
 
 const Template = (props: CalendarProps) => (
   <Calendar
     {...props}
-    defaultView={Views.WEEK}
+    defaultView="week"
     min={moment('12:00am', 'h:mma').toDate()}
     max={moment('11:59pm', 'h:mma').toDate()}
     events={events}
@@ -26,7 +26,7 @@ FirstCase.args = {
 export const SecondCase = () => (
   <Calendar
     selectable
-    defaultView={Views.WEEK}
+    defaultView="week"
     timeslots={6}
     step={10}
     min={moment('12:00am', 'h:mma').toDate()}
@@ -41,7 +41,7 @@ SecondCase.storyName = 'selectable, step 10, 6 timeslots';
 export const ThirdCase = () => (
   <Calendar
     selectable
-    defaultView={Views.WEEK}
+    defaultView="week"
     timeslots={6}
     step={5}
     min={moment('12:00am', 'h:mma').toDate()}
@@ -55,7 +55,7 @@ ThirdCase.storyName = 'selectable, step 5, 6 timeslots';
 
 export const FourthCase = () => (
   <Calendar
-    defaultView={Views.WEEK}
+    defaultView="week"
     selectable
     timeslots={3}
     getNow={() => moment('9:30am', 'h:mma').toDate()}

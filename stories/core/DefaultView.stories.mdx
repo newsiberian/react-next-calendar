@@ -1,6 +1,6 @@
 import { Canvas, Meta, Story } from '@storybook/addon-docs';
 
-import { events, Views, Calendar } from '../helpers';
+import { events, Calendar } from '../helpers';
 
 <Meta title="Core/Default view" component={Calendar} />
 
@@ -14,7 +14,7 @@ The initial view set for the Calendar
   <Story
     name="Default view"
     args={{
-      defaultView: Views.WEEK,
+      defaultView: 'week',
       events,
     }}
     parameters={{

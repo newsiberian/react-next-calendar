@@ -2,7 +2,7 @@ import { Canvas, Meta, Story, ArgsTable } from '@storybook/addon-docs';
 import { action } from '@storybook/addon-actions';
 
 import { useDragAndDrop } from '../../packages/dnd/src';
-import { DragAndDropCalendar, Views, events } from '../helpers';
+import { DragAndDropCalendar, events } from '../helpers';
 
 <Meta title="dnd/Basic usage" component={DragAndDropCalendar} />
 
@@ -93,7 +93,7 @@ function MyCalendar(props) {
   <Story
     name="Basic usage"
     args={{
-      defaultView: Views.WEEK,
+      defaultView: 'week',
       events,
       resizableAccessor: e => true,
       onEventDrop: action('event dropped'),

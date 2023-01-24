@@ -2,7 +2,7 @@ import { Canvas, Meta, Story } from '@storybook/addon-docs';
 import { action } from '@storybook/addon-actions';
 
 import customComponents from '../helpers/customComponents';
-import { DragAndDropCalendar, events, Views } from '../helpers';
+import { DragAndDropCalendar, events } from '../helpers';
 
 <Meta title="dnd/Custom components" component={DragAndDropCalendar} />
 
@@ -34,7 +34,7 @@ export const Template = props => <DragAndDropCalendar {...props} />;
   <Story
     name="timeSlotWrapper"
     args={{
-      defaultView: Views.WEEK,
+      defaultView: 'week',
       events,
       showMultiDayTimes: true,
       onEventDrop: action('event dropped'),
@@ -55,7 +55,7 @@ export const Template = props => <DragAndDropCalendar {...props} />;
   <Story
     name="eventWrapper"
     args={{
-      defaultView: Views.WEEK,
+      defaultView: 'week',
       events,
       showMultiDayTimes: true,
       onEventDrop: action('event dropped'),
