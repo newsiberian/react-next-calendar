@@ -10,7 +10,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "yarn run clean && lerna run build",
     "clean": "lerna run clean",
-    "storybook": "start-storybook -p 9001",
+    "storybook": "start-storybook -p 9001 --ci",
     "build-storybook": "build-storybook",
     "deploy-storybook": "storybook-to-ghpages",
     "test": "jest -c test/jest.config.js"
