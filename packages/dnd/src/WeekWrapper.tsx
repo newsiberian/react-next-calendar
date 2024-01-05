@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PluginsContext, EventRow } from '@react-next-calendar/core';
+import { EventRow, usePluginsContext } from '@react-next-calendar/core';
 import {
   useLatest,
   useSelection,
@@ -53,9 +53,9 @@ function WeekWrapper({
   rootRef,
   ...props
 }: WeekWrapperProps): React.ReactElement {
-  const context = React.useContext(PluginsContext) as {
+  const context = usePluginsContext<{
     draggable: DraggableContext;
-  };
+  }>();
   const actionLatest = useLatest(context.draggable.dragAndDropAction);
   const [segment, setSegment] = React.useState<Segment | null>(null);
   const segmentLatest = useLatest(segment);

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import clsx from 'clsx';
+import { usePluginsContext } from '@react-next-calendar/core';
 import { accessor } from '@react-next-calendar/utils';
-import { PluginsContext } from '@react-next-calendar/core';
 
 import { DraggableContext } from './useDragAndDrop';
 
@@ -34,9 +34,9 @@ export default function EventWrapper({
   continuesPrior,
   continuesAfter,
 }: EventWrapperProps): React.ReactElement {
-  const { draggable } = React.useContext(PluginsContext) as {
+  const { draggable } = usePluginsContext<{
     draggable: DraggableContext;
-  };
+  }>();
 
   function handleResizeUp(e: React.MouseEvent) {
     if (e.button !== 0) {
