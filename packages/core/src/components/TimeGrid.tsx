@@ -37,7 +37,6 @@ export type TimeGridProps = {
 
   components: Components;
   getters: Getters;
-  localizer: Localizer;
 
   selected?: RNC.Event;
   selectable: Selectable;
@@ -73,7 +72,6 @@ export function TimeGrid({
 
   components,
   getters,
-  localizer,
 
   selected,
   selectable,
@@ -239,7 +237,6 @@ export function TimeGrid({
             rtl={rtl}
             components={components}
             getters={getters}
-            localizer={localizer}
             timeslots={timeslots}
             selected={selected}
             selectable={selectable}
@@ -292,7 +289,6 @@ export function TimeGrid({
         width={width || gutterWidth}
         rtl={rtl}
         getNow={getNow}
-        localizer={localizer}
         selected={selected}
         resources={memoizedResources(resources)}
         selectable={selectable}
@@ -323,7 +319,6 @@ export function TimeGrid({
           timeslots={timeslots}
           components={components}
           getters={getters}
-          localizer={localizer}
         />
 
         {renderEvents(range, rangeEvents, getNow())}

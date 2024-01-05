@@ -1,3 +1,5 @@
+import { useLocalizer } from '../model/localizerContext';
+import type { Localizer } from '../localizer';
 import { WeekView } from './WeekView';
 import { TimeGrid, TimeGridProps } from './TimeGrid';
 
@@ -12,7 +14,9 @@ function workWeekRange(date: Date, options: { localizer: Localizer }): Date[] {
 }
 
 export const WorkWeekView: ExtendedFC<WorkWeekProps> = ({ date, ...props }) => {
-  const range = workWeekRange(date, props);
+  const localizer = useLocalizer();
+
+  const range = workWeekRange(date, { localizer });
 
   return <TimeGrid {...props} range={range} />;
 };

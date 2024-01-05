@@ -16,6 +16,7 @@ import {
 } from '@react-next-calendar/hooks';
 import { dates, isSelected } from '@react-next-calendar/utils';
 
+import { useLocalizer } from '../model/localizerContext';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import { notify } from '../utils/helpers';
 import * as DayEventLayout from '../utils/DayEventLayout';
@@ -35,7 +36,6 @@ export type DayColumnProps = {
 
   components: Components;
   getters: Getters;
-  localizer: Localizer;
 
   timeslots?: number;
 
@@ -67,7 +67,6 @@ export function DayColumn({
 
   components,
   getters,
-  localizer,
 
   timeslots = 2,
 
@@ -85,6 +84,7 @@ export function DayColumn({
 
   dayLayoutAlgorithm,
 }: DayColumnProps) {
+  const localizer = useLocalizer();
   // we need most of these as refs because Selection doesn't see state changes
   // internally
 
@@ -482,7 +482,6 @@ export function DayColumn({
         resourceId={resourceId}
         components={restComponents}
         getters={restGetters}
-        localizer={localizer}
       >
         <div className={clsx('rbc-events-container', rtl && 'rtl')}>
           {renderEvents()}

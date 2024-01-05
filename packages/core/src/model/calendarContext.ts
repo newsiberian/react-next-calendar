@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import invariant from 'tiny-invariant';
 
 export type CalendarContextValue = {
   rtl: boolean;
@@ -17,11 +18,10 @@ CalendarContext.displayName = 'CalendarContext';
 export const useCalendarContext = () => {
   const context = useContext(CalendarContext);
 
-  if (!context) {
-    throw new Error(
-      'useCalendarContext shouldn\'t be used outside of "CalendarContext"',
-    );
-  }
+  invariant(
+    context,
+    'useCalendarContext shouldn\'t be used outside of "CalendarContext"',
+  );
 
   return context;
 };

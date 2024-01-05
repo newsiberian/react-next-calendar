@@ -12,8 +12,10 @@ import * as animationFrame from 'dom-helpers/animationFrame';
 import Overlay from 'react-overlays/Overlay';
 import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
+import { useLocalizer } from '../model/localizerContext';
 import { NavigateAction, views } from '../utils/constants';
 import { notify } from '../utils/helpers';
+import type { Localizer } from '../localizer';
 import { Popup } from './Popup';
 import DateContentRow from './DateContentRow';
 import { Header } from './Header';
@@ -36,7 +38,6 @@ export type MonthViewProps = {
 
   components: Components & MonthComponents;
   getters: Getters;
-  localizer: Localizer;
 
   onSelectSlot: (slotInfo: SlotInfo) => void;
   onSelectEvent: <P>(args: P) => void;
@@ -75,7 +76,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
 
   components,
   getters,
-  localizer,
 
   onSelectSlot,
   onSelectEvent,
@@ -92,6 +92,7 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
   popup,
   popupOffset,
 }) => {
+  const localizer = useLocalizer();
   const [rowLimit, setRowLimit] = useState<number>(5);
   const [needLimitMeasure, setNeedLimitMeasure] = useState<boolean>(true);
   const [overlay, setOverlay] = useState<{
@@ -105,7 +106,7 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const selectTimer = useRef<ReturnType<typeof setTimeout> | undefined>();
 
-  const month = dates.visibleDays(date, localizer);
+  const month = dates.visibleDays(date, localizer.startOfWeek());
   const weeks = chunk(month, 7);
 
   useEffect(() => {
@@ -275,7 +276,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
         selectable={selectable}
         components={components}
         getters={getters}
-        localizer={localizer}
         renderHeader={readerDateHeading}
         renderForMeasure={needLimitMeasure}
         measureRowLimit={measureRowLimit}
@@ -299,7 +299,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
       <div key={'header_' + idx} className="rbc-header">
         <HeaderComponent
           date={day}
-          localizer={localizer}
           label={localizer.format(day, 'weekdayFormat')}
         />
       </div>
@@ -323,7 +322,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
             getters={getters}
             selected={selected}
             components={components}
-            localizer={localizer}
             position={overlay.position as Position}
             onDragEnd={handlePopupClose}
             events={overlay.events as RNC.Event[]}
@@ -350,8 +348,8 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
 };
 
 MonthView.range = (date, { localizer }: { localizer: Localizer }) => {
-  const start = dates.firstVisibleDay(date, localizer);
-  const end = dates.lastVisibleDay(date, localizer);
+  const start = dates.firstVisibleDay(date, localizer.startOfWeek());
+  const end = dates.lastVisibleDay(date, localizer.startOfWeek());
   return { start, end };
 };
 

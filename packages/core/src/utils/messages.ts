@@ -1,27 +1,27 @@
 const defaultMessages = {
-  date: 'Date',
-  time: 'Time',
-  event: 'Event',
+  agenda: 'Agenda',
   allDay: 'All Day',
+  date: 'Date',
+  day: 'Day',
+  event: 'Event',
+  month: 'Month',
+  next: 'Next',
+  noEventsInRange: 'There are no events in this range.',
+  previous: 'Back',
+  showMore: (total: number) => `+${total} more`,
+  time: 'Time',
+  today: 'Today',
+  tomorrow: 'Tomorrow',
   week: 'Week',
   work_week: 'Work Week',
-  day: 'Day',
-  month: 'Month',
-  previous: 'Back',
-  next: 'Next',
   yesterday: 'Yesterday',
-  tomorrow: 'Tomorrow',
-  today: 'Today',
-  agenda: 'Agenda',
-
-  noEventsInRange: 'There are no events in this range.',
-
-  showMore: (total: number) => `+${total} more`,
 };
 
-export default function messages<P extends Messages>(msgs: P): Messages {
+export function applyMessages<Key extends keyof typeof defaultMessages>(
+  messages: Record<Key, typeof defaultMessages[Key]>,
+) {
   return {
     ...defaultMessages,
-    ...msgs,
+    ...messages,
   };
 }

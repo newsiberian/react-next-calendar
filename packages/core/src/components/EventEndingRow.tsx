@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react';
 import { eventLevels } from '@react-next-calendar/utils';
 
+import { useLocalizer } from '../model/localizerContext';
 import { renderEvent, renderSpan, EventProps } from './EventRowMixin';
 
 export type EventEndingRowProps = EventProps & {
@@ -26,6 +27,8 @@ export function EventEndingRow({
   onShowMore,
   ...props
 }: EventEndingRowProps) {
+  const localizer = useLocalizer();
+
   function canRenderSlotEvent(slot: number, span: number): boolean {
     return range(slot, slot + span).every((s: number) => {
       const count = eventsInSlot(segments, s);
@@ -42,7 +45,7 @@ export function EventEndingRow({
         className="rbc-show-more"
         onClick={e => showMore(slot, e)}
       >
-        {props.localizer.messages.showMore(count)}
+        {localizer.messages.showMore(count)}
       </a>
     ) : null;
   }

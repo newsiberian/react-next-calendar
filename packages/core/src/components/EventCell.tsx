@@ -35,7 +35,6 @@ export type EventCellProps = {
 
   components: Components;
   getters: Getters;
-  localizer: Localizer;
 
   onSelect?: (event: RNC.Event, e: MouseEvent) => void;
   onDoubleClick?: (event: RNC.Event, e: MouseEvent) => void;
@@ -56,7 +55,6 @@ export function EventCell(props: EventCellProps) {
     onSelect,
     onDoubleClick,
     onKeyPress,
-    localizer,
     continuesPrior,
     continuesAfter,
     getters,
@@ -89,7 +87,6 @@ export function EventCell(props: EventCellProps) {
           continuesAfter={continuesAfter}
           title={title}
           isAllDay={allDay}
-          localizer={localizer}
           slotStart={slotStart}
           slotEnd={slotEnd}
         />

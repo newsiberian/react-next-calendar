@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import invariant from 'tiny-invariant';
 
 type PluginsContextValue<Params extends Record<string, unknown>> = Params;
 
@@ -12,11 +13,10 @@ PluginsContext.displayName = 'PluginsContext';
 export const usePluginsContext = <Params extends Record<string, unknown>>() => {
   const context = useContext<PluginsContextValue<Params>>(PluginsContext);
 
-  if (!context) {
-    throw new Error(
-      'usePluginsContext shouldn\'t be used outside of "PluginsContext"',
-    );
-  }
+  invariant(
+    context,
+    'usePluginsContext shouldn\'t be used outside of "PluginsContext"',
+  );
 
   return context;
 };

@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 
+import { useLocalizer } from '../model/localizerContext';
 import { NavigateAction } from '../utils/constants';
 import { arrayMap } from '../utils/helpers';
 
@@ -16,17 +17,17 @@ export type ToolbarProps = {
   views: View[];
   onNavigate: (action: NavigateAction) => void;
   onView: (view: View, newDate?: Date) => void;
-  localizer: Localizer;
 };
 
 export function Toolbar({
   label,
-  localizer,
   view,
   views,
   onNavigate,
   onView,
 }: ToolbarProps) {
+  const localizer = useLocalizer();
+
   function handleNavigate(action: NavigateAction): void {
     onNavigate(action);
   }

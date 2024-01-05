@@ -8,7 +8,7 @@ export type DayProps = TimeGridProps & {
   date: Date;
 };
 
-export const DayView: ExtendedFC<DayProps> = ({ date, ...props }: DayProps) => {
+export const DayView: ExtendedFC<DayProps> = ({ date, ...props }) => {
   const range = useMemo(() => DayView.range(date), [date]) as Date[];
 
   return <TimeGrid {...props} range={range} />;
@@ -31,5 +31,5 @@ DayView.navigate = (date, action) => {
   }
 };
 
-DayView.title = (date: Date, { localizer }) =>
+DayView.title = (date, { localizer }) =>
   localizer.format(date, 'dayHeaderFormat');

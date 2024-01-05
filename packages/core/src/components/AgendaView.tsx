@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates, inRange, isSelected } from '@react-next-calendar/utils';
 
+import { useLocalizer } from '../model/localizerContext';
 import { NavigateAction } from '../utils/constants';
 
 export type AgendaProps = {
@@ -14,7 +15,6 @@ export type AgendaProps = {
 
   components: Components & AgendaComponents;
   getters: Getters;
-  localizer: Localizer;
 };
 
 const defaultLength = 30;
@@ -22,12 +22,12 @@ const defaultLength = 30;
 export const AgendaView: ExtendedFC<AgendaProps> = ({
   selected,
   getters,
-  localizer,
   components,
   length = defaultLength,
   date,
   events,
 }) => {
+  const localizer = useLocalizer();
   const headerRef = useRef<HTMLTableElement>(null);
   const dateColRef = useRef<HTMLTableCellElement>(null);
   const timeColRef = useRef<HTMLTableCellElement>(null);
@@ -213,11 +213,7 @@ AgendaView.range = (start, { length = defaultLength }: { length?: number }) => {
   return { start, end };
 };
 
-AgendaView.navigate = (
-  date: Date,
-  action: Action,
-  { length = defaultLength },
-) => {
+AgendaView.navigate = (date, action, { length = defaultLength }) => {
   switch (action) {
     case NavigateAction.PREVIOUS:
       return dates.add(date, -length, 'day');
@@ -230,7 +226,7 @@ AgendaView.navigate = (
   }
 };
 
-AgendaView.title = (start: Date, { length = defaultLength, localizer }) => {
+AgendaView.title = (start, { length = defaultLength, localizer }) => {
   const end = dates.add(start, length, 'day');
   return localizer.format({ start, end }, 'agendaHeaderFormat');
 };

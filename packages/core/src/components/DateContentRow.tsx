@@ -79,7 +79,6 @@ function DateContentRow({
 
   components,
   getters,
-  localizer,
 
   className,
 
@@ -193,7 +192,6 @@ function DateContentRow({
   const eventRowProps = {
     selected,
     getters,
-    localizer,
     components,
     onSelect,
     onDoubleClick,

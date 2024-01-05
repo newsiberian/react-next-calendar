@@ -1,6 +1,12 @@
 import { dates } from '@react-next-calendar/utils';
 
-import { DateLocalizer } from '../localizer';
+import {
+  DateLocalizer,
+  RangeFormat,
+  RangeStartFormat,
+  RangeEndFormat,
+  WeekStartsOn,
+} from '../localizer';
 
 type Locale = {
   code?: string;

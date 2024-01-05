@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useRerender } from '@react-next-calendar/hooks';
 
+import { useLocalizer } from '../model/localizerContext';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import { TimeSlotGroup, TimeSlotGroupProps } from './TimeSlotGroup';
 
@@ -17,16 +18,12 @@ type TimeGutterProps = Pick<TimeSlotGroupProps, 'components' | 'getters'> & {
   timeslots: number;
   step: number;
 
-  localizer: Localizer;
-
   getNow: GetNow;
 };
 
 export const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
-  (
-    { min, max, timeslots, step, components, getters, localizer, getNow },
-    ref,
-  ) => {
+  ({ min, max, timeslots, step, components, getters, getNow }, ref) => {
+    const localizer = useLocalizer();
     const rerender = useRerender();
     const slotMetrics = useRef(
       TimeSlotUtils.getSlotMetrics({

@@ -21,7 +21,6 @@ export function renderEvent(
     selected,
     components,
     getters,
-    localizer,
     onSelect,
     onDoubleClick,
     onKeyPress,
@@ -36,7 +35,6 @@ export function renderEvent(
     <EventCell
       event={event}
       getters={getters}
-      localizer={localizer}
       components={components}
       onSelect={onSelect}
       onDoubleClick={onDoubleClick}

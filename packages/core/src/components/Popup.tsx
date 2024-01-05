@@ -11,18 +11,14 @@ import getScrollTop from 'dom-helpers/scrollTop';
 import getScrollLeft from 'dom-helpers/scrollLeft';
 import { isSelected } from '@react-next-calendar/utils';
 
+import { useLocalizer } from '../model/localizerContext';
 import { EventCell, EventCellProps } from './EventCell';
 
 type OffsetObject = { x: number; y: number };
 
 export type PopupProps = Pick<
   EventCellProps,
-  | 'components'
-  | 'getters'
-  | 'localizer'
-  | 'onSelect'
-  | 'onDoubleClick'
-  | 'onKeyPress'
+  'components' | 'getters' | 'onSelect' | 'onDoubleClick' | 'onKeyPress'
 > & {
   events: RNC.Event[];
   selected?: RNC.Event;
@@ -58,7 +54,6 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
 
       components,
       getters,
-      localizer,
       onSelect,
       onDoubleClick,
       onKeyPress,
@@ -68,6 +63,7 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
     },
     ref,
   ) => {
+    const localizer = useLocalizer();
     const rootRef = useRef<HTMLDivElement | null>(null);
     const [offset, setOffset] = useState({ topOffset: 0, leftOffset: 0 });
 
@@ -132,7 +128,6 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
             getters={getters}
             onSelect={onSelect}
             components={components}
-            localizer={localizer}
             onDoubleClick={onDoubleClick}
             onKeyPress={onKeyPress}
             // since this is a Popup, we don't need to change event's border styles

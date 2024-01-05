@@ -3,17 +3,18 @@ import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
 
 import { CalendarContext } from '../model/calendarContext';
+import { LocalizerContext } from '../model/localizerContext';
 import { PluginsContext } from '../model/pluginsContext';
 import { notify, defaults, omit } from '../utils/helpers';
 import { NavigateAction, views } from '../utils/constants';
-import message from '../utils/messages';
+import { applyMessages } from '../utils/messages';
 import moveDate from '../utils/move';
-import { mergeWithDefaults } from '../localizer';
+import { Localizer, Formats, mergeWithDefaults } from '../localizer';
 import VIEWS from './Views';
 import { Toolbar } from './Toolbar';
 import { NoopWrapper } from './NoopWrapper';
 
-export interface CalendarProps {
+export type CalendarProps = {
   localizer: Localizer;
 
   /**
@@ -488,7 +489,7 @@ export interface CalendarProps {
    * String messages used throughout the component, override to provide
    * localizations
    */
-  messages: Messages;
+  messages: ReturnType<typeof applyMessages>;
 
   /**
    * A day event layout(arrangement) algorithm.
@@ -505,7 +506,7 @@ export interface CalendarProps {
    * plugins
    */
   context: Record<string, unknown>;
-}
+};
 
 function getViewNames(availableViews: View[] | CustomViews): View[] {
   return Array.isArray(availableViews)
@@ -551,7 +552,7 @@ export function Calendar({
   formats = {} as Formats,
   localizer: localizerProp,
   culture,
-  messages = {} as Messages,
+  messages = {} as ReturnType<typeof applyMessages>,
 
   step = 30,
   timeslots = 2,
@@ -591,8 +592,12 @@ export function Calendar({
   ...props
 }: CalendarProps) {
   const localizer = useMemo(() => {
-    const msgs = message(messages);
-    return mergeWithDefaults(localizerProp, formats, msgs, culture);
+    return mergeWithDefaults(
+      localizerProp,
+      formats,
+      applyMessages(messages),
+      culture,
+    );
   }, [messages, localizerProp, culture, formats]);
 
   const getters = useMemo(
@@ -776,55 +781,56 @@ export function Calendar({
 
   return (
     <CalendarContext.Provider value={calendarContext}>
-      <PluginsContext.Provider value={context}>
-        <div
-          {...elementProps}
-          className={clsx(
-            elementProps?.className,
-            'rbc-calendar',
-            rtl && 'rbc-rtl',
-          )}
-        >
-          {toolbar && (
-            <CalToolbar
+      <LocalizerContext.Provider value={localizer}>
+        <PluginsContext.Provider value={context}>
+          <div
+            {...elementProps}
+            className={clsx(
+              elementProps?.className,
+              'rbc-calendar',
+              rtl && 'rbc-rtl',
+            )}
+          >
+            {toolbar && (
+              <CalToolbar
+                date={current}
+                view={view}
+                views={viewNames}
+                label={label}
+                onView={handleViewChange}
+                onNavigate={handleNavigate}
+              />
+            )}
+            <View
+              {...props}
+              events={events}
               date={current}
-              view={view}
-              views={viewNames}
-              label={label}
-              onView={handleViewChange}
-              onNavigate={handleNavigate}
-              localizer={localizer}
+              getNow={getNow}
+              step={step}
+              timeslots={timeslots}
+              length={length}
+              selectable={selectable}
+              // TODO: use from calendarContext
+              rtl={rtl}
+              getters={getters}
+              components={components}
+              longPressThreshold={longPressThreshold}
+              showMultiDayTimes={showMultiDayTimes}
+              getDrilldownView={getDrillDownView}
+              onDrillDown={handleDrillDown}
+              onSelectEvent={handleSelectEvent}
+              onDoubleClickEvent={handleDoubleClickEvent}
+              onKeyPressEvent={handleKeyPressEvent}
+              onSelectSlot={handleSelectSlot}
+              // TODO: propagate popup to Month view only
+              onShowMore={onShowMore}
+              // TODO: propagate popup to Month view only
+              popup={popup}
+              dayLayoutAlgorithm={dayLayoutAlgorithm}
             />
-          )}
-          <View
-            {...props}
-            events={events}
-            date={current}
-            getNow={getNow}
-            step={step}
-            timeslots={timeslots}
-            length={length}
-            selectable={selectable}
-            rtl={rtl}
-            localizer={localizer}
-            getters={getters}
-            components={components}
-            longPressThreshold={longPressThreshold}
-            showMultiDayTimes={showMultiDayTimes}
-            getDrilldownView={getDrillDownView}
-            onDrillDown={handleDrillDown}
-            onSelectEvent={handleSelectEvent}
-            onDoubleClickEvent={handleDoubleClickEvent}
-            onKeyPressEvent={handleKeyPressEvent}
-            onSelectSlot={handleSelectSlot}
-            // TODO: propagate popup to Month view only
-            onShowMore={onShowMore}
-            // TODO: propagate popup to Month view only
-            popup={popup}
-            dayLayoutAlgorithm={dayLayoutAlgorithm}
-          />
-        </div>
-      </PluginsContext.Provider>
+          </div>
+        </PluginsContext.Provider>
+      </LocalizerContext.Provider>
     </CalendarContext.Provider>
   );
 }

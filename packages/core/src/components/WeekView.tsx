@@ -1,15 +1,18 @@
 import { dates } from '@react-next-calendar/utils';
 
+import { useLocalizer } from '../model/localizerContext';
 import { NavigateAction } from '../utils/constants';
+import type { Localizer } from '../localizer';
 import { TimeGrid, TimeGridProps } from './TimeGrid';
 
 export type WeekProps = TimeGridProps & {
   date: Date;
-  localizer: Localizer;
 };
 
 export const WeekView: ExtendedFC<WeekProps> = ({ date, ...props }) => {
-  const range = WeekView.range(date, { localizer: props.localizer }) as Date[];
+  const localizer = useLocalizer();
+
+  const range = WeekView.range(date, { localizer }) as Date[];
 
   return <TimeGrid {...props} range={range} />;
 };
