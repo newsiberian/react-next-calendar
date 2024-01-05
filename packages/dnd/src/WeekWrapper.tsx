@@ -21,7 +21,6 @@ export interface WeekWrapperProps {
 
   components: Components;
   getters: Getters;
-  localizer: Localizer;
 
   resourceId: string | number;
   rootRef: React.RefObject<HTMLDivElement>;

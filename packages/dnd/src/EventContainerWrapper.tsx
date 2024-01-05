@@ -3,6 +3,7 @@ import {
   NoopWrapper,
   TimeGridEvent,
   useCalendarContext,
+  useLocalizer,
   usePluginsContext,
 } from '@react-next-calendar/core';
 import {
@@ -26,7 +27,6 @@ export interface EventContainerWrapperProps {
 
   components: Components;
   getters: Getters;
-  localizer: Localizer;
 }
 
 const pointInColumn = (
@@ -44,9 +44,9 @@ function EventContainerWrapper({
   resourceId,
   components,
   getters,
-  localizer,
 }: EventContainerWrapperProps): React.ReactElement {
   const { rtl } = useCalendarContext();
+  const localizer = useLocalizer();
   const context = usePluginsContext<{
     draggable: DraggableContext;
   }>();

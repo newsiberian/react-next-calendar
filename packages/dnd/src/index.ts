@@ -1,4 +1,5 @@
-import { useDragAndDrop, DragAndDropCalendarProps } from './useDragAndDrop';
+import { useDragAndDrop } from './useDragAndDrop';
 
-export { useDragAndDrop, DragAndDropCalendarProps };
+export { useDragAndDrop };
+export type { DragAndDropCalendarProps } from './useDragAndDrop';
 export default useDragAndDrop;
