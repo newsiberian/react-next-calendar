@@ -39,21 +39,30 @@ export function monthsInYear(year: number): Date[] {
   return MONTHS.map(i => dates.month(date, i));
 }
 
-export function firstVisibleDay(date: Date, localizer: Localizer): Date {
+export function firstVisibleDay(
+  date: Date,
+  startOfWeek: dates.StartOfWeek,
+): Date {
   const firstOfMonth = dates.startOf(date, 'month');
 
-  return dates.startOf(firstOfMonth, 'week', localizer.startOfWeek());
+  return dates.startOf(firstOfMonth, 'week', startOfWeek);
 }
 
-export function lastVisibleDay(date: Date, localizer: Localizer): Date {
+export function lastVisibleDay(
+  date: Date,
+  startOfWeek: dates.StartOfWeek,
+): Date {
   const endOfMonth = dates.endOf(date, 'month');
 
-  return dates.endOf(endOfMonth, 'week', localizer.startOfWeek());
+  return dates.endOf(endOfMonth, 'week', startOfWeek);
 }
 
-export function visibleDays(date: Date, localizer: Localizer): Date[] {
-  let current = firstVisibleDay(date, localizer);
-  const last = lastVisibleDay(date, localizer);
+export function visibleDays(
+  date: Date,
+  startOfWeek: dates.StartOfWeek,
+): Date[] {
+  let current = firstVisibleDay(date, startOfWeek);
+  const last = lastVisibleDay(date, startOfWeek);
   const days = [];
 
   while (dates.lte(current, last, 'day')) {
