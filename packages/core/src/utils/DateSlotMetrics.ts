@@ -16,10 +16,10 @@ export function getSlotMetrics(): (
   options: DateSlotMetricsOptions,
 ) => DateSlotMetrics {
   return memoizeOne((options: DateSlotMetricsOptions): DateSlotMetrics => {
-    const { range, events, maxRows, minRows, accessors } = options;
+    const { range, events, maxRows, minRows } = options;
     const { first, last } = endOfRange(range);
 
-    const segments = events.map(evt => eventSegments(evt, range, accessors));
+    const segments = events.map(evt => eventSegments(evt, range));
 
     const { levels, extra } = eventLevels(segments, Math.max(maxRows - 1, 1));
 
@@ -58,16 +58,12 @@ export function getSlotMetrics(): (
       },
 
       continuesPrior(event: RNC.Event): boolean {
-        return dates.lt(accessors.start(event), first, 'day');
+        return dates.lt(event.start, first, 'day');
       },
 
       continuesAfter(event: RNC.Event): boolean {
-        const eventEnd = accessors.end(event);
-        const singleDayDuration = dates.eq(
-          accessors.start(event),
-          eventEnd,
-          'minutes',
-        );
+        const eventEnd = event.end;
+        const singleDayDuration = dates.eq(event.start, eventEnd, 'minutes');
 
         return singleDayDuration
           ? dates.gte(eventEnd, last, 'minutes')

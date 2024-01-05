@@ -77,7 +77,6 @@ function DateContentRow({
   isAllDay = false,
   isFirstRow,
 
-  accessors,
   components,
   getters,
   localizer,
@@ -124,7 +123,6 @@ function DateContentRow({
       events,
       maxRows,
       minRows,
-      accessors,
     });
     const row = qsa(rootRef.current as HTMLDivElement, '.rbc-row-bg')[0];
 
@@ -187,7 +185,6 @@ function DateContentRow({
     events,
     maxRows,
     minRows,
-    accessors,
   });
   const { levels, extra } = metrics;
 
@@ -195,7 +192,6 @@ function DateContentRow({
 
   const eventRowProps = {
     selected,
-    accessors,
     getters,
     localizer,
     components,

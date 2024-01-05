@@ -14,7 +14,6 @@ export type TimeGridEventProps = {
    */
   className?: string;
 
-  accessors: Accessors;
   getters: Getters;
   components: Components;
 
@@ -37,7 +36,6 @@ export function TimeGridEvent(props: TimeGridEventProps) {
     style,
     className,
     event,
-    accessors,
     rtl,
     selected,
     label,
@@ -50,10 +48,8 @@ export function TimeGridEvent(props: TimeGridEventProps) {
     components: { event: Event, eventWrapper: EventWrapper },
   } = props;
 
-  const title = accessors.title(event);
-  const tooltip = accessors.tooltip(event);
-  const end = accessors.end(event);
-  const start = accessors.start(event);
+  const { title, start, end } = event;
+  const tooltip = title;
 
   const eventProps = getters.eventProp(event, start, end, selected);
 

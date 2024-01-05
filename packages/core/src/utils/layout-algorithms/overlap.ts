@@ -15,21 +15,13 @@ class Event {
   public constructor(
     data: RNC.Event,
     {
-      accessors,
       slotMetrics,
     }: {
-      accessors: Accessors;
       slotMetrics: TimeSlotMetrics<TimeSlotMetricsOptions>;
     },
   ) {
-    const {
-      start,
-      startDate,
-      end,
-      endDate,
-      top,
-      height,
-    } = slotMetrics.getRange(accessors.start(data), accessors.end(data));
+    const { start, startDate, end, endDate, top, height } =
+      slotMetrics.getRange(data.start, data.end);
 
     this.start = start;
     this.end = end;
@@ -139,21 +131,20 @@ function onSameRow(
  * to set descending order on object property just add '-' at the beginning of
  * property
  */
-const compareBy = <T extends keyof R | string, R>(...props: T[]) => (
-  a: R,
-  b: R,
-) => {
-  for (let i = 0; i < props.length; i++) {
-    const ascValue = (props[i] as string).startsWith('-') ? -1 : 1;
-    const prop = (props[i] as string).startsWith('-')
-      ? (props[i] as string).substr(1)
-      : props[i];
-    if (a[prop as keyof R] !== b[prop as keyof R]) {
-      return a[prop as keyof R] > b[prop as keyof R] ? ascValue : -ascValue;
+const compareBy =
+  <T extends keyof R | string, R>(...props: T[]) =>
+  (a: R, b: R) => {
+    for (let i = 0; i < props.length; i++) {
+      const ascValue = (props[i] as string).startsWith('-') ? -1 : 1;
+      const prop = (props[i] as string).startsWith('-')
+        ? (props[i] as string).substr(1)
+        : props[i];
+      if (a[prop as keyof R] !== b[prop as keyof R]) {
+        return a[prop as keyof R] > b[prop as keyof R] ? ascValue : -ascValue;
+      }
     }
-  }
-  return 0;
-};
+    return 0;
+  };
 
 function sortByRender(events: Event[]) {
   if (!events.length) {
@@ -195,7 +186,6 @@ export default function getStyledEvents({
   events,
   minimumStartDifference,
   slotMetrics,
-  accessors,
 }: GetStyledEventsOptions): StyledEvent[] {
   if (!events.length) {
     return [];
@@ -203,9 +193,7 @@ export default function getStyledEvents({
 
   // Create proxy events and order them so that we don't have
   // to fiddle with z-indexes.
-  const proxies = events.map(
-    event => new Event(event, { slotMetrics, accessors }),
-  );
+  const proxies = events.map(event => new Event(event, { slotMetrics }));
   const eventsInRenderOrder = sortByRender(proxies);
   // Group overlapping events, while keeping order.
   // Every event is always one of: container, row or leaf.
@@ -234,7 +222,7 @@ export default function getStyledEvents({
 
     // Check if the event can be placed in an existing row.
     // Start looking from behind.
-    let row = null;
+    let row = undefined;
 
     if (Array.isArray(container.rows) && container.rows.length) {
       for (let j = container.rows.length - 1; !row && j >= 0; j--) {
@@ -244,9 +232,10 @@ export default function getStyledEvents({
       }
     }
 
-    if (row?.leaves) {
+    const rowLeaves = row?.leaves;
+    if (rowLeaves) {
       // Found a row, so add it.
-      row.leaves.push(event);
+      rowLeaves.push(event);
       event.row = row;
     } else {
       // Couldn't find a row – that means this event is a row.

@@ -2,21 +2,18 @@ import type { ReactNode } from 'react';
 
 export const NONE = 'nothing-here';
 
-type MapFn = (
+type MapCallback = (
   [id, resource]: [id: string | number, resource: Resource | null],
   index: number,
-) => ReactNode[];
+) => ReactNode[] | ReactNode;
 
-export default function Resources(
-  resources: Resource[],
-  accessors: Accessors,
-): Resources {
+export function Resources(resources: Resource[]) {
   return {
-    map(fn: MapFn) {
+    map(callback: MapCallback) {
       return !resources
-        ? [fn([NONE, null], 0)]
+        ? [callback([NONE, null], 0)]
         : resources.map((resource, idx) =>
-            fn([accessors.resourceId(resource), resource], idx),
+            callback([resource.id, resource], idx),
           );
     },
 
@@ -30,7 +27,7 @@ export default function Resources(
       }
 
       events.forEach(event => {
-        const id = accessors.resource(event) || NONE;
+        const id = event.resourceId ?? NONE;
         const resourceEvents = eventsByResource.get(id) || [];
         resourceEvents.push(event);
         eventsByResource.set(id, resourceEvents);

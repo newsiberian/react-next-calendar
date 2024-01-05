@@ -33,7 +33,6 @@ export type EventCellProps = {
    */
   continuesAfter: boolean;
 
-  accessors: Accessors;
   components: Components;
   getters: Getters;
   localizer: Localizer;
@@ -60,7 +59,6 @@ export function EventCell(props: EventCellProps) {
     localizer,
     continuesPrior,
     continuesAfter,
-    accessors,
     getters,
     children,
     components: { event: Event, eventWrapper: EventWrapper },
@@ -69,11 +67,8 @@ export function EventCell(props: EventCellProps) {
     ...rest
   } = props;
 
-  const title = accessors.title(event);
-  const tooltip = accessors.tooltip(event);
-  const end = accessors.end(event);
-  const start = accessors.start(event);
-  const allDay = accessors.allDay(event);
+  const { title, allDay, start, end } = event;
+  const tooltip = title;
 
   const showAsAllDay = useMemo(
     () =>

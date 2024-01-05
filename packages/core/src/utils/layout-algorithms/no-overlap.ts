@@ -29,7 +29,6 @@ export default function ({
   events,
   minimumStartDifference,
   slotMetrics,
-  accessors,
 }: GetStyledEventsOptions): StyledEvent[] {
   if (!events.length) {
     return [];
@@ -39,7 +38,6 @@ export default function ({
     events,
     minimumStartDifference,
     slotMetrics,
-    accessors,
   });
 
   styledEvents.sort((a, b): 1 | -1 => {

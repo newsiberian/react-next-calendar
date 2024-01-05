@@ -34,7 +34,6 @@ export type MonthViewProps = {
   selectable: Selectable;
   longPressThreshold: number;
 
-  accessors: Accessors;
   components: Components & MonthComponents;
   getters: Getters;
   localizer: Localizer;
@@ -63,12 +62,8 @@ function chunk<T>(input: T[], size: number): Array<T[]> {
   }, []);
 }
 
-const eventsForWeek = (
-  events: RNC.Event[],
-  start: Date,
-  end: Date,
-  accessors: Accessors,
-): RNC.Event[] => events.filter(e => inRange(e, start, end, accessors));
+const eventsForWeek = (events: RNC.Event[], start: Date, end: Date) =>
+  events.filter(e => inRange(e, start, end));
 
 export const MonthView: ExtendedFC<MonthViewProps> = ({
   events,
@@ -78,7 +73,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
   selectable,
   longPressThreshold,
 
-  accessors,
   components,
   getters,
   localizer,
@@ -262,16 +256,9 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
   }
 
   function renderWeek(week: Date[], weekIdx: number) {
-    const weekEvents = eventsForWeek(
-      events,
-      week[0],
-      week[week.length - 1],
-      accessors,
-    );
+    const weekEvents = eventsForWeek(events, week[0], week[week.length - 1]);
 
-    weekEvents.sort((a: RNC.Event, b: RNC.Event) =>
-      sortEvents(a, b, accessors),
-    );
+    weekEvents.sort((a: RNC.Event, b: RNC.Event) => sortEvents(a, b));
 
     return (
       <DateContentRow
@@ -287,7 +274,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
         selected={selected}
         selectable={selectable}
         components={components}
-        accessors={accessors}
         getters={getters}
         localizer={localizer}
         renderHeader={readerDateHeading}
@@ -334,7 +320,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
           <Popup
             {...props}
             popupOffset={popupOffset}
-            accessors={accessors}
             getters={getters}
             selected={selected}
             components={components}

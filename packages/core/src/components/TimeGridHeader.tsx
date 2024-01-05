@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates } from '@react-next-calendar/utils';
 
+import { Resources } from '../utils/Resources';
 import { notify } from '../utils/helpers';
 import DateContentRow from './DateContentRow';
 import { Header } from './Header';
@@ -13,7 +14,7 @@ export type TimeGridHeaderProps = {
   /**
    * Structured resources
    */
-  resources: Resources;
+  resources: ReturnType<typeof Resources>;
 
   range: Date[];
 
@@ -23,7 +24,6 @@ export type TimeGridHeaderProps = {
 
   width?: number;
 
-  accessors: Accessors;
   components: Components & WeekComponents;
   getters: Getters;
   localizer: Localizer;
@@ -55,7 +55,6 @@ export function TimeGridHeader({
 
   width,
 
-  accessors,
   components,
   getters,
   localizer,
@@ -146,56 +145,50 @@ export function TimeGridHeader({
         {TimeGutterHeader && <TimeGutterHeader />}
       </div>
 
-      {resources.map(
-        ([id, resource]: [string | number, Resource], index: number) => (
-          <div className="rbc-time-header-content" key={id || index}>
-            {resource && (
-              <div
-                className="rbc-row rbc-row-resource"
-                key={`resource_${index}`}
-              >
-                <div className="rbc-header">
-                  <ResourceHeaderComponent
-                    index={index}
-                    label={accessors.resourceTitle(resource)}
-                    resource={resource}
-                  />
-                </div>
+      {resources.map(([id, resource], index) => (
+        <div className="rbc-time-header-content" key={id || index}>
+          {resource && (
+            <div className="rbc-row rbc-row-resource" key={`resource_${index}`}>
+              <div className="rbc-header">
+                <ResourceHeaderComponent
+                  index={index}
+                  label={resource.title}
+                  resource={resource}
+                />
               </div>
-            )}
-
-            <div
-              className={`rbc-row rbc-time-header-cell${
-                range.length <= 1 ? ' rbc-time-header-cell-single-day' : ''
-              }`}
-            >
-              {renderHeaderCells()}
             </div>
+          )}
 
-            <DateContentRow
-              isAllDay
-              rtl={rtl}
-              getNow={getNow}
-              minRows={2}
-              range={range}
-              events={groupedEvents.get(id) || []}
-              resourceId={resource && id}
-              className="rbc-allday-cell"
-              selectable={selectable}
-              selected={selected}
-              components={components}
-              accessors={accessors}
-              getters={getters}
-              localizer={localizer}
-              onSelect={onSelectEvent}
-              onDoubleClick={onDoubleClickEvent}
-              onKeyPress={onKeyPressEvent}
-              onSelectSlot={onSelectSlot}
-              longPressThreshold={longPressThreshold}
-            />
+          <div
+            className={`rbc-row rbc-time-header-cell${
+              range.length <= 1 ? ' rbc-time-header-cell-single-day' : ''
+            }`}
+          >
+            {renderHeaderCells()}
           </div>
-        ),
-      )}
+
+          <DateContentRow
+            isAllDay
+            rtl={rtl}
+            getNow={getNow}
+            minRows={2}
+            range={range}
+            events={groupedEvents.get(id) || []}
+            resourceId={id}
+            className="rbc-allday-cell"
+            selectable={selectable}
+            selected={selected}
+            components={components}
+            getters={getters}
+            localizer={localizer}
+            onSelect={onSelectEvent}
+            onDoubleClick={onDoubleClickEvent}
+            onKeyPress={onKeyPressEvent}
+            onSelectSlot={onSelectSlot}
+            longPressThreshold={longPressThreshold}
+          />
+        </div>
+      ))}
     </div>
   );
 }

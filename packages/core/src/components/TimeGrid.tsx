@@ -11,7 +11,7 @@ import * as animationFrame from 'dom-helpers/animationFrame';
 import { dates, inRange, sortEvents } from '@react-next-calendar/utils';
 
 import { notify } from '../utils/helpers';
-import Resources from '../utils/Resources';
+import { Resources } from '../utils/Resources';
 import { DayColumn } from './DayColumn';
 import { TimeGutter } from './TimeGutter';
 import { TimeGridHeader } from './TimeGridHeader';
@@ -35,7 +35,6 @@ export type TimeGridProps = {
 
   width?: number;
 
-  accessors: Accessors;
   components: Components;
   getters: Getters;
   localizer: Localizer;
@@ -72,7 +71,6 @@ export function TimeGrid({
 
   width,
 
-  accessors,
   components,
   getters,
   localizer,
@@ -216,55 +214,46 @@ export function TimeGrid({
     });
   }
 
-  const memoizedResources = memoize((resources, accessors) =>
-    Resources(resources, accessors),
-  );
+  const memoizedResources = memoize(resources => Resources(resources));
 
   function renderEvents(range: Date[], events: RNC.Event[], now: Date) {
-    const res = memoizedResources(resources, accessors);
+    const res = memoizedResources(resources);
     const groupedEvents = res.groupEvents(events);
 
-    return res.map(
-      ([id, resource]: [string, Resource], resourceIndex: number) =>
-        range.map((date, rangeIndex) => {
-          const daysEvents = (groupedEvents.get(id) || []).filter(event =>
-            dates.inRange(
-              date,
-              accessors.start(event),
-              accessors.end(event),
-              'day',
-            ),
-          );
+    return res.map(([id, resource], resourceIndex) =>
+      range.map((date, rangeIndex) => {
+        const daysEvents = (groupedEvents.get(id) || []).filter(event =>
+          dates.inRange(date, event.start, event.end, 'day'),
+        );
 
-          return (
-            <DayColumn
-              key={resourceIndex + '-' + rangeIndex}
-              events={daysEvents}
-              step={step}
-              date={date}
-              min={dates.merge(date, min)}
-              max={dates.merge(date, max)}
-              getNow={getNow}
-              isNow={dates.eq(date, now, 'day')}
-              rtl={rtl}
-              accessors={accessors}
-              components={components}
-              getters={getters}
-              localizer={localizer}
-              timeslots={timeslots}
-              selected={selected}
-              selectable={selectable}
-              longPressThreshold={longPressThreshold}
-              onSelecting={onSelecting}
-              onSelectSlot={onSelectSlot}
-              onSelectEvent={onSelectEvent}
-              onDoubleClickEvent={onDoubleClickEvent}
-              onKeyPressEvent={onKeyPressEvent}
-              resourceId={(resource && id) || undefined}
-              dayLayoutAlgorithm={dayLayoutAlgorithm}
-            />
-          );
-        }),
+        return (
+          <DayColumn
+            key={resourceIndex + '-' + rangeIndex}
+            events={daysEvents}
+            step={step}
+            date={date}
+            min={dates.merge(date, min)}
+            max={dates.merge(date, max)}
+            getNow={getNow}
+            isNow={dates.eq(date, now, 'day')}
+            rtl={rtl}
+            components={components}
+            getters={getters}
+            localizer={localizer}
+            timeslots={timeslots}
+            selected={selected}
+            selectable={selectable}
+            longPressThreshold={longPressThreshold}
+            onSelecting={onSelecting}
+            onSelectSlot={onSelectSlot}
+            onSelectEvent={onSelectEvent}
+            onDoubleClickEvent={onDoubleClickEvent}
+            onKeyPressEvent={onKeyPressEvent}
+            resourceId={(resource && id) || undefined}
+            dayLayoutAlgorithm={dayLayoutAlgorithm}
+          />
+        );
+      }),
     );
   }
 
@@ -275,12 +264,12 @@ export function TimeGrid({
   const rangeEvents: RNC.Event[] = [];
 
   events.forEach(event => {
-    if (inRange(event, start, end, accessors)) {
-      const eStart = accessors.start(event);
-      const eEnd = accessors.end(event);
+    if (inRange(event, start, end)) {
+      const eStart = event.start;
+      const eEnd = event.end;
 
       if (
-        accessors.allDay(event) ||
+        event.allDay ||
         (dates.isJustDate(eStart) && dates.isJustDate(eEnd)) ||
         (!showMultiDayTimes && !dates.eq(eStart, eEnd, 'day'))
       ) {
@@ -291,7 +280,7 @@ export function TimeGrid({
     }
   });
 
-  allDayEvents.sort((a, b) => sortEvents(a, b, accessors));
+  allDayEvents.sort((a, b) => sortEvents(a, b));
 
   return (
     <div
@@ -305,9 +294,8 @@ export function TimeGrid({
         getNow={getNow}
         localizer={localizer}
         selected={selected}
-        resources={memoizedResources(resources, accessors)}
+        resources={memoizedResources(resources)}
         selectable={selectable}
-        accessors={accessors}
         getters={getters}
         components={components}
         scrollRef={scrollRef}

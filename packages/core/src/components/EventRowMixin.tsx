@@ -19,7 +19,6 @@ export type EventProps = Omit<
 export function renderEvent(
   {
     selected,
-    accessors,
     components,
     getters,
     localizer,
@@ -38,7 +37,6 @@ export function renderEvent(
       event={event}
       getters={getters}
       localizer={localizer}
-      accessors={accessors}
       components={components}
       onSelect={onSelect}
       onDoubleClick={onDoubleClick}

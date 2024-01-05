@@ -33,7 +33,6 @@ export type DayColumnProps = {
 
   rtl: boolean;
 
-  accessors: Accessors;
   components: Components;
   getters: Getters;
   localizer: Localizer;
@@ -66,7 +65,6 @@ export function DayColumn({
 
   rtl,
 
-  accessors,
   components,
   getters,
   localizer,
@@ -406,15 +404,13 @@ export function DayColumn({
 
     const styledEvents = DayEventLayout.getStyledEvents({
       events,
-      accessors,
       slotMetrics: timeSlotMetrics,
       minimumStartDifference: Math.ceil((step * timeslots) / 2),
       dayLayoutAlgorithm,
     });
 
     return styledEvents.map(({ event, style }, idx) => {
-      const end = accessors.end(event);
-      const start = accessors.start(event);
+      const { start, end } = event;
       let format = 'eventTimeRangeFormat';
       let label;
 
@@ -448,7 +444,6 @@ export function DayColumn({
           components={components}
           continuesEarlier={continuesEarlier}
           continuesLater={continuesLater}
-          accessors={accessors}
           selected={isSelected(event, selected)}
           onClick={(e: MouseEvent) => handleSelect(event, e)}
           onDoubleClick={(e: MouseEvent) => handleDoubleClick(event, e)}
@@ -485,7 +480,6 @@ export function DayColumn({
         rootRef={dayRef}
         slotMetrics={timeSlotMetrics}
         resourceId={resourceId}
-        accessors={accessors}
         components={restComponents}
         getters={restGetters}
         localizer={localizer}

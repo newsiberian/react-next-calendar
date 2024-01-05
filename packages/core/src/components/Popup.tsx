@@ -17,7 +17,6 @@ type OffsetObject = { x: number; y: number };
 
 export type PopupProps = Pick<
   EventCellProps,
-  | 'accessors'
   | 'components'
   | 'getters'
   | 'localizer'
@@ -57,7 +56,6 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
       events,
       selected,
 
-      accessors,
       components,
       getters,
       localizer,
@@ -133,7 +131,6 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
             event={event}
             getters={getters}
             onSelect={onSelect}
-            accessors={accessors}
             components={components}
             localizer={localizer}
             onDoubleClick={onDoubleClick}

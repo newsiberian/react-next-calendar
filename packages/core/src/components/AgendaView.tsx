@@ -12,7 +12,6 @@ export type AgendaProps = {
 
   selected?: RNC.Event;
 
-  accessors: Accessors;
   components: Components & AgendaComponents;
   getters: Getters;
   localizer: Localizer;
@@ -23,7 +22,6 @@ const defaultLength = 30;
 export const AgendaView: ExtendedFC<AgendaProps> = ({
   selected,
   getters,
-  accessors,
   localizer,
   components,
   length = defaultLength,
@@ -46,13 +44,11 @@ export const AgendaView: ExtendedFC<AgendaProps> = ({
     const AgendaDate = components.date;
 
     const eventsInRange = events.filter((e: RNC.Event) =>
-      inRange(e, dates.startOf(day, 'day'), dates.endOf(day, 'day'), accessors),
+      inRange(e, dates.startOf(day, 'day'), dates.endOf(day, 'day')),
     );
 
     return eventsInRange.map((event, idx) => {
-      const title = accessors.title(event);
-      const end = accessors.end(event);
-      const start = accessors.start(event);
+      const { title, end, start } = event;
 
       const eventProps = getters.eventProp(
         event,
@@ -93,10 +89,10 @@ export const AgendaView: ExtendedFC<AgendaProps> = ({
     let label = localizer.messages.allDay;
     const AgendaTime = components.time;
 
-    const end = accessors.end(event);
-    const start = accessors.start(event);
+    const end = event.end;
+    const start = event.start;
 
-    if (!accessors.allDay(event)) {
+    if (!event.allDay) {
       if (dates.eq(start, end)) {
         label = localizer.format(start, 'agendaTimeFormat');
       } else if (dates.eq(start, end, 'day')) {
@@ -175,8 +171,8 @@ export const AgendaView: ExtendedFC<AgendaProps> = ({
   const filteredEvents = useMemo(
     () =>
       events
-        .filter(event => inRange(event, date, end, accessors))
-        .sort((a, b) => +accessors.start(a) - +accessors.start(b)),
+        .filter(event => inRange(event, date, end))
+        .sort((a, b) => +a.start - +b.start),
     [events, date, end],
   );
 

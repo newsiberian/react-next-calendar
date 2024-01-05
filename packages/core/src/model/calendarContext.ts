@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-export type Context = {
+export type CalendarContextValue = {
   rtl: boolean;
 };
 
@@ -8,7 +8,9 @@ export type Context = {
  * This context contains commonly used heave props like components, getters,
  * accessors, localizer etc
  */
-export const CalendarContext = createContext<Context>({ rtl: false });
+export const CalendarContext = createContext<CalendarContextValue>({
+  rtl: false,
+});
 
 CalendarContext.displayName = 'CalendarContext';
 

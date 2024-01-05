@@ -1,7 +1,6 @@
 import { useMemo, HTMLAttributes, MouseEvent, KeyboardEvent } from 'react';
 import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
-import { wrapAccessor } from '@react-next-calendar/utils';
 
 import { CalendarContext } from '../model/calendarContext';
 import { PluginsContext } from '../model/pluginsContext';
@@ -32,37 +31,12 @@ export interface CalendarProps {
   date?: Date;
 
   /**
-   * An array of event objects to display on the calendar. Events objects
-   * can be any shape, as long as the Calendar knows how to retrieve the
-   * following details of the event:
-   *
-   *  - start time
-   *  - end time
-   *  - title
-   *  - whether it's an "all day" event or not
-   *  - any resource the event may be related to
-   *
-   * Each of these properties can be customized or generated dynamically by
-   * setting the various "accessor" props. Without any configuration the default
-   * event should look like:
-   *
-   * ```js
-   * Event {
-   *   title: string,
-   *   start: Date,
-   *   end: Date,
-   *   allDay?: boolean
-   *   resource?: any,
-   * }
-   * ```
+   * An array of event objects to display on the calendar.
    */
   events: RNC.Event[];
 
   /**
    * An array of resource objects that map events to a specific resource.
-   * Resource objects, like events, can be any shape or have any properties,
-   * but should be uniquely identifiable via the `resourceIdAccessor`, as
-   * well as a "title" or name as provided by the `resourceTitleAccessor` prop.
    */
   resources?: Resource[];
 
@@ -115,107 +89,11 @@ export interface CalendarProps {
   views?: View[] | CustomViews;
 
   /**
-   * Accessor for the event title, used to display event information. Should
-   * resolve to a `renderable` value.
-   *
-   * ```ts
-   * string | (event: Event) => string
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  titleAccessor?: ((event: RNC.Event) => string) | string;
-
-  /**
-   * Accessor for the event tooltip. Should resolve to a `renderable` value.
-   * Removes the tooltip if null.
-   *
-   * ```js
-   * string | (event: Event) => string
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  tooltipAccessor?: ((event: RNC.Event) => string) | string;
-
-  /**
-   * Determines whether the event should be considered an "all day" event and
-   * ignore time.
-   * Must resolve to a `boolean` value.
-   *
-   * ```js
-   * string | (event: Event) => boolean
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  allDayAccessor?: ((event: RNC.Event) => boolean) | string;
-
-  /**
-   * The start date/time of the event. Must resolve to a JavaScript `Date` object.
-   *
-   * ```js
-   * string | (event: Event) => Date
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  startAccessor?: ((event: RNC.Event) => Date) | string;
-
-  /**
-   * The end date/time of the event. Must resolve to a JavaScript `Date` object.
-   *
-   * ```js
-   * string | (event: Event) => Date
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  endAccessor?: ((event: RNC.Event) => Date) | string;
-
-  /**
-   * Returns the id of the `resource` that the event is a member of. This
-   * id should match at least one resource in the `resources` array.
-   *
-   * ```js
-   * string | (event: Event) => string | number
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  resourceAccessor?: ((event: RNC.Event) => string | number) | string;
-
-  /**
-   * Provides a unique identifier for each resource in the `resources` array
-   *
-   * ```js
-   * string | (resource: Resource) => string | number
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  resourceIdAccessor?: ((resource: Resource) => string | number) | string;
-
-  /**
-   * Provides a human-readable name for the resource object, used in headers.
-   *
-   * ```js
-   * string | (resource: Resource) => string
-   * ```
-   *
-   * @type {(func|string)}
-   */
-  resourceTitleAccessor?: ((resource: Resource) => string) | string;
-
-  /**
    * Determines the current date/time which is highlighted in the views.
    *
    * The value affects which day is shaded and which time is shown as
    * the current time. It also affects the date used by the Today button in
    * the toolbar.
-   *
-   * Providing a value here can be useful when you are implementing time zones
-   * using the `startAccessor` and `endAccessor` properties.
    *
    * @type {func}
    * @default () => new Date()
@@ -616,7 +494,7 @@ export interface CalendarProps {
    * A day event layout(arrangement) algorithm.
    * `overlap` allows events to be overlapped.
    * `no-overlap` resizes events to avoid overlap.
-   * or custom `Function(events, minimumStartDifference, slotMetrics, accessors)`
+   * or custom `Function(events, minimumStartDifference, slotMetrics)`
    *
    * @defaultValue 'overlap'
    */
@@ -652,19 +530,15 @@ function isValidView(
  * specific needs).
  *
  * React Next Calendar is unopiniated about editing and moving events, preferring
- * to let you implement it in a way that makes the most sense to your app. It
- * also tries not to be prescriptive about your event data structures, just tell
- * it how to find the start and end datetimes and you can pass it whatever you
- * want.
+ * to let you implement it in a way that makes the most sense to your app.
  *
  * One thing to note is that, **React Next Calendar** treats event start/end dates
  * as an _exclusive_ range. which means that the event spans up to, but not
  * including, the end date. In the case of displaying events on whole days, end
  * dates are rounded _up_ to the next day. So an event ending on
  * `Apr 8th 12:00:00 am` will not appear on the 8th, whereas one ending on
- * `Apr 8th 12:01:00 am` will. If you want _inclusive_ ranges consider providing
- * a function `endAccessor` that returns the end date + 1 day for those events
- * that end at midnight.
+ * `Apr 8th 12:01:00 am` will. If you want _inclusive_ ranges consider normalizing
+ * the `end` date + 1 day for those events that end at midnight.
  */
 export function Calendar({
   events,
@@ -673,15 +547,6 @@ export function Calendar({
   view = views.MONTH,
   views: viewsProp = [views.MONTH, views.WEEK, views.DAY, views.AGENDA],
   drilldownView = views.DAY,
-
-  startAccessor = 'start',
-  endAccessor = 'end',
-  allDayAccessor = 'allDay',
-  tooltipAccessor = 'title',
-  titleAccessor = 'title',
-  resourceAccessor = 'resourceId',
-  resourceIdAccessor = 'id',
-  resourceTitleAccessor = 'title',
 
   formats = {} as Formats,
   localizer: localizerProp,
@@ -761,29 +626,6 @@ export function Calendar({
       names,
     ];
   }, [viewsProp, view, componentsProp]);
-
-  const accessors = useMemo(
-    () => ({
-      start: wrapAccessor(startAccessor),
-      end: wrapAccessor(endAccessor),
-      allDay: wrapAccessor(allDayAccessor),
-      tooltip: wrapAccessor(tooltipAccessor),
-      title: wrapAccessor(titleAccessor),
-      resource: wrapAccessor(resourceAccessor),
-      resourceId: wrapAccessor(resourceIdAccessor),
-      resourceTitle: wrapAccessor(resourceTitleAccessor),
-    }),
-    [
-      startAccessor,
-      endAccessor,
-      allDayAccessor,
-      tooltipAccessor,
-      titleAccessor,
-      resourceAccessor,
-      resourceIdAccessor,
-      resourceTitleAccessor,
-    ],
-  );
 
   const calendarContext = useMemo(
     () => ({
@@ -967,7 +809,6 @@ export function Calendar({
             localizer={localizer}
             getters={getters}
             components={components}
-            accessors={accessors}
             longPressThreshold={longPressThreshold}
             showMultiDayTimes={showMultiDayTimes}
             getDrilldownView={getDrillDownView}
