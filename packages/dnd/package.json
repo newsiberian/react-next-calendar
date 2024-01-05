@@ -18,7 +18,7 @@
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf dist",
-    "sass": "node-sass styles.scss dist/styles.css",
+    "sass": "sass styles.scss dist/styles.css",
     "autoprefixer": "postcss --use autoprefixer < ./dist/styles.css",
     "build:css": "npm run sass && npm run autoprefixer",
     "build:cjs": "tsc -p tsconfig.build.json",

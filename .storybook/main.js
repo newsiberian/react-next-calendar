@@ -1,48 +1,61 @@
-const path = require('path');
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+import { dirname, join } from 'path';
+import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
 module.exports = {
-  stories: ['../stories/**/*.stories.@(ts|tsx|js|mdx)'],
+  stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx|mdx)'],
+
   addons: [
-    '@storybook/addon-essentials',
+    getAbsolutePath('@storybook/addon-essentials'),
     {
-      name: '@storybook/addon-postcss',
+      name: getAbsolutePath('@storybook/addon-styling-webpack'),
       options: {
-        postcssLoaderOptions: {
-          implementation: require('postcss'),
-        },
+        rules: [
+          // Replaces any existing Sass rules with given rules
+          {
+            test: /\.s[ac]ss$/i,
+            use: [
+              'style-loader',
+              'css-loader',
+              {
+                loader: 'sass-loader',
+                options: { implementation: require.resolve('sass') },
+              },
+            ],
+          },
+        ],
       },
     },
   ],
-  core: {
-    builder: 'webpack5',
+
+  framework: {
+    name: getAbsolutePath('@storybook/react-webpack5'),
+    options: {},
   },
-  framework: '@storybook/react',
+
   // https://storybook.js.org/docs/react/configure/typescript#mainjs-configuration
   typescript: {
     check: false, // type-check stories during Storybook build
-    // reactDocgen: 'react-docgen-typescript',
-    reactDocgen: 'react-docgen',
+    reactDocgen: 'react-docgen-typescript',
   },
+
   webpackFinal: async (config /* , { configType } */) => {
-    // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
-    // You can change the configuration based on that.
-    // 'PRODUCTION' is used when building the static version of storybook.
-
-    // Make whatever fine-grained changes you need
-    config.module.rules.push({
-      test: /\.scss$/,
-      use: ['style-loader', 'css-loader', 'sass-loader'],
-      include: path.resolve(__dirname, '../'),
-    });
-
     // required to have access to packages by path @react-next-calendar/*
     config.resolve.plugins = [
       ...(config.resolve.plugins || []),
-      new TsconfigPathsPlugin(),
+      new TsconfigPathsPlugin({
+        extensions: config.resolve.extensions,
+      }),
     ];
 
     // Return the altered config
     return config;
   },
+
+  docs: {
+    autodocs: true,
+  },
 };
+
+function getAbsolutePath(value) {
+  return dirname(require.resolve(join(value, 'package.json')));
+}

@@ -1,4 +1,3 @@
-import { addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 import format from 'date-fns/format';
@@ -6,11 +5,6 @@ import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import enLocale from 'date-fns/locale/en-US';
 import ruLocale from 'date-fns/locale/ru';
-
-const dateFnsLocales = {
-  'en-US': enLocale,
-  ru: ruLocale,
-};
 
 import {
   Calendar as BaseCalendar,
@@ -25,9 +19,10 @@ import {
 
 export type { CalendarProps };
 
-addDecorator(function WithHeight(fn) {
-  return <div style={{ height: 600 }}>{fn()}</div>;
-});
+const dateFnsLocales = {
+  'en-US': enLocale,
+  ru: ruLocale,
+};
 
 const localizerMoment = momentLocalizer(moment);
 const localizerDateFns = dateFnsLocalizer({

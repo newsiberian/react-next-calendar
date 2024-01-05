@@ -2,8 +2,16 @@ import { DocsPage, DocsContainer } from '@storybook/addon-docs';
 
 import '../packages/core/src/sass/styles.scss';
 import '../packages/dnd/styles.scss';
+import * as React from 'react';
 
-export const parameters = {
+export default {
+  decorators: [
+    Story => (
+      <div style={{ height: 600 }}>
+        <Story />
+      </div>
+    ),
+  ],
   docs: {
     container: DocsContainer,
     page: DocsPage,
