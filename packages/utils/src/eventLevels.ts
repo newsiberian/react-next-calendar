@@ -13,16 +13,12 @@ export function endOfRange(
   };
 }
 
-export function eventSegments(
-  event: RNC.Event,
-  range: Date[],
-  accessors: Pick<Accessors, 'start' | 'end'>,
-): Segment {
+export function eventSegments(calEvent: RNC.Event, range: Date[]): Segment {
   const { first, last } = endOfRange(range);
 
   const slots = dates.diff(first, last, 'day');
-  const start = dates.max(dates.startOf(accessors.start(event), 'day'), first);
-  const end = dates.min(dates.ceil(accessors.end(event), 'day'), last);
+  const start = dates.max(dates.startOf(calEvent.start, 'day'), first);
+  const end = dates.min(dates.ceil(calEvent.end, 'day'), last);
 
   const padding = range.findIndex((x: Date) => dates.eq(x, start, 'day'));
   let span = dates.diff(start, end, 'day');
@@ -31,7 +27,7 @@ export function eventSegments(
   span = Math.max(span, 1);
 
   return {
-    event,
+    event: calEvent,
     span,
     left: padding + 1,
     right: Math.max(padding + span, 1),
@@ -74,14 +70,9 @@ export function eventLevels(
   return { levels, extra };
 }
 
-export function inRange(
-  e: RNC.Event,
-  start: Date,
-  end: Date,
-  accessors: Accessors,
-): boolean {
-  const eStart = dates.startOf(accessors.start(e), 'day');
-  const eEnd = accessors.end(e);
+export function inRange(calEvent: RNC.Event, start: Date, end: Date): boolean {
+  const eStart = dates.startOf(calEvent.start, 'day');
+  const eEnd = calEvent.end;
 
   const startsBeforeEnd = dates.lte(eStart, end, 'day');
   // when the event is zero duration we need to handle a bit differently
@@ -98,24 +89,20 @@ export function segsOverlap(seg: Segment, otherSegs: Segment[]): boolean {
   );
 }
 
-export function sortEvents(
-  evtA: RNC.Event,
-  evtB: RNC.Event,
-  accessors: Accessors,
-): number {
+export function sortEvents(calEventA: RNC.Event, calEventB: RNC.Event): number {
   const startSort =
-    +dates.startOf(accessors.start(evtA), 'day') -
-    +dates.startOf(accessors.start(evtB), 'day');
+    +dates.startOf(calEventA.start, 'day') -
+    +dates.startOf(calEventB.start, 'day');
 
   const durA = dates.diff(
-    accessors.start(evtA),
-    dates.ceil(accessors.end(evtA), 'day'),
+    calEventA.start,
+    dates.ceil(calEventA.end, 'day'),
     'day',
   );
 
   const durB = dates.diff(
-    accessors.start(evtB),
-    dates.ceil(accessors.end(evtB), 'day'),
+    calEventB.start,
+    dates.ceil(calEventB.end, 'day'),
     'day',
   );
 
@@ -125,8 +112,8 @@ export function sortEvents(
     // events spanning multiple days go first
     Math.max(durB, 1) - Math.max(durA, 1) ||
     // then allDay single day events
-    +accessors.allDay(evtB) - +accessors.allDay(evtA) ||
+    +(calEventB.allDay || 0) - +(calEventA.allDay || 0) ||
     // then sort by start time
-    +accessors.start(evtA) - +accessors.start(evtB)
+    +calEventA.start - +calEventB.start
   );
 }
