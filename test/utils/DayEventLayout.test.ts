@@ -7,10 +7,6 @@ describe('getStyledEvents', () => {
   const min = dates.startOf(d(), 'day');
   const max = dates.endOf(d(), 'day');
   const slotMetrics = getSlotMetrics({ min, max, step: 30, timeslots: 4 });
-  const accessors = {
-    start: e => e.start,
-    end: e => e.end,
-  } as Pick<Accessors, 'start' | 'end'>;
   const dayLayoutAlgorithm = 'overlap';
 
   describe('matrix', () => {
@@ -96,7 +92,6 @@ describe('getStyledEvents', () => {
       it(title as string, () => {
         const styledEvents = getStyledEvents({
           events,
-          accessors,
           slotMetrics,
           minimumStartDifference: 10,
           dayLayoutAlgorithm,

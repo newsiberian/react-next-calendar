@@ -32,10 +32,6 @@ describe('eventSegments', () => {
     start: new Date(2017, 0, 8),
     end: new Date(2017, 0, 11, 12),
   } as RNC.Event;
-  const accessors = { start: e => e.start, end: e => e.end } as Pick<
-    Accessors,
-    'start' | 'end'
-  >;
 
   test('it includes the original event in the returned object', () => {
     const range = [
@@ -45,7 +41,7 @@ describe('eventSegments', () => {
       new Date(2017, 0, 11),
     ];
 
-    const result = eventSegments(event, range, accessors);
+    const result = eventSegments(event, range);
 
     expect(result.event).toEqual(event);
   });
@@ -59,19 +55,19 @@ describe('eventSegments', () => {
     ];
 
     test('it sets span equal to the number of days the event spans', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.span).toBe(4);
     });
 
     test('it sets left equal to one', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.left).toBe(1);
     });
 
     test('it sets right equal to the length of the range', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.right).toBe(4);
     });
@@ -85,19 +81,19 @@ describe('eventSegments', () => {
     ];
 
     test('it sets span equal to the number of days the range spans', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.span).toBe(3);
     });
 
     test('it sets left equal to one', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.left).toBe(1);
     });
 
     test('it sets right equal to the length of the range', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.right).toBe(3);
     });
@@ -111,19 +107,19 @@ describe('eventSegments', () => {
     ];
 
     test('it sets span equal to the number of days the range spans', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.span).toBe(3);
     });
 
     test('it sets left equal to one', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.left).toBe(1);
     });
 
     test('it sets right equal to the length of the range', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.right).toBe(3);
     });
@@ -140,19 +136,19 @@ describe('eventSegments', () => {
     ];
 
     test('it sets span equal to the number of days the event spans', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.span).toBe(4);
     });
 
     test('it sets left equal to the 1-based index into the range where the event starts', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.left).toBe(2);
     });
 
     test('it sets right equal to the 1-based index into the range where the event ends', () => {
-      const result = eventSegments(event, range, accessors);
+      const result = eventSegments(event, range);
 
       expect(result.right).toBe(5);
     });
@@ -259,7 +255,6 @@ describe('inRange', () => {
 
   const rangeStart = new Date(2017, 4, 1);
   const rangeEnd = new Date(2017, 5, 1);
-  const accessors = { start: e => e.start, end: e => e.end } as Accessors;
 
   describe('matrix', () => {
     const weekOfThe5th = [d(5), d(11)];
@@ -369,7 +364,6 @@ describe('inRange', () => {
             event as RNC.Event,
             (range as Date[])[0],
             (range as Date[])[1],
-            accessors,
           ),
         ).toBe(result);
       });
@@ -382,7 +376,7 @@ describe('inRange', () => {
       end: new Date(2017, 4, 31),
     } as RNC.Event;
 
-    const result = inRange(event, rangeStart, rangeEnd, accessors);
+    const result = inRange(event, rangeStart, rangeEnd);
 
     expect(result).toBeTruthy();
   });
@@ -393,7 +387,7 @@ describe('inRange', () => {
       end: new Date(2017, 3, 28),
     } as RNC.Event;
 
-    const result = inRange(event, rangeStart, rangeEnd, accessors);
+    const result = inRange(event, rangeStart, rangeEnd);
 
     expect(result).toBeFalsy();
   });
@@ -404,7 +398,7 @@ describe('inRange', () => {
       end: new Date(2017, 5, 3),
     } as RNC.Event;
 
-    const result = inRange(event, rangeStart, rangeEnd, accessors);
+    const result = inRange(event, rangeStart, rangeEnd);
 
     expect(result).toBeFalsy();
   });
@@ -415,7 +409,7 @@ describe('inRange', () => {
       end: new Date(2017, 5, 1),
     } as RNC.Event;
 
-    const result = inRange(event, rangeStart, rangeEnd, accessors);
+    const result = inRange(event, rangeStart, rangeEnd);
 
     expect(result).toBeTruthy();
   });
@@ -426,7 +420,7 @@ describe('inRange', () => {
       end: new Date(2017, 5, 1),
     } as RNC.Event;
 
-    const result = inRange(event, rangeStart, rangeEnd, accessors);
+    const result = inRange(event, rangeStart, rangeEnd);
 
     expect(result).toBeTruthy();
   });
@@ -487,12 +481,6 @@ describe('segsOverlap', () => {
 });
 
 describe('sortEvents', () => {
-  const accessors = {
-    start: e => e.start,
-    end: e => e.end,
-    allDay: e => e.allDay,
-  } as Accessors;
-
   describe('when the events start on different calendar days', () => {
     const earlierEvent = {
       start: new Date(2017, 0, 1),
@@ -504,13 +492,13 @@ describe('sortEvents', () => {
     } as RNC.Event;
 
     test('it returns a positive number when event B starts on a day before the start day of event A', () => {
-      const result = sortEvents(laterEvent, earlierEvent, accessors);
+      const result = sortEvents(laterEvent, earlierEvent);
 
       expect(result).toBeGreaterThan(0);
     });
 
     test('it returns a negative number when event A starts on a day before the start day of event B', () => {
-      const result = sortEvents(earlierEvent, laterEvent, accessors);
+      const result = sortEvents(earlierEvent, laterEvent);
 
       expect(result).toBeLessThan(0);
     });
@@ -528,13 +516,13 @@ describe('sortEvents', () => {
       } as RNC.Event;
 
       test('it returns a positive number when event B has a longer duration than event A', () => {
-        const result = sortEvents(shorterEvent, longerEvent, accessors);
+        const result = sortEvents(shorterEvent, longerEvent);
 
         expect(result).toBeGreaterThan(0);
       });
 
       test('it returns a negative number when event A has a longer duration than event B', () => {
-        const result = sortEvents(longerEvent, shorterEvent, accessors);
+        const result = sortEvents(longerEvent, shorterEvent);
 
         expect(result).toBeLessThan(0);
       });
@@ -554,13 +542,13 @@ describe('sortEvents', () => {
         } as RNC.Event;
 
         test('it returns a positive number when event B is an all day event', () => {
-          const result = sortEvents(nonAllDayEvent, allDayEvent, accessors);
+          const result = sortEvents(nonAllDayEvent, allDayEvent);
 
           expect(result).toBeGreaterThan(0);
         });
 
         test('it returns a negative number when event A is an all day event', () => {
-          const result = sortEvents(allDayEvent, nonAllDayEvent, accessors);
+          const result = sortEvents(allDayEvent, nonAllDayEvent);
 
           expect(result).toBeLessThan(0);
         });
@@ -579,7 +567,7 @@ describe('sortEvents', () => {
         } as RNC.Event;
 
         test('it returns zero', () => {
-          const result = sortEvents(allDayEvent, otherAllDayEvent, accessors);
+          const result = sortEvents(allDayEvent, otherAllDayEvent);
 
           expect(result).toBe(0);
         });
@@ -598,20 +586,20 @@ describe('sortEvents', () => {
         } as RNC.Event;
 
         test('it returns a positive number when event B starts at an earlier time than event A', () => {
-          const result = sortEvents(laterEvent, earlierEvent, accessors);
+          const result = sortEvents(laterEvent, earlierEvent);
 
           expect(result).toBeGreaterThan(0);
         });
 
         test('it returns a negative number when event A starts at an earlier time than event B', () => {
-          const result = sortEvents(earlierEvent, laterEvent, accessors);
+          const result = sortEvents(earlierEvent, laterEvent);
 
           expect(result).toBeLessThan(0);
         });
 
         test('it returns zero when both events start at the same time', () => {
           const otherEarlierEvent = Object.assign({}, earlierEvent);
-          const result = sortEvents(earlierEvent, otherEarlierEvent, accessors);
+          const result = sortEvents(earlierEvent, otherEarlierEvent);
 
           expect(result).toBe(0);
         });

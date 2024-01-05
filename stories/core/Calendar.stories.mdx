@@ -27,9 +27,8 @@ as an _exclusive_ range. which means that the event spans up to, but not
 including, the end date. In the case of displaying events on whole days, end
 dates are rounded _up_ to the next day. So an event ending on
 `Apr 8th 12:00:00 am` will not appear on the 8th, whereas one ending on
-`Apr 8th 12:01:00 am` will. If you want _inclusive_ ranges consider providing
-a function `endAccessor` that returns the end date + 1 day for those events
-that end at midnight.
+`Apr 8th 12:01:00 am` will. If you want _inclusive_ ranges consider normalizing
+the `end` date + 1 day for those events that end at midnight.
 
 ## Basic Usage
 
