@@ -1,10 +1,4 @@
 import * as React from 'react';
-import { wrapAccessor } from '@react-next-calendar/utils';
-
-export const dragAccessors = {
-  start: wrapAccessor((e: RNC.Event) => e.start),
-  end: wrapAccessor((e: RNC.Event) => e.end),
-} as Pick<Accessors, 'start' | 'end'>;
 
 export interface NextProps {
   children: React.ReactNode;
@@ -40,13 +34,13 @@ export const mergeComponents = (
       K extends keyof Pick<
         Components,
         'eventWrapper' | 'eventContainerWrapper' | 'weekWrapper'
-      >
+      >,
     >(
       key: K,
     ) => {
-      result[key] = (components[key]
-        ? nest(components[key], addons[key])
-        : addons[key]) as Component;
+      result[key] = (
+        components[key] ? nest(components[key], addons[key]) : addons[key]
+      ) as Component;
     },
   );
   return result;

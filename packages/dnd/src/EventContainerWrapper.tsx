@@ -13,7 +13,6 @@ import {
 } from '@react-next-calendar/hooks';
 import { dates } from '@react-next-calendar/utils';
 
-import { dragAccessors } from './common';
 import { DraggableContext } from './useDragAndDrop';
 
 export interface EventContainerWrapperProps {
@@ -25,7 +24,6 @@ export interface EventContainerWrapperProps {
 
   rootRef: React.RefObject<HTMLDivElement>;
 
-  accessors: Accessors;
   components: Components;
   getters: Getters;
   localizer: Localizer;
@@ -44,7 +42,6 @@ function EventContainerWrapper({
   children,
   slotMetrics,
   resourceId,
-  accessors,
   components,
   getters,
   localizer,
@@ -117,8 +114,8 @@ function EventContainerWrapper({
       bounds,
     );
 
-    const eventStart = accessors.start(actionLatest.current.event as RNC.Event);
-    const eventEnd = accessors.end(actionLatest.current.event as RNC.Event);
+    const eventStart = (actionLatest.current.event as RNC.Event).start;
+    const eventEnd = (actionLatest.current.event as RNC.Event).end;
     const end = dates.add(
       currentSlot,
       dates.diff(eventStart, eventEnd, 'minutes'),
@@ -134,10 +131,10 @@ function EventContainerWrapper({
     const currentSlot = slotMetrics.closestSlotFromPoint(point, bounds);
 
     if (actionLatest.current.direction === 'UP') {
-      end = accessors.end(actionLatest.current.event as RNC.Event);
+      end = (actionLatest.current.event as RNC.Event).end;
       start = dates.min(currentSlot, slotMetrics.closestSlotFromDate(end, -1));
     } else if (actionLatest.current.direction === 'DOWN') {
-      start = accessors.start(actionLatest.current.event as RNC.Event);
+      start = (actionLatest.current.event as RNC.Event).start;
       end = dates.max(currentSlot, slotMetrics.closestSlotFromDate(start));
     }
 
@@ -301,7 +298,6 @@ function EventContainerWrapper({
             components={
               { ...components, eventWrapper: NoopWrapper } as Components
             }
-            accessors={{ ...accessors, ...dragAccessors }}
             continuesEarlier={startsBeforeDay}
             continuesLater={startsAfterDay}
             selected={false}

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { usePluginsContext } from '@react-next-calendar/core';
-import { accessor } from '@react-next-calendar/utils';
 
 import { DraggableContext } from './useDragAndDrop';
 
@@ -99,9 +98,7 @@ export default function EventWrapper({
 
   const { draggableAccessor, resizableAccessor } = draggable;
 
-  const isDraggable = draggableAccessor
-    ? !!accessor(event, draggableAccessor)
-    : true;
+  const isDraggable = draggableAccessor ? draggableAccessor(event) : true;
 
   // Event is not draggable, no need to wrap it
   if (!isDraggable) {
@@ -124,9 +121,7 @@ export default function EventWrapper({
   // continue beyond current component. This happens in the middle of events
   // when showMultiDay is true, and to events at the edges of the calendar's
   // min/max location.
-  const isResizable = resizableAccessor
-    ? !!accessor(event, resizableAccessor)
-    : true;
+  const isResizable = resizableAccessor ? resizableAccessor(event) : true;
 
   if (isResizable || isDraggable) {
     // props.children is the singular <Event> component. BigCalendar positions

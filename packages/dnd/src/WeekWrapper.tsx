@@ -12,7 +12,6 @@ import {
   pointInBox,
 } from '@react-next-calendar/utils';
 
-import { dragAccessors } from './common';
 import { DraggableContext } from './useDragAndDrop';
 
 export interface WeekWrapperProps {
@@ -20,7 +19,6 @@ export interface WeekWrapperProps {
   isAllDay: boolean;
   slotMetrics: DateSlotMetrics;
 
-  accessors: Accessors;
   components: Components;
   getters: Getters;
   localizer: Localizer;
@@ -29,12 +27,8 @@ export interface WeekWrapperProps {
   rootRef: React.RefObject<HTMLDivElement>;
 }
 
-const eventTimes = (
-  event: RNC.Event,
-  accessors: Accessors,
-): { start: Date; end: Date } => {
-  const start = accessors.start(event);
-  const end = accessors.end(event);
+const eventTimes = (event: RNC.Event): { start: Date; end: Date } => {
+  const { start, end } = event;
 
   const isZeroDuration =
     dates.eq(start, end, 'minutes') && start.getMinutes() === 0;
@@ -48,7 +42,6 @@ function WeekWrapper({
   children,
   isAllDay,
   slotMetrics,
-  accessors,
   resourceId,
   rootRef,
   ...props
@@ -159,7 +152,6 @@ function WeekWrapper({
         __isPreview: boolean;
       },
       slotMetrics.range,
-      dragAccessors,
     );
 
     if (
@@ -198,12 +190,12 @@ function WeekWrapper({
       slotMetrics.getDateForSlot(
         getSlotAtX(rowBox, x, false, slotMetrics.slots),
       ),
-      accessors.start(event),
+      event.start,
     );
 
     const end = dates.add(
       start,
-      dates.diff(accessors.start(event), accessors.end(event), 'minutes'),
+      dates.diff(event.start, event.end, 'minutes'),
       'minutes',
     );
 
@@ -237,7 +229,7 @@ function WeekWrapper({
   function handleResize(point: SelectedRect, node: NodeBounds): void {
     const { event, direction } = actionLatest.current;
 
-    let { start, end } = eventTimes(event as RNC.Event, accessors);
+    let { start, end } = eventTimes(event as RNC.Event);
 
     const rowBox = getBoundsForNode(node);
     const cursorInRow = pointInBox(rowBox, point);
@@ -319,10 +311,6 @@ function WeekWrapper({
           selected={undefined}
           className="rbc-addons-dnd-drag-row"
           segments={[segment]}
-          accessors={{
-            ...accessors,
-            ...dragAccessors,
-          }}
           slotMetrics={slotMetrics}
         />
       )}

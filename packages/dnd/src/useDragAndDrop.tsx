@@ -252,10 +252,10 @@ export function useDragAndDrop({
         // TODO: rename to onDragEnd?
         onEnd: handleInteractionEnd,
         onBeginAction: handleBeginAction,
-        onDropFromOutside: onDropFromOutside,
-        dragFromOutsideItem: dragFromOutsideItem,
-        draggableAccessor: draggableAccessor,
-        resizableAccessor: resizableAccessor,
+        onDropFromOutside,
+        dragFromOutsideItem,
+        draggableAccessor,
+        resizableAccessor,
         dragAndDropAction: {
           action,
           direction,
