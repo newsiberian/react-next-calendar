@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   NoopWrapper,
   TimeGridEvent,
-  useCalendar,
   useLocalizer,
   usePlugins,
 } from '@react-next-calendar/core';
@@ -45,7 +44,6 @@ function EventContainerWrapper({
   components,
   getters,
 }: EventContainerWrapperProps): React.ReactElement {
-  const { rtl } = useCalendar();
   const localizer = useLocalizer();
   const context = usePlugins<{
     draggable: DraggableContext;
@@ -301,7 +299,6 @@ function EventContainerWrapper({
             continuesEarlier={startsBeforeDay}
             continuesLater={startsAfterDay}
             selected={false}
-            rtl={rtl}
           />
         )}
       </React.Fragment>
