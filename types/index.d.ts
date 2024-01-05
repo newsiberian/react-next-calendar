@@ -367,45 +367,6 @@ declare global {
     month: MonthComponents;
   };
 
-  type GetterResult = {
-    className?: string;
-    style?: Record<string, number | string>;
-  };
-
-  interface Getters {
-    /**
-     * Optionally provide a function that returns an object of className or style
-     * props to be applied to the the day background. Caution! Styles that change
-     * layout or position may break the calendar in unexpected ways.
-     *
-     * ```js
-     * (date: Date) => { className?: string, style?: Object }
-     * ```
-     */
-    dayProp: (date: Date) => GetterResult;
-    /**
-     * Optionally provide a function that returns an object of className or style
-     * props to be applied to the the event node.
-     *
-     * ```js
-     * (
-     *  event: Object,
-     *  start: Date,
-     *  end: Date,
-     *  isSelected: boolean
-     * ) => { className?: string, style?: Object }
-     * ```
-     */
-    eventProp: (
-      event: RNC.Event,
-      start: Date,
-      end: Date,
-      isSelected: boolean,
-    ) => GetterResult;
-    slotGroupProp: () => GetterResult;
-    slotProp: (date: Date, resourceId?: string | number) => GetterResult;
-  }
-
   type GetDrilldownView = (date: Date) => View | null;
 
   /**
