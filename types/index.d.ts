@@ -4,13 +4,31 @@ import { NavigateAction } from '../packages/core/src/utils/constants';
 
 declare global {
   namespace RNC {
-    interface Event {
+    type Event = {
       id: number;
+      /**
+       * Used to display event information. Should resolve to a `renderable` value.
+       */
       title: string;
+      /**
+       * The start date/time of the event.
+       */
       start: Date;
+      /**
+       * The end date/time of the event.
+       */
       end: Date;
+      /**
+       * Determines whether the event should be considered an "all day" event and
+       * ignore time.
+       */
       allDay?: boolean;
-    }
+      /**
+       * The id of the `resource` that the event is a member of. This id should
+       * match at least one resource in the `resources` array.
+       */
+      resourceId?: string | number;
+    };
 
     interface Selection {
       end: number;
@@ -135,7 +153,13 @@ declare global {
   }
 
   interface Resource {
+    /**
+     * A unique identifier for each resource in the `resources` array
+     */
     id: string | number;
+    /**
+     * A human-readable name for the resource object, used in headers.
+     */
     title: string;
   }
 
@@ -154,7 +178,6 @@ declare global {
   }
 
   interface DateSlotMetricsOptions {
-    accessors: Accessors;
     events: RNC.Event[];
     range: Date[];
     maxRows: number;
@@ -224,7 +247,6 @@ declare global {
 
   interface GetStyledEventsOptions {
     events: RNC.Event[];
-    accessors: Accessors;
     slotMetrics: TimeSlotMetrics<TimeSlotMetricsOptions>;
     minimumStartDifference: number;
     dayLayoutAlgorithm?: DayLayoutAlgorithm;
@@ -247,17 +269,6 @@ declare global {
     friends?: StyledEvent[];
     idx?: number;
     size?: number;
-  }
-
-  interface Accessors {
-    allDay: (event: RNC.Event) => boolean;
-    end: (event: RNC.Event) => Date;
-    resource: (event: RNC.Event) => string | number;
-    resourceId: (resource: Resource) => string | number;
-    resourceTitle: (resource: Resource) => string;
-    start: (event: RNC.Event) => Date;
-    title: (event: RNC.Event) => string;
-    tooltip: (event: RNC.Event) => string;
   }
 
   type Component = <P = Record<string, unknown>>(
