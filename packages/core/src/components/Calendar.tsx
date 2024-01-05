@@ -3,7 +3,8 @@ import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
 import { wrapAccessor } from '@react-next-calendar/utils';
 
-import { CalendarContext, PluginsContext } from '../CalendarContext';
+import { CalendarContext } from '../model/calendarContext';
+import { PluginsContext } from '../model/pluginsContext';
 import { notify, defaults, omit } from '../utils/helpers';
 import { NavigateAction, views } from '../utils/constants';
 import message from '../utils/messages';

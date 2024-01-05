@@ -1,6 +1,7 @@
 export { default as Calendar, CalendarProps } from './components/Calendar';
 
-export { CalendarContext, PluginsContext } from './CalendarContext';
+export { useCalendarContext } from './model/calendarContext';
+export { usePluginsContext } from './model/pluginsContext';
 
 export * from './components/EventRow';
 export * from './components/NoopWrapper';
