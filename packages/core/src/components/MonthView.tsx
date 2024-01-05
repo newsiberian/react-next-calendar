@@ -46,8 +46,6 @@ export type MonthViewProps = {
   onShowMore?: (events: RNC.Event[], date: Date, slot: number) => void;
   onDrillDown: (date: Date, view: View | null) => void;
 
-  rtl: boolean;
-
   getDrilldownView: GetDrilldownView;
   getNow: GetNow;
 
@@ -83,8 +81,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
   onKeyPressEvent,
   onShowMore,
   onDrillDown,
-
-  rtl,
 
   getDrilldownView,
   getNow,
@@ -285,7 +281,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
         onKeyPress={handleKeyPress}
         onSelectSlot={handleSelectSlot}
         longPressThreshold={longPressThreshold}
-        rtl={rtl}
       />
     );
   }

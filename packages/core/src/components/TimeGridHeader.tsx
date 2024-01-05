@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates } from '@react-next-calendar/utils';
 
+import { useCalendar } from '../model/calendarContext';
 import { useLocalizer } from '../model/localizerContext';
 import { Resources } from '../utils/Resources';
 import { notify } from '../utils/helpers';
@@ -20,8 +21,6 @@ export type TimeGridHeaderProps = {
   range: Date[];
 
   isOverflowing: boolean;
-
-  rtl: boolean;
 
   width?: number;
 
@@ -51,8 +50,6 @@ export function TimeGridHeader({
 
   isOverflowing,
 
-  rtl,
-
   width,
 
   components,
@@ -73,6 +70,7 @@ export function TimeGridHeader({
 
   scrollRef,
 }: TimeGridHeaderProps) {
+  const { rtl } = useCalendar();
   const localizer = useLocalizer();
 
   function handleHeaderClick(date: Date, view: View, e: MouseEvent): void {
@@ -168,7 +166,6 @@ export function TimeGridHeader({
 
           <DateContentRow
             isAllDay
-            rtl={rtl}
             getNow={getNow}
             minRows={2}
             range={range}

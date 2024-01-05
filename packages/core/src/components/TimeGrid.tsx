@@ -31,8 +31,6 @@ export type TimeGridProps = {
 
   dayLayoutAlgorithm: DayLayoutAlgorithm;
 
-  rtl: boolean;
-
   width?: number;
 
   components: Components;
@@ -65,8 +63,6 @@ export function TimeGrid({
 
   scrollToTime = dates.startOf(new Date(), 'day'),
   showMultiDayTimes,
-
-  rtl,
 
   width,
 
@@ -234,7 +230,6 @@ export function TimeGrid({
             max={dates.merge(date, max)}
             getNow={getNow}
             isNow={dates.eq(date, now, 'day')}
-            rtl={rtl}
             components={components}
             getters={getters}
             timeslots={timeslots}
@@ -287,7 +282,6 @@ export function TimeGrid({
         range={range}
         events={allDayEvents}
         width={width || gutterWidth}
-        rtl={rtl}
         getNow={getNow}
         selected={selected}
         resources={memoizedResources(resources)}

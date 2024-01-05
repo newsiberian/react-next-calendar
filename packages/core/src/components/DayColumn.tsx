@@ -16,6 +16,7 @@ import {
 } from '@react-next-calendar/hooks';
 import { dates, isSelected } from '@react-next-calendar/utils';
 
+import { useCalendar } from '../model/calendarContext';
 import { useLocalizer } from '../model/localizerContext';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import { notify } from '../utils/helpers';
@@ -31,8 +32,6 @@ export type DayColumnProps = {
   max: Date;
   getNow: () => Date;
   isNow: boolean;
-
-  rtl: boolean;
 
   components: Components;
   getters: Getters;
@@ -63,8 +62,6 @@ export function DayColumn({
   getNow,
   isNow,
 
-  rtl,
-
   components,
   getters,
 
@@ -84,6 +81,7 @@ export function DayColumn({
 
   dayLayoutAlgorithm,
 }: DayColumnProps) {
+  const { rtl } = useCalendar();
   const localizer = useLocalizer();
   // we need most of these as refs because Selection doesn't see state changes
   // internally
@@ -440,7 +438,6 @@ export function DayColumn({
           label={label}
           key={'evt_' + idx}
           getters={getters}
-          rtl={rtl}
           components={components}
           continuesEarlier={continuesEarlier}
           continuesLater={continuesLater}

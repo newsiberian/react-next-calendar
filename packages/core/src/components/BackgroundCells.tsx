@@ -12,6 +12,8 @@ import {
   pointInBox,
 } from '@react-next-calendar/utils';
 
+import { useCalendar } from '../model/calendarContext';
+
 export type BackgroundCellsProps = {
   components: Components;
   containerRef: RefObject<HTMLDivElement>;
@@ -22,7 +24,6 @@ export type BackgroundCellsProps = {
   onSelectSlot: (slot: Slot) => void;
   selectable: Selectable;
   range: Date[];
-  rtl: boolean;
   resourceId?: string | number;
 };
 
@@ -38,9 +39,9 @@ export function BackgroundCells({
   onSelectSlot,
   selectable,
   range,
-  rtl,
   resourceId,
 }: BackgroundCellsProps) {
+  const { rtl } = useCalendar();
   // we need most of these as refs because Selection doesn't see state changes
   // internally
   const selecting = useRef(false);

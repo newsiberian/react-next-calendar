@@ -632,13 +632,6 @@ export function Calendar({
     ];
   }, [viewsProp, view, componentsProp]);
 
-  const calendarContext = useMemo(
-    () => ({
-      rtl,
-    }),
-    [rtl],
-  );
-
   const current = currentDate || getNow();
 
   // TODO: memoize
@@ -780,7 +773,7 @@ export function Calendar({
   }
 
   return (
-    <CalendarContext.Provider value={calendarContext}>
+    <CalendarContext.Provider value={{ rtl }}>
       <LocalizerContext.Provider value={localizer}>
         <PluginsContext.Provider value={context}>
           <div
@@ -810,8 +803,6 @@ export function Calendar({
               timeslots={timeslots}
               length={length}
               selectable={selectable}
-              // TODO: use from calendarContext
-              rtl={rtl}
               getters={getters}
               components={components}
               longPressThreshold={longPressThreshold}

@@ -12,12 +12,7 @@ import { EventEndingRow } from './EventEndingRow';
 type DateContentRowProps = Omit<EventRowProps, 'slotMetrics'> &
   Pick<
     BackgroundCellsProps,
-    | 'date'
-    | 'longPressThreshold'
-    | 'rtl'
-    | 'range'
-    | 'resourceId'
-    | 'selectable'
+    'date' | 'longPressThreshold' | 'range' | 'resourceId' | 'selectable'
   > & {
     events: RNC.Event[];
 
@@ -56,7 +51,6 @@ function DateContentRow({
   events,
   range,
 
-  rtl,
   resourceId,
   renderForMeasure = false,
   measureRowLimit,
@@ -205,7 +199,6 @@ function DateContentRow({
       <BackgroundCells
         date={date}
         getNow={getNow}
-        rtl={rtl}
         range={range}
         selectable={selectable}
         containerRef={containerRef || rootRef}
