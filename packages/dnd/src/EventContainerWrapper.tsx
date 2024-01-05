@@ -2,9 +2,9 @@ import * as React from 'react';
 import {
   NoopWrapper,
   TimeGridEvent,
-  useCalendarContext,
+  useCalendar,
   useLocalizer,
-  usePluginsContext,
+  usePlugins,
 } from '@react-next-calendar/core';
 import {
   useLatest,
@@ -45,9 +45,9 @@ function EventContainerWrapper({
   components,
   getters,
 }: EventContainerWrapperProps): React.ReactElement {
-  const { rtl } = useCalendarContext();
+  const { rtl } = useCalendar();
   const localizer = useLocalizer();
-  const context = usePluginsContext<{
+  const context = usePlugins<{
     draggable: DraggableContext;
   }>();
   const actionLatest = useLatest(context.draggable.dragAndDropAction);
