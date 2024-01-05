@@ -18,7 +18,7 @@ type OffsetObject = { x: number; y: number };
 
 export type PopupProps = Pick<
   EventCellProps,
-  'components' | 'getters' | 'onSelect' | 'onDoubleClick' | 'onKeyPress'
+  'components' | 'onSelect' | 'onDoubleClick' | 'onKeyPress'
 > & {
   events: RNC.Event[];
   selected?: RNC.Event;
@@ -53,7 +53,6 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
       selected,
 
       components,
-      getters,
       onSelect,
       onDoubleClick,
       onKeyPress,
@@ -125,7 +124,6 @@ export const Popup = forwardRef<HTMLElement, PopupProps>(
             draggable
             key={idx}
             event={event}
-            getters={getters}
             onSelect={onSelect}
             components={components}
             onDoubleClick={onDoubleClick}

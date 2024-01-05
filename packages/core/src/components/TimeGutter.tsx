@@ -6,7 +6,7 @@ import { useLocalizer } from '../model/localizerContext';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import { TimeSlotGroup, TimeSlotGroupProps } from './TimeSlotGroup';
 
-type TimeGutterProps = Pick<TimeSlotGroupProps, 'components' | 'getters'> & {
+type TimeGutterProps = Pick<TimeSlotGroupProps, 'components'> & {
   /**
    * in seconds to allow use this as dep for useEffect
    */
@@ -22,7 +22,7 @@ type TimeGutterProps = Pick<TimeSlotGroupProps, 'components' | 'getters'> & {
 };
 
 export const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
-  ({ min, max, timeslots, step, components, getters, getNow }, ref) => {
+  ({ min, max, timeslots, step, components, getNow }, ref) => {
     const localizer = useLocalizer();
     const rerender = useRerender();
     const slotMetrics = useRef(
@@ -65,7 +65,6 @@ export const TimeGutter = forwardRef<HTMLDivElement | null, TimeGutterProps>(
             group={group}
             components={components}
             renderSlot={renderSlot}
-            getters={getters}
           />
         ))}
       </div>

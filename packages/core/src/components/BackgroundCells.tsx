@@ -12,6 +12,7 @@ import {
   pointInBox,
 } from '@react-next-calendar/utils';
 
+import { useGetters } from '../model/gettersContext';
 import { useCalendar } from '../model/calendarContext';
 
 export type BackgroundCellsProps = {
@@ -19,7 +20,6 @@ export type BackgroundCellsProps = {
   containerRef: RefObject<HTMLDivElement>;
   date?: Date;
   getNow: () => Date;
-  getters: Getters;
   longPressThreshold: number;
   onSelectSlot: (slot: Slot) => void;
   selectable: Selectable;
@@ -34,13 +34,13 @@ export function BackgroundCells({
   containerRef,
   date: currentDate,
   getNow,
-  getters,
   longPressThreshold,
   onSelectSlot,
   selectable,
   range,
   resourceId,
 }: BackgroundCellsProps) {
+  const getters = useGetters();
   const { rtl } = useCalendar();
   // we need most of these as refs because Selection doesn't see state changes
   // internally

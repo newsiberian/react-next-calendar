@@ -3,6 +3,7 @@ import { uncontrollable } from 'uncontrollable';
 import clsx from 'clsx';
 
 import { CalendarContext } from '../model/calendarContext';
+import { GettersContext, GetterResult } from '../model/gettersContext';
 import { LocalizerContext } from '../model/localizerContext';
 import { PluginsContext } from '../model/pluginsContext';
 import { notify, defaults, omit } from '../utils/helpers';
@@ -335,9 +336,9 @@ export type CalendarProps = {
 
   /**
    * Optionally provide a function that returns an object of className or style
-   * props to be applied to the the event node.
+   * props to be applied to the event node.
    *
-   * ```js
+   * ```ts
    * (
    * 	event: Object,
    * 	start: Date,
@@ -358,18 +359,18 @@ export type CalendarProps = {
    * props to be applied to the time-slot node. Caution! Styles that change
    * layout or position may break the calendar in unexpected ways.
    *
-   * ```js
-   * (date: Date, resourceId: (number|string)) => { className?: string, style?: Object }
+   * ```ts
+   * (date: Date, resourceId?: number|string) => { className?: string, style?: Object }
    * ```
    */
-  slotPropGetter?: (date: Date, resourceId: number | string) => GetterResult;
+  slotPropGetter?: (date: Date, resourceId?: number | string) => GetterResult;
 
   /**
    * Optionally provide a function that returns an object of props to be applied
    * to the time-slot group node. Useful to dynamically change the sizing of
    * time nodes.
    *
-   * ```js
+   * ```ts
    * () => { style?: Object }
    * ```
    */
@@ -380,7 +381,7 @@ export type CalendarProps = {
    * props to be applied to the the day background. Caution! Styles that change
    * layout or position may break the calendar in unexpected ways.
    *
-   * ```js
+   * ```ts
    * (date: Date) => { className?: string, style?: Object }
    * ```
    */
@@ -602,17 +603,16 @@ export function Calendar({
 
   const getters = useMemo(
     () => ({
+      dayProp: (date: Date) => dayPropGetter?.(date) || {},
       eventProp: (
         event: RNC.Event,
         start: Date,
         end: Date,
         selected: boolean,
-      ) =>
-        (eventPropGetter && eventPropGetter(event, start, end, selected)) || {},
-      slotProp: (...args: [Date, string | number]) =>
-        (slotPropGetter && slotPropGetter(...args)) || {},
-      slotGroupProp: () => (slotGroupPropGetter && slotGroupPropGetter()) || {},
-      dayProp: (date: Date) => (dayPropGetter && dayPropGetter(date)) || {},
+      ) => eventPropGetter?.(event, start, end, selected) || {},
+      slotProp: (...args: [Date, string | number | undefined]) =>
+        slotPropGetter?.(...args) || {},
+      slotGroupProp: () => slotGroupPropGetter?.() || {},
     }),
     [eventPropGetter, slotPropGetter, slotGroupPropGetter, dayPropGetter],
   );
@@ -776,50 +776,51 @@ export function Calendar({
     <CalendarContext.Provider value={{ rtl }}>
       <LocalizerContext.Provider value={localizer}>
         <PluginsContext.Provider value={context}>
-          <div
-            {...elementProps}
-            className={clsx(
-              elementProps?.className,
-              'rbc-calendar',
-              rtl && 'rbc-rtl',
-            )}
-          >
-            {toolbar && (
-              <CalToolbar
+          <GettersContext.Provider value={getters}>
+            <div
+              {...elementProps}
+              className={clsx(
+                elementProps?.className,
+                'rbc-calendar',
+                rtl && 'rbc-rtl',
+              )}
+            >
+              {toolbar && (
+                <CalToolbar
+                  date={current}
+                  view={view}
+                  views={viewNames}
+                  label={label}
+                  onView={handleViewChange}
+                  onNavigate={handleNavigate}
+                />
+              )}
+              <View
+                {...props}
+                events={events}
                 date={current}
-                view={view}
-                views={viewNames}
-                label={label}
-                onView={handleViewChange}
-                onNavigate={handleNavigate}
+                getNow={getNow}
+                step={step}
+                timeslots={timeslots}
+                length={length}
+                selectable={selectable}
+                components={components}
+                longPressThreshold={longPressThreshold}
+                showMultiDayTimes={showMultiDayTimes}
+                getDrilldownView={getDrillDownView}
+                onDrillDown={handleDrillDown}
+                onSelectEvent={handleSelectEvent}
+                onDoubleClickEvent={handleDoubleClickEvent}
+                onKeyPressEvent={handleKeyPressEvent}
+                onSelectSlot={handleSelectSlot}
+                // TODO: propagate popup to Month view only
+                onShowMore={onShowMore}
+                // TODO: propagate popup to Month view only
+                popup={popup}
+                dayLayoutAlgorithm={dayLayoutAlgorithm}
               />
-            )}
-            <View
-              {...props}
-              events={events}
-              date={current}
-              getNow={getNow}
-              step={step}
-              timeslots={timeslots}
-              length={length}
-              selectable={selectable}
-              getters={getters}
-              components={components}
-              longPressThreshold={longPressThreshold}
-              showMultiDayTimes={showMultiDayTimes}
-              getDrilldownView={getDrillDownView}
-              onDrillDown={handleDrillDown}
-              onSelectEvent={handleSelectEvent}
-              onDoubleClickEvent={handleDoubleClickEvent}
-              onKeyPressEvent={handleKeyPressEvent}
-              onSelectSlot={handleSelectSlot}
-              // TODO: propagate popup to Month view only
-              onShowMore={onShowMore}
-              // TODO: propagate popup to Month view only
-              popup={popup}
-              dayLayoutAlgorithm={dayLayoutAlgorithm}
-            />
-          </div>
+            </div>
+          </GettersContext.Provider>
         </PluginsContext.Provider>
       </LocalizerContext.Provider>
     </CalendarContext.Provider>

@@ -37,7 +37,6 @@ export type MonthViewProps = {
   longPressThreshold: number;
 
   components: Components & MonthComponents;
-  getters: Getters;
 
   onSelectSlot: (slotInfo: SlotInfo) => void;
   onSelectEvent: <P>(args: P) => void;
@@ -73,7 +72,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
   longPressThreshold,
 
   components,
-  getters,
 
   onSelectSlot,
   onSelectEvent,
@@ -271,7 +269,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
         selected={selected}
         selectable={selectable}
         components={components}
-        getters={getters}
         renderHeader={readerDateHeading}
         renderForMeasure={needLimitMeasure}
         measureRowLimit={measureRowLimit}
@@ -314,7 +311,6 @@ export const MonthView: ExtendedFC<MonthViewProps> = ({
           <Popup
             {...props}
             popupOffset={popupOffset}
-            getters={getters}
             selected={selected}
             components={components}
             position={overlay.position as Position}

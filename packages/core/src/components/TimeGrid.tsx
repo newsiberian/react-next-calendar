@@ -34,7 +34,6 @@ export type TimeGridProps = {
   width?: number;
 
   components: Components;
-  getters: Getters;
 
   selected?: RNC.Event;
   selectable: Selectable;
@@ -67,7 +66,6 @@ export function TimeGrid({
   width,
 
   components,
-  getters,
 
   selected,
   selectable,
@@ -231,7 +229,6 @@ export function TimeGrid({
             getNow={getNow}
             isNow={dates.eq(date, now, 'day')}
             components={components}
-            getters={getters}
             timeslots={timeslots}
             selected={selected}
             selectable={selectable}
@@ -286,7 +283,6 @@ export function TimeGrid({
         selected={selected}
         resources={memoizedResources(resources)}
         selectable={selectable}
-        getters={getters}
         components={components}
         scrollRef={scrollRef}
         isOverflowing={isOverflowing}
@@ -312,7 +308,6 @@ export function TimeGrid({
           getNow={getNow}
           timeslots={timeslots}
           components={components}
-          getters={getters}
         />
 
         {renderEvents(range, rangeEvents, getNow())}

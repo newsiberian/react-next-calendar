@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates, inRange, isSelected } from '@react-next-calendar/utils';
 
+import { useGetters } from '../model/gettersContext';
 import { useLocalizer } from '../model/localizerContext';
 import { NavigateAction } from '../utils/constants';
 
@@ -14,19 +15,18 @@ export type AgendaProps = {
   selected?: RNC.Event;
 
   components: Components & AgendaComponents;
-  getters: Getters;
 };
 
 const defaultLength = 30;
 
 export const AgendaView: ExtendedFC<AgendaProps> = ({
   selected,
-  getters,
   components,
   length = defaultLength,
   date,
   events,
 }) => {
+  const getters = useGetters();
   const localizer = useLocalizer();
   const headerRef = useRef<HTMLTableElement>(null);
   const dateColRef = useRef<HTMLTableCellElement>(null);

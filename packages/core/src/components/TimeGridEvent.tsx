@@ -2,6 +2,7 @@ import type { KeyboardEvent, MouseEvent } from 'react';
 import clsx from 'clsx';
 
 import { useCalendar } from '../model/calendarContext';
+import { useGetters } from '../model/gettersContext';
 
 function stringifyPercent(value: string | number): string {
   return typeof value === 'string' ? value : value + '%';
@@ -16,7 +17,6 @@ export type TimeGridEventProps = {
    */
   className?: string;
 
-  getters: Getters;
   components: Components;
 
   label?: string | null;
@@ -40,13 +40,13 @@ export function TimeGridEvent(props: TimeGridEventProps) {
     label,
     continuesEarlier,
     continuesLater,
-    getters,
     onClick,
     onDoubleClick,
     onKeyPress,
     components: { event: Event, eventWrapper: EventWrapper },
   } = props;
   const { rtl } = useCalendar();
+  const getters = useGetters();
 
   const { title, start, end } = event;
   const tooltip = title;

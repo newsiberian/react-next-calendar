@@ -8,6 +8,8 @@ import {
 import clsx from 'clsx';
 import { dates } from '@react-next-calendar/utils';
 
+import { useGetters } from '../model/gettersContext';
+
 export type EventCellProps = {
   event: RNC.Event;
   slotStart: Date;
@@ -34,7 +36,6 @@ export type EventCellProps = {
   continuesAfter: boolean;
 
   components: Components;
-  getters: Getters;
 
   onSelect?: (event: RNC.Event, e: MouseEvent) => void;
   onDoubleClick?: (event: RNC.Event, e: MouseEvent) => void;
@@ -57,13 +58,13 @@ export function EventCell(props: EventCellProps) {
     onKeyPress,
     continuesPrior,
     continuesAfter,
-    getters,
     children,
     components: { event: Event, eventWrapper: EventWrapper },
     slotStart,
     slotEnd,
     ...rest
   } = props;
+  const getters = useGetters();
 
   const { title, allDay, start, end } = event;
   const tooltip = title;

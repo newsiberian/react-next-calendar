@@ -20,7 +20,6 @@ export function renderEvent(
   {
     selected,
     components,
-    getters,
     onSelect,
     onDoubleClick,
     onKeyPress,
@@ -34,7 +33,6 @@ export function renderEvent(
   return (
     <EventCell
       event={event}
-      getters={getters}
       components={components}
       onSelect={onSelect}
       onDoubleClick={onDoubleClick}

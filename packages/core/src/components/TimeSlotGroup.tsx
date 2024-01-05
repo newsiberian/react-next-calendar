@@ -1,13 +1,13 @@
 import type { ReactElement } from 'react';
 import clsx from 'clsx';
 
+import { useGetters } from '../model/gettersContext';
 import { NoopWrapper } from './NoopWrapper';
 
 export type TimeSlotGroupProps = {
   group: Date[];
   resourceId?: string | number;
   renderSlot?: (date: Date, idx: number) => ReactElement | null;
-  getters: Pick<Getters, 'slotGroupProp' | 'slotProp'>;
   components?: Partial<Pick<Components, 'timeSlotWrapper'>>;
 };
 
@@ -15,14 +15,15 @@ export function TimeSlotGroup({
   group,
   resourceId,
   renderSlot,
-  getters,
   components: { timeSlotWrapper: Wrapper = NoopWrapper as Component } = {},
 }: TimeSlotGroupProps) {
-  const groupProps = getters ? getters.slotGroupProp() : {};
+  const getters = useGetters();
+  const groupProps = getters.slotGroupProp();
+
   return (
     <div className="rbc-timeslot-group" {...groupProps}>
       {group.map((date, idx) => {
-        const slotProps = getters ? getters.slotProp(date, resourceId) : {};
+        const slotProps = getters.slotProp(date, resourceId);
         return (
           <Wrapper key={idx} value={date} resource={resourceId}>
             <div

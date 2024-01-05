@@ -4,6 +4,7 @@ import scrollbarSize from 'dom-helpers/scrollbarSize';
 import { dates } from '@react-next-calendar/utils';
 
 import { useCalendar } from '../model/calendarContext';
+import { useGetters } from '../model/gettersContext';
 import { useLocalizer } from '../model/localizerContext';
 import { Resources } from '../utils/Resources';
 import { notify } from '../utils/helpers';
@@ -25,7 +26,6 @@ export type TimeGridHeaderProps = {
   width?: number;
 
   components: Components & WeekComponents;
-  getters: Getters;
 
   selected?: RNC.Event;
   selectable: Selectable;
@@ -53,7 +53,6 @@ export function TimeGridHeader({
   width,
 
   components,
-  getters,
 
   selected,
   selectable,
@@ -71,6 +70,7 @@ export function TimeGridHeader({
   scrollRef,
 }: TimeGridHeaderProps) {
   const { rtl } = useCalendar();
+  const getters = useGetters();
   const localizer = useLocalizer();
 
   function handleHeaderClick(date: Date, view: View, e: MouseEvent): void {
@@ -175,7 +175,6 @@ export function TimeGridHeader({
             selectable={selectable}
             selected={selected}
             components={components}
-            getters={getters}
             onSelect={onSelectEvent}
             onDoubleClick={onDoubleClickEvent}
             onKeyPress={onKeyPressEvent}

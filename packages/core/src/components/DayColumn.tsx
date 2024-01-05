@@ -17,6 +17,7 @@ import {
 import { dates, isSelected } from '@react-next-calendar/utils';
 
 import { useCalendar } from '../model/calendarContext';
+import { useGetters } from '../model/gettersContext';
 import { useLocalizer } from '../model/localizerContext';
 import * as TimeSlotUtils from '../utils/TimeSlots';
 import { notify } from '../utils/helpers';
@@ -34,7 +35,6 @@ export type DayColumnProps = {
   isNow: boolean;
 
   components: Components;
-  getters: Getters;
 
   timeslots?: number;
 
@@ -63,7 +63,6 @@ export function DayColumn({
   isNow,
 
   components,
-  getters,
 
   timeslots = 2,
 
@@ -82,6 +81,7 @@ export function DayColumn({
   dayLayoutAlgorithm,
 }: DayColumnProps) {
   const { rtl } = useCalendar();
+  const getters = useGetters();
   const localizer = useLocalizer();
   // we need most of these as refs because Selection doesn't see state changes
   // internally
@@ -127,7 +127,7 @@ export function DayColumn({
   const timeIndicatorTimeout = useRef<number | null>(null);
   const initialSlot = useRef<Date>();
 
-  const { dayProp, ...restGetters } = getters;
+  const { dayProp } = getters;
   const { eventContainerWrapper: EventContainer, ...restComponents } =
     components;
   const { className, style } = dayProp(max);
@@ -437,7 +437,6 @@ export function DayColumn({
           event={event}
           label={label}
           key={'evt_' + idx}
-          getters={getters}
           components={components}
           continuesEarlier={continuesEarlier}
           continuesLater={continuesLater}
@@ -468,7 +467,6 @@ export function DayColumn({
           key={idx}
           group={grp}
           resourceId={resourceId}
-          getters={restGetters}
           components={restComponents}
         />
       ))}
@@ -478,7 +476,6 @@ export function DayColumn({
         slotMetrics={timeSlotMetrics}
         resourceId={resourceId}
         components={restComponents}
-        getters={restGetters}
       >
         <div className={clsx('rbc-events-container', rtl && 'rtl')}>
           {renderEvents()}

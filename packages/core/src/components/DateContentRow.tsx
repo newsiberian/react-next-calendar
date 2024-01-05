@@ -72,7 +72,6 @@ function DateContentRow({
   isFirstRow,
 
   components,
-  getters,
 
   className,
 
@@ -185,7 +184,6 @@ function DateContentRow({
 
   const eventRowProps = {
     selected,
-    getters,
     components,
     onSelect,
     onDoubleClick,
@@ -202,7 +200,6 @@ function DateContentRow({
         range={range}
         selectable={selectable}
         containerRef={containerRef || rootRef}
-        getters={getters}
         onSelectSlot={handleSelectSlot}
         components={components}
         longPressThreshold={longPressThreshold}
