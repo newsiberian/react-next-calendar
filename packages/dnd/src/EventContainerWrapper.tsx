@@ -25,7 +25,6 @@ export interface EventContainerWrapperProps {
   rootRef: React.RefObject<HTMLDivElement>;
 
   components: Components;
-  getters: Getters;
 }
 
 const pointInColumn = (
@@ -42,7 +41,6 @@ function EventContainerWrapper({
   slotMetrics,
   resourceId,
   components,
-  getters,
 }: EventContainerWrapperProps): React.ReactElement {
   const localizer = useLocalizer();
   const context = usePlugins<{
@@ -292,7 +290,6 @@ function EventContainerWrapper({
             label={label}
             className="rbc-addons-dnd-drag-preview"
             style={{ top, height, width: 100 }}
-            getters={getters}
             components={
               { ...components, eventWrapper: NoopWrapper } as Components
             }

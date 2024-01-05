@@ -20,7 +20,6 @@ export interface WeekWrapperProps {
   slotMetrics: DateSlotMetrics;
 
   components: Components;
-  getters: Getters;
 
   resourceId: string | number;
   rootRef: React.RefObject<HTMLDivElement>;
