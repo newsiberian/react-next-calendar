@@ -10,12 +10,12 @@ export const PluginsContext = createContext<PluginsContextValue<any>>({});
 
 PluginsContext.displayName = 'PluginsContext';
 
-export const usePluginsContext = <Params extends Record<string, unknown>>() => {
+export const usePlugins = <Params extends Record<string, unknown>>() => {
   const context = useContext<PluginsContextValue<Params>>(PluginsContext);
 
   invariant(
     context,
-    'usePluginsContext shouldn\'t be used outside of "PluginsContext"',
+    'usePlugins shouldn\'t be used outside of "PluginsContext"',
   );
 
   return context;

@@ -15,12 +15,12 @@ export const CalendarContext = createContext<CalendarContextValue>({
 
 CalendarContext.displayName = 'CalendarContext';
 
-export const useCalendarContext = () => {
+export const useCalendar = () => {
   const context = useContext(CalendarContext);
 
   invariant(
     context,
-    'useCalendarContext shouldn\'t be used outside of "CalendarContext"',
+    'useCalendar shouldn\'t be used outside of "CalendarContext"',
   );
 
   return context;
